@@ -114,7 +114,8 @@
           "inboundCourseMag": 130,
           "side": "L",
           "maxDistanceNm": 10,
-          "minAltFt": 6200
+          "minAltFt": 6200,
+          "inboundMinAltFt": 5800
         }
       ]
     },

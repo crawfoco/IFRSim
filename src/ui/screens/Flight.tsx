@@ -1,6 +1,6 @@
 /** Flight screen: briefing and plate on the left, instrument panel and autopilot on the right. */
 import { TRAINING_DISCLAIMER } from '../../app-info';
-import { TIME_SCALES } from '../../sim/recorder';
+import { TIME_SCALES, type LoggedCommand } from '../../sim/recorder';
 import type { Scenario } from '../../sim/scenario/scenario';
 import { ChartViewer } from '../chart/ChartViewer';
 import { Altimeter } from '../instruments/Altimeter';
@@ -24,7 +24,15 @@ const OUTCOME_TEXT = {
   missedComplete: 'Missed approach and hold flown. Scenario complete.',
 } as const;
 
-export function Flight({ scenario, onExit }: { scenario: Scenario; onExit: () => void }) {
+export function Flight({
+  scenario,
+  onExit,
+  onDebrief,
+}: {
+  scenario: Scenario;
+  onExit: () => void;
+  onDebrief: (log: readonly LoggedCommand[], endTick: number) => void;
+}) {
   const { sim, state, sensors, progress } = useSim(scenario);
   const send = sim.send;
   const cdi1 = courseDeviation(sensors.nav1);
@@ -68,6 +76,13 @@ export function Flight({ scenario, onExit }: { scenario: Scenario; onExit: () =>
           <button type="button" data-testid="restart" onClick={() => sim.restart()}>
             Restart
           </button>
+          <button
+            type="button"
+            data-testid="end-flight"
+            onClick={() => onDebrief([...sim.log], sim.tick)}
+          >
+            {sim.ended ? 'Debrief' : 'End flight'}
+          </button>
         </div>
       </header>
 
@@ -83,6 +98,13 @@ export function Flight({ scenario, onExit }: { scenario: Scenario; onExit: () =>
             {progress.phase === 'ended' && progress.outcome && (
               <div className="callout-end-row">
                 <strong data-testid="outcome">{OUTCOME_TEXT[progress.outcome]}</strong>
+                <button
+                  type="button"
+                  data-testid="debrief"
+                  onClick={() => onDebrief([...sim.log], sim.tick)}
+                >
+                  Debrief
+                </button>
                 <button type="button" onClick={() => sim.restart()}>
                   Fly again
                 </button>

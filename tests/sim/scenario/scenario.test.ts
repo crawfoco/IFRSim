@@ -1,24 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import kcfo from '../../../src/procedures/kcfo-ils26.json';
 import { parseProcedure } from '../../../src/procedures/schema';
-import { signedAngleDiff } from '../../../src/sim/geo/angles';
-import { distanceNm } from '../../../src/sim/geo/geodesy';
-import { SimRunner } from '../../../src/sim/recorder';
-import {
-  initialProgress,
-  updateProgress,
-  type ScenarioProgress,
-} from '../../../src/sim/scenario/progress';
 import {
   activeMinimums,
   briefing,
   buildScenario,
-  type Scenario,
   type ScenarioOptions,
 } from '../../../src/sim/scenario/scenario';
-import { sense } from '../../../src/sim/sensors';
-import type { Command } from '../../../src/sim/state';
 import { nav } from '../helpers';
+import { Flight } from '../scripted';
 
 const p = parseProcedure(kcfo);
 const opts = (o: Partial<ScenarioOptions> = {}): ScenarioOptions => ({
@@ -64,40 +54,6 @@ describe('building a scenario', () => {
     expect(b.notes).toContain('DME required.');
   });
 });
-
-/** Runs a scenario with a scripted learner and tracks progress every step. */
-class Flight {
-  r: SimRunner;
-  progress: ScenarioProgress = initialProgress();
-  constructor(public sc: Scenario) {
-    this.r = new SimRunner(sc.initial, sc.world);
-  }
-  send(...cmds: Command[]) {
-    cmds.forEach((c) => this.r.enqueue(c));
-  }
-  /** Step until `done` (checked every step) or the time limit; returns success. */
-  until(done: () => boolean, maxS = 1200): boolean {
-    for (let i = 0; i < maxS * 20; i++) {
-      if (done()) return true;
-      this.r.stepOnce();
-      this.progress = updateProgress(this.progress, this.r.state, this.sc);
-    }
-    return done();
-  }
-  get hdgMag() {
-    return sense(this.r.state, this.sc.world).headingMagDeg;
-  }
-  /** Turn in HDG mode through intermediate bugs (forces the turn direction). */
-  turn(...bugs: number[]) {
-    for (const b of bugs) {
-      this.send({ type: 'headingBug', deg: b });
-      expect(this.until(() => Math.abs(signedAngleDiff(this.hdgMag, b)) < 3, 120)).toBe(true);
-    }
-  }
-  distTo(fix: string) {
-    return distanceNm(this.r.state.aircraft.position, this.sc.fixes[fix]!);
-  }
-}
 
 /** Vectors to final, ILS (or LOC with VS descents when the glideslope is out). */
 function flyFinal(f: Flight) {

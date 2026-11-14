@@ -84,16 +84,6 @@
           "maxDistanceNm": 10,
           "minAltFt": 6000,
           "inboundMinAltFt": 5300
-        },
-        {
-          "type": "track",
-          "to": "AKO",
-          "course": {
-            "navaid": "AKO",
-            "courseMag": 290,
-            "toFrom": "TO"
-          },
-          "minAltFt": 5300
         }
       ]
     },

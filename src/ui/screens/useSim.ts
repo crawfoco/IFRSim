@@ -77,6 +77,13 @@ export class BrowserSim {
     return s;
   }
 
+  /** Recorded inputs and the current tick, for the debrief. */
+  get log() {
+    return this.runner.log;
+  }
+  get tick() {
+    return this.runner.state.tick;
+  }
   get ended() {
     return this.progress.phase === 'ended';
   }

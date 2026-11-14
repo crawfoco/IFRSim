@@ -6,36 +6,40 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 
 ## Current status (updated 2026-11-14)
 
-**Where we are:** M0–M4 are committed. The M6 data encodings (all five remaining
-approaches) are merged and registered, so all six V1 approaches can be selected and
-flown. M6's integration runs (perfect/bad scripted runs) wait for M5.
+**Where we are:** M0–M5 are committed, and the M6 data is merged. Next: the M5 checkpoint
+(you fly a full approach and read the debrief), then the rest of M6.
 
 | Item | Status | Notes |
 |---|---|---|
-| M0–M2 | ✅ committed | through `16d8f90` |
-| M3 (T12–T14) | ✅ committed `cd98a9e` | T14 checkpoint: user test-flight feedback still pending |
-| M4 (T15–T19) | ✅ committed | T15 `d3a62c9`, T16–T19 `7ee2756` |
-| M6 data (T23, T24, T26–T28) | ✅ merged | ILS branch `748d256`, VOR branch `79e79b4`; registered in `src/procedures/index.ts` |
-| M6 rest | ⏳ after M5 | integration tests (one perfect run and one bad run each), T25 PT sequencer/scoring |
-| M5 (T20–T22) | ⏭ next | leg sequencer, scoring, debrief |
+| M0–M4 | ✅ committed | through `7ee2756` |
+| M6 data | ✅ merged + registered | `49229bc`; schema gaps closed in `3da243c` |
+| M5 (T20–T22) | ✅ committed | sequencer, 11 scoring rules, debrief with replay; fresh-eyes review done (8 bugs fixed, see commit) |
+| M6 rest | ⏭ next | integration runs (perfect + bad) for KGXY, KLAR, KSNY; T25 is covered by the procedure-turn rule |
 
-**Last verified (M6 data merge):** 392 unit tests pass. `tests/procedures/all.test.ts`
-builds every start condition of all six approaches. Typecheck, lint and Prettier are
-clean. In the browser, all six briefings load with their plates.
+**Last verified:** 417 unit tests and 3 e2e tests pass (KCFO flown to DA, and the debrief
+replay). Typecheck and lint are clean.
 
 **Next steps (in order):**
-1. ~~Close the schema gaps~~: done. Added `procedureTurn.inboundMinAltFt`, `turn`/`climbToFt`
-   on `direct`, leg `dme` + `expectedDmeSource()`, `final.descentAngle`, and
-   `expandedServiceVolumeNm` (KMTJ: JNC 50 NM, so the HAQHY feeder no longer flags).
-2. M5: T20 leg sequencer, T21 scoring rules (fresh-eyes review at the end), T22 debrief.
+1. Checkpoint: the user flies a full approach and reads the debrief.
+2. M6: scripted perfect and bad runs for KGXY, KLAR and KSNY (KCFO, KMTJ and KAKO
+   have them).
+3. M7 polish and V1 acceptance.
 
 **Known gaps / decisions:**
 - KCFO chart note "Autopilot coupled approach NA below 6250 MSL": the trainer's
   autopilot flies to DA anyway. It is shown as a briefing note only.
 - Scenario end conditions are geometric (fix passage within 1 NM, inbound heading
   within 30°). Hold-entry correctness is scored in M5, not checked here.
-- If the learner goes missed early (before DA/MDA or the MAP), the scenario does
-  not switch to the missed phase. Revisit with the T20 sequencer.
+- An early missed approach (climbing 300 ft or more after the FAF) is detected by the
+  T20 sequencer for scoring. The scenario's own progress still switches to the missed
+  phase only at DA or the MAP. Align the two if it confuses learners.
+- Moving map: not built yet, so the "map used" informational item is not emitted.
+- Hold `maxAltFt` (e.g. the KCFO hold's 8000 ceiling) is not scored. The SPEC doesn't list it.
+- No start condition reaches KMTJ's procedure turn (the `mtj` transition). Add one in M6
+  if wanted.
+- Fix passages need the aircraft to close in at least 0.2 NM after a watch is armed. Hold
+  and procedure-turn completion and the FAF use along-track inbound crossings, so tight
+  holds still count.
 
 ## M0 — Scaffold
 
@@ -113,13 +117,13 @@ clean. In the browser, all six briefings load with their plates.
 
 ## M5 — Scoring + debrief
 
-- [ ] **T20 Leg sequencer.** Tracks the current procedure leg from fix passage and course alignment.
+- [x] **T20 Leg sequencer.** Tracks the current procedure leg from fix passage and course alignment.
   - Acceptance: correct leg sequence on the scripted KCFO runs, including the hold and missed approach.
   - Files: `src/sim/scoring/sequencer.ts`, tests
-- [ ] **T21 Scoring rules.** Every rule in the spec (altitude below segment minimum, tuning/ident, fix order, LOC/GS ½ scale inside FAF, hold entry, PT, wrong DME source, below DA/MDA, missed approach, map-use and NoPT notes). _(🤖 fresh-eyes review of T20–T21 at end of M5)_
+- [x] **T21 Scoring rules.** Every rule in the spec (altitude below segment minimum, tuning/ident, fix order, LOC/GS ½ scale inside FAF, hold entry, PT, wrong DME source, below DA/MDA, missed approach, map-use and NoPT notes). _(🤖 fresh-eyes review of T20–T21 at end of M5)_
   - Acceptance: one "bad run" test per rule loses points on exactly that rule; the perfect run scores 100%.
   - Files: `src/sim/scoring/rules/*.ts`, `tests/integration/kcfo-scoring.test.ts`
-- [ ] **T22 Debrief screen.** Plan-view track over procedure, altitude profile vs chart profile, event timeline, score table, replay at 1×/4×/16×.
+- [x] **T22 Debrief screen.** Plan-view track over procedure, altitude profile vs chart profile, event timeline, score table, replay at 1×/4×/16×.
   - Files: `src/ui/screens/Debrief.tsx`, `src/ui/map/*.tsx`, `e2e/debrief.spec.ts`
 
 ## M6 — Remaining approaches
