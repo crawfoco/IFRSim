@@ -1,0 +1,152 @@
+{
+  "id": "kcfo-ils26",
+  "airport": "KCFO",
+  "runway": "26",
+  "name": "ILS or LOC RWY 26",
+  "chart": {
+    "number": "AL-6851",
+    "amendment": "Amdt 6B",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kcfo-ils26.png"
+  },
+  "navaids": ["I-FTG", "FQF"],
+  "fixes": {
+    "FQF": { "def": { "kind": "navaid", "navaid": "FQF" }, "faaId": "FQF" },
+    "SKIPI": {
+      "def": { "kind": "locDme", "loc": "I-FTG", "dmeNm": 7 },
+      "faaId": "SKIPI",
+      "note": "IAF and FAF; also FQF R-045 at 11 NM"
+    },
+    "I-FTG 2.9": {
+      "def": { "kind": "locDme", "loc": "I-FTG", "dmeNm": 2.9 },
+      "note": "VDP, LOC only"
+    },
+    "I-FTG 1.7": {
+      "def": { "kind": "locDme", "loc": "I-FTG", "dmeNm": 1.7 },
+      "note": "Missed approach point, LOC only"
+    },
+    "RW26": { "def": { "kind": "threshold" } }
+  },
+  "transitions": [
+    {
+      "id": "fqf",
+      "name": "FQF R-045 feeder",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "SKIPI",
+          "course": { "navaid": "FQF", "courseMag": 45, "toFrom": "FROM" },
+          "minAltFt": 8000
+        },
+        {
+          "type": "hold",
+          "fix": "SKIPI",
+          "inboundCourseMag": 263,
+          "course": { "loc": "I-FTG" },
+          "turn": "L",
+          "legMinutes": 1,
+          "minAltFt": 7200,
+          "maxAltFt": 8000
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "final",
+      "faf": "SKIPI",
+      "course": { "loc": "I-FTG" },
+      "fafAltFt": 7200,
+      "glideslope": { "angleDeg": 3, "tchFt": 50 },
+      "stepDowns": [],
+      "vdp": "I-FTG 2.9",
+      "map": { "fix": "I-FTG 1.7" }
+    }
+  ],
+  "missed": [
+    { "type": "climb", "toAltFt": 6100 },
+    {
+      "type": "heading",
+      "headingMag": 80,
+      "turn": "L",
+      "climbToFt": 7200,
+      "intercept": { "navaid": "FQF", "courseMag": 45, "toFrom": "FROM" }
+    },
+    {
+      "type": "track",
+      "to": "SKIPI",
+      "course": { "navaid": "FQF", "courseMag": 45, "toFrom": "FROM" },
+      "minAltFt": 7200
+    },
+    {
+      "type": "hold",
+      "fix": "SKIPI",
+      "inboundCourseMag": 263,
+      "course": { "loc": "I-FTG" },
+      "turn": "L",
+      "legMinutes": 1,
+      "minAltFt": 7200,
+      "maxAltFt": 8000
+    }
+  ],
+  "missedText": "Climb to 6100 then climbing left turn to 7200 on heading 080° and on FQF VORTAC R-045 to SKIPI/I-FTG 7 DME and hold.",
+  "minimums": [
+    {
+      "kind": "ILS",
+      "label": "S-ILS 26",
+      "A": { "altFt": 5689, "visibilitySm": 0.5 },
+      "B": { "altFt": 5689, "visibilitySm": 0.5 }
+    },
+    {
+      "kind": "LOC",
+      "label": "S-LOC 26",
+      "A": { "altFt": 5900, "visibilitySm": 0.5 },
+      "B": { "altFt": 5900, "visibilitySm": 0.5 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "over-fqf",
+      "name": "Over FQF, via the R-045 feeder",
+      "clearance": "Cross FQF at or above 8000, cleared ILS runway 26 approach via the FQF 045 radial.",
+      "position": { "kind": "navaid", "navaid": "FQF" },
+      "altitudeFt": 8000,
+      "headingMag": 360,
+      "iasKt": 100,
+      "transition": "fqf",
+      "nav1MHz": 116.3,
+      "nav2MHz": 116.3
+    },
+    {
+      "id": "join-feeder",
+      "name": "Vectors to join the FQF R-045 feeder",
+      "clearance": "Fly heading 360, join the FQF 045 radial, maintain 8000, cleared ILS runway 26 approach.",
+      "position": { "kind": "radialDme", "navaid": "FQF", "radialMag": 90, "dmeNm": 6 },
+      "altitudeFt": 8000,
+      "headingMag": 360,
+      "iasKt": 100,
+      "transition": "fqf",
+      "nav1MHz": 116.3,
+      "nav2MHz": 116.3
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Turn left heading 293, maintain 7000 until established on the localizer, cleared ILS runway 26 approach.",
+      "position": { "kind": "radialDme", "navaid": "I-FTG", "radialMag": 94, "dmeNm": 16 },
+      "altitudeFt": 8000,
+      "headingMag": 330,
+      "iasKt": 100,
+      "nav1MHz": 116.3,
+      "nav2MHz": 116.3
+    }
+  ],
+  "notes": [
+    "DME required.",
+    "Procedure NA for arrival on FQF VORTAC airway radials 038 CW 078.",
+    "Autopilot coupled approach NA below 6250 MSL.",
+    "MSA FQF 25 NM: 8400 east (360°–180°), 9600 west (180°–360°)."
+  ]
+}

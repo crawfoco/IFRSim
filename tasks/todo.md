@@ -65,7 +65,7 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 
 ## M4 — Full procedure + scenario
 
-- [ ] **T15 Procedure schema.** Zod schema for legs (feeder, arc, hold-in-lieu, heading-to-intercept, barbed PT, final with step-downs/VDP/MAP, missed with hold/climb-in-hold), minimums, start conditions.
+- [x] **T15 Procedure schema.** Zod schema for legs (feeder, arc, hold-in-lieu, heading-to-intercept, barbed PT, final with step-downs/VDP/MAP, missed with hold/climb-in-hold), minimums, start conditions.
   - Acceptance: schema documented in `docs/procedure-encoding.md`; invalid sample files fail with clear errors.
   - Files: `src/procedures/schema.ts`, `docs/procedure-encoding.md`, tests
 - [ ] **T16 Encode KCFO ILS/LOC 26 fully.** Feeder FQF R-045, SKIPI hold-in-lieu, ILS + LOC-only minimums, missed to SKIPI; 3 start conditions. _(🤖 independent chart-verification subagent)_
