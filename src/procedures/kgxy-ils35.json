@@ -1,0 +1,202 @@
+{
+  "id": "kgxy-ils35",
+  "airport": "KGXY",
+  "runway": "35",
+  "name": "ILS or LOC RWY 35",
+  "chart": {
+    "number": "AL-325",
+    "amendment": "Amdt 3A",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kgxy-ils35.png"
+  },
+  "navaids": ["I-DCI", "GLL"],
+  "fixes": {
+    "GLL": { "def": { "kind": "navaid", "navaid": "GLL" }, "faaId": "GLL" },
+    "WAVDI": {
+      "def": { "kind": "radialDme", "navaid": "GLL", "radialMag": 136, "dmeNm": 17.5 },
+      "faaId": "WAVDI",
+      "note": "IAF; start of the GLL 17.5 DME arc (NoPT)"
+    },
+    "CEDUK": {
+      "def": { "kind": "radialDme", "navaid": "GLL", "radialMag": 136, "dmeNm": 16 },
+      "faaId": "CEDUK",
+      "note": "Missed-approach holding fix (GLL R-136 / 16 DME)"
+    },
+    "WELDS": {
+      "def": { "kind": "locDme", "loc": "I-DCI", "dmeNm": 14.5 },
+      "faaId": "WELDS",
+      "note": "IF/IAF; also GLL R-177 at 17.5 DME, or radar. Hold-in-lieu of PT."
+    },
+    "BUFFS": {
+      "def": { "kind": "locDme", "loc": "I-DCI", "dmeNm": 7.6 },
+      "faaId": "BUFFS",
+      "note": "FAF (LOC); glideslope intercept at 6600"
+    },
+    "ARTSS": {
+      "def": { "kind": "locDme", "loc": "I-DCI", "dmeNm": 3.7 },
+      "faaId": "ARTSS",
+      "note": "Step-down fix, 5360 LOC only"
+    },
+    "I-DCI 2.9": {
+      "def": { "kind": "locDme", "loc": "I-DCI", "dmeNm": 2.9 },
+      "note": "VDP, LOC only"
+    },
+    "I-DCI 1.6": {
+      "def": { "kind": "locDme", "loc": "I-DCI", "dmeNm": 1.6 },
+      "note": "Missed approach point, LOC only"
+    },
+    "KROMM": {
+      "def": { "kind": "radialDme", "navaid": "CYS", "radialMag": 153.6, "dmeNm": 26.3 },
+      "faaId": "KROMM",
+      "note": "Alternate missed approach fix, charted CYS R-154 / 26.3 DME (NASR puts it on R-153.6, 0.17 NM from the whole-degree radial)."
+    },
+    "RW35": { "def": { "kind": "threshold" } }
+  },
+  "transitions": [
+    {
+      "id": "wavdi",
+      "name": "GLL 17.5 DME arc from WAVDI",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "arc",
+          "to": "WELDS",
+          "navaid": "GLL",
+          "radiusNm": 17.5,
+          "fromRadialMag": 136,
+          "toRadialMag": 177,
+          "turn": "R",
+          "leadRadialMag": 170,
+          "minAltFt": 7000
+        }
+      ]
+    },
+    {
+      "id": "gll",
+      "name": "GLL R-177 feeder",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "WELDS",
+          "course": { "navaid": "GLL", "courseMag": 177, "toFrom": "FROM" },
+          "minAltFt": 7000
+        },
+        {
+          "type": "hold",
+          "fix": "WELDS",
+          "inboundCourseMag": 350,
+          "course": { "loc": "I-DCI" },
+          "turn": "R",
+          "legMinutes": 1,
+          "minAltFt": 7000
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "BUFFS",
+      "course": { "loc": "I-DCI" },
+      "minAltFt": 6600
+    },
+    {
+      "type": "final",
+      "faf": "BUFFS",
+      "course": { "loc": "I-DCI" },
+      "fafAltFt": 6600,
+      "glideslope": { "angleDeg": 3, "tchFt": 51 },
+      "stepDowns": [{ "fix": "ARTSS", "minAltFt": 5360, "locOnly": true }],
+      "vdp": "I-DCI 2.9",
+      "map": { "fix": "I-DCI 1.6" }
+    }
+  ],
+  "missed": [
+    { "type": "climb", "toAltFt": 5300 },
+    {
+      "type": "heading",
+      "headingMag": 120,
+      "turn": "R",
+      "climbToFt": 7000,
+      "intercept": { "navaid": "GLL", "courseMag": 136, "toFrom": "FROM" }
+    },
+    {
+      "type": "track",
+      "to": "CEDUK",
+      "course": { "navaid": "GLL", "courseMag": 136, "toFrom": "FROM" },
+      "minAltFt": 7000
+    },
+    {
+      "type": "hold",
+      "fix": "CEDUK",
+      "inboundCourseMag": 316,
+      "course": { "navaid": "GLL", "courseMag": 316, "toFrom": "TO" },
+      "turn": "R",
+      "legMinutes": 1,
+      "minAltFt": 7000
+    }
+  ],
+  "missedText": "Climb to 5300 then climbing right turn to 7000 on heading 120° and GLL VOR/DME R-136 to CEDUK INT/GLL 16 DME and hold.",
+  "minimums": [
+    {
+      "kind": "ILS",
+      "label": "S-ILS 35",
+      "A": { "altFt": 4865, "visibilitySm": 0.75 },
+      "B": { "altFt": 4865, "visibilitySm": 0.75 }
+    },
+    {
+      "kind": "LOC",
+      "label": "S-LOC 35",
+      "A": { "altFt": 5100, "visibilitySm": 1 },
+      "B": { "altFt": 5100, "visibilitySm": 1 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "wavdi-arc",
+      "name": "Outbound on GLL R-136 to WAVDI, then the 17.5 DME arc",
+      "clearance": "Proceed outbound on the Gill 136 radial to WAVDI, cross WAVDI at or above 7000, cleared ILS runway 35 approach.",
+      "position": { "kind": "radialDme", "navaid": "GLL", "radialMag": 136, "dmeNm": 11 },
+      "altitudeFt": 7000,
+      "headingMag": 136,
+      "iasKt": 100,
+      "transition": "wavdi",
+      "nav1MHz": 114.2,
+      "nav2MHz": 114.2
+    },
+    {
+      "id": "over-gll",
+      "name": "Over GLL, via the R-177 feeder and the WELDS hold-in-lieu",
+      "clearance": "Cross Gill at or above 8000, cleared ILS runway 35 approach via the Gill 177 radial.",
+      "position": { "kind": "navaid", "navaid": "GLL" },
+      "altitudeFt": 8000,
+      "headingMag": 180,
+      "iasKt": 100,
+      "transition": "gll",
+      "nav1MHz": 114.2,
+      "nav2MHz": 114.2
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 320, maintain 7000 until established on the localizer, cleared ILS runway 35 approach.",
+      "position": { "kind": "radialDme", "navaid": "I-DCI", "radialMag": 160, "dmeNm": 20 },
+      "altitudeFt": 7000,
+      "headingMag": 320,
+      "iasKt": 100,
+      "nav1MHz": 114.2,
+      "nav2MHz": 114.2
+    }
+  ],
+  "notes": [
+    "DME or RADAR required.",
+    "Use I-DCI DME when on the localizer course; the arc and the missed approach use GLL DME.",
+    "VDP NA when using the Northern Colorado Rgnl altimeter setting. When the local altimeter is not received, use the Northern Colorado Rgnl setting and increase DA to 4950 and all visibilities 1/4 SM; increase all MDAs 100 ft and visibility Cats C and D 1/4 SM.",
+    "Alternate missed approach fix: KROMM (CYS R-154 / 26.3 DME), hold inbound 334°, outbound 154°.",
+    "MSA GLL 25 NM: 6900 east (bearings to GLL 180°–360°), 8100 west (360°–180°).",
+    "Take-off minimums, departure procedures and alternate minimums are non-standard (see the chart).",
+    "Circling minimums are on the chart and not part of V1 scoring."
+  ]
+}
