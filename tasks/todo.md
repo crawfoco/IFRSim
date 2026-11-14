@@ -6,24 +6,30 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 
 ## Current status (updated 2026-11-14)
 
-**Where we are:** M0–M5 are committed, and the M6 data is merged. Next: the M5 checkpoint
-(you fly a full approach and read the debrief), then the rest of M6.
+**Where we are:** M0–M6 are committed. All six V1 approaches have encodings, golden
+receiver tests, and scripted perfect and bad runs. Next: M7 (polish and V1 acceptance).
+The M5 checkpoint, where the user flies an approach and reads the debrief, is still open.
 
 | Item | Status | Notes |
 |---|---|---|
-| M0–M4 | ✅ committed | through `7ee2756` |
-| M6 data | ✅ merged + registered | `49229bc`; schema gaps closed in `3da243c` |
-| M5 (T20–T22) | ✅ committed | sequencer, 11 scoring rules, debrief with replay; fresh-eyes review done (8 bugs fixed, see commit) |
-| M6 rest | ⏭ next | integration runs (perfect + bad) for KGXY, KLAR, KSNY; T25 is covered by the procedure-turn rule |
+| M0–M5 | ✅ committed | through `3c2e491` |
+| M6 (T23–T28) | ✅ committed | integration runs for KGXY (arc), KLAR (PT and step-downs), KSNY (arc and missed); KCFO, KMTJ and KAKO were done in M5; T25 (PT) is covered by the procedure-turn rule |
+| M7 | ⏭ next | see the M7 tasks below |
 
-**Last verified:** 417 unit tests and 3 e2e tests pass (KCFO flown to DA, and the debrief
-replay). Typecheck and lint are clean.
+**Last verified:** 424 unit and integration tests pass. Typecheck and lint are clean.
+
+Scripted perfect runs score 100% on all six approaches. A bad run on each approach fails
+only its own rule:
+- KCFO: several rules;
+- KMTJ: DME source;
+- KAKO: procedure-turn side;
+- KGXY: arc altitude, and fix order;
+- KLAR: step-down;
+- KSNY: missed-approach turn.
 
 **Next steps (in order):**
-1. Checkpoint: the user flies a full approach and reads the debrief.
-2. M6: scripted perfect and bad runs for KGXY, KLAR and KSNY (KCFO, KMTJ and KAKO
-   have them).
-3. M7 polish and V1 acceptance.
+1. The user's checkpoint flight and debrief review (M3/M5 checkpoints).
+2. M7.
 
 **Known gaps / decisions:**
 - KCFO chart note "Autopilot coupled approach NA below 6250 MSL": the trainer's
@@ -35,8 +41,8 @@ replay). Typecheck and lint are clean.
   phase only at DA or the MAP. Align the two if it confuses learners.
 - Moving map: not built yet, so the "map used" informational item is not emitted.
 - Hold `maxAltFt` (e.g. the KCFO hold's 8000 ceiling) is not scored. The SPEC doesn't list it.
-- No start condition reaches KMTJ's procedure turn (the `mtj` transition). Add one in M6
-  if wanted.
+- KMTJ gained an "over MTJ" start for its procedure-turn route (`over-mtj`); there is no
+  scripted run for it yet (the PT rule is covered at KAKO and KLAR).
 - Fix passages need the aircraft to close in at least 0.2 NM after a watch is armed. Hold
   and procedure-turn completion and the FAF use along-track inbound crossings, so tight
   holds still count.
@@ -130,12 +136,12 @@ replay). Typecheck and lint are clean.
 
 Each task: encode JSON, start conditions, golden receiver tests at every fix, and one scripted perfect run plus one bad run.
 
-- [ ] **T23 KGXY ILS/LOC 35.** GLL 17.5 arc (NoPT), WELDS hold-in-lieu, missed to CEDUK. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
-- [ ] **T24 KMTJ ILS/LOC 17.** DME from MTJ VOR (wrong-source rule), MTJ 14.8 arc, HAQHY feeder, climb-in-hold at PAGRE; GPS feeders excluded. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
-- [ ] **T25 Barbed procedure turn support.** Sequencer + scoring for 45°/180° PT (side, distance, altitude). Needed by T26–T28.
-- [ ] **T26 KAKO VOR 29.** FROM-station final, MAP by DME and by timing table, AKO 10 arcs, GERON PT. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
-- [ ] **T27 KLAR VOR/DME 30.** Step-downs, LAR 18 arc, ECECU PT, FLEMS heading-to-intercept, climb-in-hold. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
-- [ ] **T28 KSNY VOR/DME 13.** On-field VOR, JIKUT MAP, VDP, SNY 11 arcs, CHAKO PT. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
+- [x] **T23 KGXY ILS/LOC 35.** GLL 17.5 arc (NoPT), WELDS hold-in-lieu, missed to CEDUK. _(🤖 chart verification; data part may run in a parallel worktree)_
+- [x] **T24 KMTJ ILS/LOC 17.** DME from MTJ VOR (wrong-source rule), MTJ 14.8 arc, HAQHY feeder, climb-in-hold at PAGRE; GPS feeders excluded. _(🤖 chart verification; data part may run in a parallel worktree)_
+- [x] **T25 Barbed procedure turn support.** Sequencer + scoring for 45°/180° PT (side, distance, altitude). Needed by T26–T28.
+- [x] **T26 KAKO VOR 29.** FROM-station final, MAP by DME and by timing table, AKO 10 arcs, GERON PT. _(🤖 chart verification; data part may run in a parallel worktree)_
+- [x] **T27 KLAR VOR/DME 30.** Step-downs, LAR 18 arc, ECECU PT, FLEMS heading-to-intercept, climb-in-hold. _(🤖 chart verification; data part may run in a parallel worktree)_
+- [x] **T28 KSNY VOR/DME 13.** On-field VOR, JIKUT MAP, VDP, SNY 11 arcs, CHAKO PT. _(🤖 chart verification; data part may run in a parallel worktree)_
   - Files (each): `src/procedures/<id>.json`, `tests/procedures/<id>.test.ts`, `tests/integration/<id>.test.ts`, `public/charts/<id>.png`
 
 ## M7 — Polish + V1 acceptance

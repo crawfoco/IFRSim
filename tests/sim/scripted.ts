@@ -1,7 +1,13 @@
 /** A scripted learner for integration tests: drives the sim with real commands. */
 import { expect } from 'vitest';
-import { signedAngleDiff } from '../../src/sim/geo/angles';
-import { distanceNm } from '../../src/sim/geo/geodesy';
+import {
+  clamp,
+  magToTrue,
+  normalize360,
+  signedAngleDiff,
+  trueToMag,
+} from '../../src/sim/geo/angles';
+import { distanceNm, initialBearingTrueDeg } from '../../src/sim/geo/geodesy';
 import { SimRunner } from '../../src/sim/recorder';
 import {
   initialProgress,
@@ -79,6 +85,44 @@ export class Flight {
         const crossed = d > last && d < withinNm;
         last = d;
         return crossed;
+      }, maxS),
+    ).toBe(true);
+  }
+  /** Magnetic radial (station declination) and distance from a VOR, as a pilot reads them. */
+  radialFrom(navaid: string): { radial: number; dist: number } {
+    const v = this.sc.world.navdata.navaids[navaid]!;
+    const p = this.r.state.aircraft.position;
+    return {
+      radial: normalize360(initialBearingTrueDeg(v.position, p) - v.declinationEastDeg),
+      dist: distanceNm(v.position, p),
+    };
+  }
+  /**
+   * Fly a DME arc in HDG mode (10°-step technique, refined each second) until the radial
+   * `untilRadialMag` is reached in the direction of flight.
+   */
+  flyArc(navaid: string, radiusNm: number, turn: 'L' | 'R', untilRadialMag: number, maxS = 1200) {
+    const v = this.sc.world.navdata.navaids[navaid]!;
+    const mv = this.sc.world.magVarEastDeg;
+    if (this.r.state.ap.lateral !== 'HDG') this.send({ type: 'button', button: 'HDG' });
+    for (let i = 0; i < maxS; i++) {
+      const { radial, dist } = this.radialFrom(navaid);
+      const past = signedAngleDiff(radial, untilRadialMag);
+      if (turn === 'R' ? past >= 0 : past <= 0) return;
+      const radialTrue = magToTrue(radial, v.declinationEastDeg);
+      const corr = clamp(30 * (dist - radiusNm), -30, 30); // + = turn in toward the station
+      const hdgTrue = turn === 'R' ? radialTrue + 90 + corr : radialTrue - 90 - corr;
+      this.send({ type: 'headingBug', deg: Math.round(trueToMag(normalize360(hdgTrue), mv)) });
+      this.wait(1);
+    }
+    expect.fail(`arc ${navaid} ${radiusNm} did not reach R-${untilRadialMag}`);
+  }
+  /** Fly on until the DME distance from a VOR reaches `nm` (going out or coming in). */
+  untilDme(navaid: string, nm: number, outbound: boolean, maxS = 1200) {
+    expect(
+      this.until(() => {
+        const d = this.radialFrom(navaid).dist;
+        return outbound ? d >= nm : d <= nm;
       }, maxS),
     ).toBe(true);
   }
