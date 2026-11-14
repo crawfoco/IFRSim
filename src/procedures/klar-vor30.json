@@ -1,0 +1,252 @@
+{
+  "id": "klar-vor30",
+  "airport": "KLAR",
+  "runway": "30",
+  "name": "VOR/DME RWY 30",
+  "chart": {
+    "number": "AL-225",
+    "amendment": "Amdt 7B",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/klar-vor30.png"
+  },
+  "navaids": ["LAR"],
+  "fixes": {
+    "LAR": {
+      "def": { "kind": "navaid", "navaid": "LAR" },
+      "faaId": "LAR",
+      "note": "Feeder to ECECU (R-112, 18 NM, 11300) and missed-approach holding fix"
+    },
+    "POVOH": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 55, "dmeNm": 18 },
+      "faaId": "POVOH",
+      "note": "IAF, LAR R-055 at 18 DME"
+    },
+    "JESAR": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 86, "dmeNm": 18 },
+      "faaId": "JESAR",
+      "note": "IAF, LAR R-086 at 18 DME"
+    },
+    "ECECU": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 111.6, "dmeNm": 18 },
+      "faaId": "ECECU",
+      "note": "IF/IAF, charted LAR R-112 at 18 DME (NASR fix lies on R-111.6)"
+    },
+    "DMYIH": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 111.6, "dmeNm": 25 },
+      "faaId": "DMYIH",
+      "note": "End of the FLEMS heading-337 leg, on charted R-112, 7 NM outside ECECU"
+    },
+    "FLEMS": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 118.9, "dmeNm": 28.8 },
+      "faaId": "FLEMS",
+      "note": "IAF, LAR 28.8 DME; the chart prints no radial (R-118.9 from NASR)"
+    },
+    "DUCBE": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 111.6, "dmeNm": 14.1 },
+      "faaId": "DUCBE",
+      "note": "Intermediate step-down, LAR 14.1 DME"
+    },
+    "HEMBI": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 111.6, "dmeNm": 11.2 },
+      "faaId": "HEMBI",
+      "note": "FAF, LAR 11.2 DME"
+    },
+    "GARBE": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 111.6, "dmeNm": 6 },
+      "faaId": "GARBE",
+      "note": "Final step-down, LAR 6 DME"
+    },
+    "LAR 4": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 111.6, "dmeNm": 4 },
+      "note": "VDP, LAR 4 DME"
+    },
+    "LAR 3.1": {
+      "def": { "kind": "radialDme", "navaid": "LAR", "radialMag": 111.6, "dmeNm": 3.1 },
+      "note": "Missed approach point, LAR 3.1 DME (runway 30 threshold)"
+    },
+    "RW30": { "def": { "kind": "threshold" } }
+  },
+  "transitions": [
+    {
+      "id": "lar-pt",
+      "name": "From LAR on R-112, procedure turn at ECECU",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "ECECU",
+          "course": { "navaid": "LAR", "courseMag": 112, "toFrom": "FROM" },
+          "minAltFt": 11300
+        },
+        {
+          "type": "procedureTurn",
+          "fix": "ECECU",
+          "course": { "navaid": "LAR", "courseMag": 292, "toFrom": "TO" },
+          "outboundCourseMag": 112,
+          "barbHeadingMag": 67,
+          "inboundCourseMag": 292,
+          "side": "L",
+          "maxDistanceNm": 10,
+          "minAltFt": 10600
+        }
+      ]
+    },
+    {
+      "id": "povoh-arc",
+      "name": "LAR 18 DME arc from POVOH via JESAR",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "arc",
+          "to": "JESAR",
+          "navaid": "LAR",
+          "radiusNm": 18,
+          "fromRadialMag": 55,
+          "toRadialMag": 86,
+          "turn": "R",
+          "minAltFt": 10600
+        },
+        {
+          "type": "arc",
+          "to": "ECECU",
+          "navaid": "LAR",
+          "radiusNm": 18,
+          "fromRadialMag": 86,
+          "toRadialMag": 112,
+          "turn": "R",
+          "minAltFt": 10600
+        }
+      ]
+    },
+    {
+      "id": "jesar-arc",
+      "name": "LAR 18 DME arc from JESAR",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "arc",
+          "to": "ECECU",
+          "navaid": "LAR",
+          "radiusNm": 18,
+          "fromRadialMag": 86,
+          "toRadialMag": 112,
+          "turn": "R",
+          "minAltFt": 10600
+        }
+      ]
+    },
+    {
+      "id": "flems",
+      "name": "FLEMS, heading 337° to DMYIH, then R-112 inbound",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "heading",
+          "headingMag": 337,
+          "intercept": { "navaid": "LAR", "courseMag": 292, "toFrom": "TO" },
+          "minAltFt": 10600
+        },
+        {
+          "type": "track",
+          "to": "ECECU",
+          "course": { "navaid": "LAR", "courseMag": 292, "toFrom": "TO" },
+          "minAltFt": 10600
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "DUCBE",
+      "course": { "navaid": "LAR", "courseMag": 292, "toFrom": "TO" },
+      "minAltFt": 10200
+    },
+    {
+      "type": "track",
+      "to": "HEMBI",
+      "course": { "navaid": "LAR", "courseMag": 292, "toFrom": "TO" },
+      "minAltFt": 9900
+    },
+    {
+      "type": "final",
+      "faf": "HEMBI",
+      "course": { "navaid": "LAR", "courseMag": 292, "toFrom": "TO" },
+      "fafAltFt": 9900,
+      "stepDowns": [{ "fix": "GARBE", "minAltFt": 8220 }],
+      "vdp": "LAR 4",
+      "map": { "fix": "LAR 3.1" }
+    }
+  ],
+  "missed": [
+    { "type": "direct", "to": "LAR" },
+    {
+      "type": "hold",
+      "fix": "LAR",
+      "inboundCourseMag": 125,
+      "course": { "navaid": "LAR", "courseMag": 125, "toFrom": "TO" },
+      "turn": "L",
+      "legMinutes": 1,
+      "climbInHold": true,
+      "minAltFt": 9600
+    }
+  ],
+  "missedText": "Climb to 9600 direct LAR VOR/DME and hold, continue climb-in-hold to 9600.",
+  "minimums": [
+    {
+      "kind": "VOR",
+      "label": "S-30",
+      "A": { "altFt": 7600, "visibilitySm": 0.75 },
+      "B": { "altFt": 7600, "visibilitySm": 0.75 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "direct-lar",
+      "name": "Direct LAR, R-112 outbound and procedure turn at ECECU",
+      "clearance": "Proceed direct Laramie, cross Laramie at or above 11300, cleared VOR/DME runway 30 approach.",
+      "position": { "kind": "radialDme", "navaid": "LAR", "radialMag": 20, "dmeNm": 12 },
+      "altitudeFt": 11300,
+      "headingMag": 200,
+      "iasKt": 100,
+      "transition": "lar-pt",
+      "nav1MHz": 113.1,
+      "nav2MHz": 113.1
+    },
+    {
+      "id": "povoh-arc",
+      "name": "Inbound on LAR R-055, 18 DME arc from POVOH",
+      "clearance": "Proceed inbound on the Laramie 055 radial, cross POVOH at or above 10600, cleared VOR/DME runway 30 approach.",
+      "position": { "kind": "radialDme", "navaid": "LAR", "radialMag": 55, "dmeNm": 24 },
+      "altitudeFt": 11000,
+      "headingMag": 235,
+      "iasKt": 100,
+      "transition": "povoh-arc",
+      "nav1MHz": 117.6,
+      "nav2MHz": 113.1
+    },
+    {
+      "id": "flems",
+      "name": "Over FLEMS, heading 337° to join R-112",
+      "clearance": "Cross FLEMS at or above 10600, cleared VOR/DME runway 30 approach.",
+      "position": { "kind": "radialDme", "navaid": "LAR", "radialMag": 118.9, "dmeNm": 28.8 },
+      "altitudeFt": 10600,
+      "headingMag": 337,
+      "iasKt": 100,
+      "transition": "flems",
+      "nav1MHz": 113.1,
+      "nav2MHz": 117.6
+    }
+  ],
+  "notes": [
+    "Final approach course 292° inbound to LAR VOR/DME; step-downs by LAR DME.",
+    "From FLEMS: heading 337° (5.1 NM) to DMYIH, then 292° (7 NM) to ECECU, 10600, NoPT.",
+    "Procedure turn at ECECU: outbound on LAR R-112, remain within 10 NM, 10600.",
+    "VDP at LAR 4 DME. Descent angle 3.00°/TCH 41.",
+    "Missed approach: continue climb-in-hold to 9600.",
+    "MSA LAR 25 NM: 10300 northeast (bearings to LAR 120°–320°), 13300 southwest (320°–120°).",
+    "ODALS Rwy 30.",
+    "Non-standard takeoff minimums and departure procedures published."
+  ]
+}
