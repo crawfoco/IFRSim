@@ -6,7 +6,7 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 
 ## M0 — Scaffold
 
-- [ ] **T01 Project scaffold.** Vite + React + TS (strict), Vitest, Playwright, ESLint, Prettier, npm scripts from the spec.
+- [x] **T01 Project scaffold.** Vite + React + TS (strict), Vitest, Playwright, ESLint, Prettier, npm scripts from the spec.
   - Acceptance: every spec command exists and runs; placeholder page renders; one trivial unit test and one e2e test pass.
   - Verify: `npm run build && npm test && npm run test:e2e`
   - Files: `package.json`, `vite.config.ts`, `tsconfig*.json`, `eslint.config.js`, `playwright.config.ts`, `src/main.tsx`, `tests/smoke.test.ts`, `e2e/smoke.spec.ts`

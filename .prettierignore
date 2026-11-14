@@ -1,0 +1,10 @@
+dist
+coverage
+playwright-report
+test-results
+data
+.claude
+Charts
+package-lock.json
+skills-lock.json
+*.md

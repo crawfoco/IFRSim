@@ -1,6 +1,6 @@
 # Implementation Plan: IFRSim V1
 
-Status: draft, awaiting review
+Status: approved
 Spec: [SPEC.md](../SPEC.md) (approved V1)
 Tasks: [todo.md](todo.md)
 
