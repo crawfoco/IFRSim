@@ -13,10 +13,10 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 
 ## M1 — Geo + nav data
 
-- [ ] **T02 Geo library.** Great-circle distance/bearing, destination point, local east/north projection, signed angle diff, magnetic↔true.
+- [x] **T02 Geo library.** Great-circle distance/bearing, destination point, local east/north projection, signed angle diff, magnetic↔true.
   - Acceptance: golden tests from known coordinate pairs (accuracy ±0.01 NM, ±0.05°).
   - Files: `src/sim/geo/*.ts`, `tests/sim/geo/*.test.ts`
-- [ ] **T03 NASR/CIFP download + parsers.** `scripts/navdata/` downloads the current cycle into `data/raw/` and parses the records we need: navaids, fixes, ILS (LOC/GS/DME), runway thresholds, airport magvar. _(🤖 research subagent for FAA file layouts)_
+- [x] **T03 NASR/CIFP download + parsers.** `scripts/navdata/` downloads the current cycle into `data/raw/` and parses the records we need: navaids, fixes, ILS (LOC/GS/DME), runway thresholds, airport magvar. _(🤖 research subagent for FAA file layouts)_
   - Acceptance: parsers tested on small checked-in sample snippets; script prints the source cycle.
   - Verify: `npm run navdata` (network, dev-only) + unit tests
   - Files: `scripts/navdata/*.ts`, `tests/scripts/navdata/*.test.ts`, `tests/fixtures/navdata/*`

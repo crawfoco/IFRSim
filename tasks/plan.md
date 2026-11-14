@@ -27,7 +27,7 @@ and checkable.
 | Component | Location | Depends on | Notes |
 |---|---|---|---|
 | geo | `src/sim/geo` | — | Spherical-earth bearing/distance, local east/north projection, magnetic ↔ true |
-| navdata | `scripts/navdata/`, `src/procedures/navdata.json` | geo | Dev-time script downloads NASR + CIFP into `data/raw/` (git-ignored) and writes a small JSON with only the navaids/fixes/runways we use, plus the source cycle |
+| navdata | `scripts/navdata/`, `src/procedures/navdata.json` | geo | Dev-time script downloads NASR (CIFP not needed: every fix is in NASR) into `data/raw/` (git-ignored) and writes a small JSON with only the navaids/fixes/runways we use, plus the source cycle |
 | procedure model | `src/procedures/` | navdata | Zod schema + one JSON per approach; fixes defined chart-style (navaid + radial/DME, or LOC + DME) and checked against FAA coordinates |
 | nav receivers | `src/sim/nav` | geo, navdata | VOR, LOC, GS, DME; flags, ranges; Morse ident strings |
 | aircraft | `src/sim/aircraft` | geo | Point mass, standard-rate turns, VS and speed limits |

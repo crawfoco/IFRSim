@@ -1,0 +1,692 @@
+{
+  "source": {
+    "dataset": "FAA NASR",
+    "cycle": "2026-10-29",
+    "extracted": "2026-11-14"
+  },
+  "airports": {
+    "KCFO": {
+      "id": "KCFO",
+      "faaId": "CFO",
+      "name": "COLORADO AIR AND SPACE PORT",
+      "position": {
+        "latDeg": 39.78419444,
+        "lonDeg": -104.53763888
+      },
+      "elevationFt": 5515.2,
+      "magVarEastDeg": 8,
+      "magVarYear": 2015
+    },
+    "KGXY": {
+      "id": "KGXY",
+      "faaId": "GXY",
+      "name": "GREELEY-WELD COUNTY",
+      "position": {
+        "latDeg": 40.43741666,
+        "lonDeg": -104.63322222
+      },
+      "elevationFt": 4696.8,
+      "magVarEastDeg": 8,
+      "magVarYear": 2015
+    },
+    "KMTJ": {
+      "id": "KMTJ",
+      "faaId": "MTJ",
+      "name": "MONTROSE RGNL",
+      "position": {
+        "latDeg": 38.50980555,
+        "lonDeg": -107.89425
+      },
+      "elevationFt": 5758.5,
+      "magVarEastDeg": 12,
+      "magVarYear": 1995
+    },
+    "KAKO": {
+      "id": "KAKO",
+      "faaId": "AKO",
+      "name": "COLORADO PLAINS RGNL",
+      "position": {
+        "latDeg": 40.17563888,
+        "lonDeg": -103.22202777
+      },
+      "elevationFt": 4716,
+      "magVarEastDeg": 10,
+      "magVarYear": 2000
+    },
+    "KLAR": {
+      "id": "KLAR",
+      "faaId": "LAR",
+      "name": "LARAMIE RGNL",
+      "position": {
+        "latDeg": 41.31205722,
+        "lonDeg": -105.67498555
+      },
+      "elevationFt": 7283.7,
+      "magVarEastDeg": 13,
+      "magVarYear": 1980
+    },
+    "KSNY": {
+      "id": "KSNY",
+      "faaId": "SNY",
+      "name": "SIDNEY MUNI/LLOYD W CARR FLD",
+      "position": {
+        "latDeg": 41.09976083,
+        "lonDeg": -102.98499305
+      },
+      "elevationFt": 4314.2,
+      "magVarEastDeg": 11,
+      "magVarYear": 1980
+    }
+  },
+  "runwayEnds": [
+    {
+      "airport": "CFO",
+      "runway": "26",
+      "threshold": {
+        "latDeg": 39.79356166,
+        "lonDeg": -104.53678247
+      },
+      "elevationFt": 5489.1,
+      "tdzeFt": 5489.1,
+      "trueAlignmentDeg": 271,
+      "vgsiTchFt": 50
+    },
+    {
+      "airport": "GXY",
+      "runway": "35",
+      "threshold": {
+        "latDeg": 40.42882616,
+        "lonDeg": -104.63086286
+      },
+      "elevationFt": 4648.5,
+      "tdzeFt": 4664.8,
+      "trueAlignmentDeg": 357,
+      "vgsiTchFt": 51,
+      "displacedThreshold": {
+        "position": {
+          "latDeg": 40.43184358,
+          "lonDeg": -104.63101297
+        },
+        "elevationFt": 4652.9,
+        "lengthFt": 1100
+      }
+    },
+    {
+      "airport": "MTJ",
+      "runway": "17",
+      "threshold": {
+        "latDeg": 38.52983163,
+        "lonDeg": -107.89273986
+      },
+      "elevationFt": 5693.7,
+      "tdzeFt": 5708.3,
+      "trueAlignmentDeg": 180,
+      "vgsiTchFt": 55
+    },
+    {
+      "airport": "AKO",
+      "runway": "29",
+      "threshold": {
+        "latDeg": 40.17092752,
+        "lonDeg": -103.21110825
+      },
+      "elevationFt": 4670.8,
+      "tdzeFt": 4682.7,
+      "trueAlignmentDeg": 299,
+      "vgsiTchFt": 43
+    },
+    {
+      "airport": "LAR",
+      "runway": "30",
+      "threshold": {
+        "latDeg": 41.30759983,
+        "lonDeg": -105.66498236
+      },
+      "elevationFt": 7274.8,
+      "tdzeFt": 7278.3,
+      "trueAlignmentDeg": 315,
+      "vgsiTchFt": 41
+    },
+    {
+      "airport": "SNY",
+      "runway": "13",
+      "threshold": {
+        "latDeg": 41.10771652,
+        "lonDeg": -102.99376061
+      },
+      "elevationFt": 4314.2,
+      "tdzeFt": 4314.2,
+      "trueAlignmentDeg": 135,
+      "vgsiTchFt": 45
+    }
+  ],
+  "navaids": {
+    "FQF": {
+      "id": "FQF",
+      "name": "FALCON",
+      "type": "VORTAC",
+      "position": {
+        "latDeg": 39.69013888,
+        "lonDeg": -104.62097222
+      },
+      "elevationFt": 5780,
+      "freqMHz": 116.3,
+      "declinationEastDeg": 11,
+      "declinationYear": 1995,
+      "serviceVolume": "H",
+      "dmeChannel": "110X",
+      "dmePosition": {
+        "latDeg": 39.69013888,
+        "lonDeg": -104.62097222
+      }
+    },
+    "GLL": {
+      "id": "GLL",
+      "name": "GILL",
+      "type": "VOR/DME",
+      "position": {
+        "latDeg": 40.50386561,
+        "lonDeg": -104.55301322
+      },
+      "elevationFt": 4903.5,
+      "freqMHz": 114.2,
+      "declinationEastDeg": 13,
+      "declinationYear": 1970,
+      "serviceVolume": "H",
+      "dmeChannel": "89X",
+      "dmePosition": {
+        "latDeg": 40.50386561,
+        "lonDeg": -104.55301322
+      }
+    },
+    "AKO": {
+      "id": "AKO",
+      "name": "AKRON",
+      "type": "VOR/DME",
+      "position": {
+        "latDeg": 40.15555508,
+        "lonDeg": -103.17971469
+      },
+      "elevationFt": 4623.2,
+      "freqMHz": 114.4,
+      "declinationEastDeg": 13,
+      "declinationYear": 1965,
+      "serviceVolume": "H",
+      "dmeChannel": "91X",
+      "dmePosition": {
+        "latDeg": 40.15555508,
+        "lonDeg": -103.17971469
+      }
+    },
+    "LAR": {
+      "id": "LAR",
+      "name": "LARAMIE",
+      "type": "VOR/DME",
+      "position": {
+        "latDeg": 41.33782038,
+        "lonDeg": -105.72093263
+      },
+      "elevationFt": 7299.4,
+      "freqMHz": 117.6,
+      "declinationEastDeg": 14,
+      "declinationYear": 1965,
+      "serviceVolume": "L",
+      "dmeChannel": "123X",
+      "dmePosition": {
+        "latDeg": 41.33782038,
+        "lonDeg": -105.72093263
+      }
+    },
+    "SNY": {
+      "id": "SNY",
+      "name": "SIDNEY",
+      "type": "VOR/DME",
+      "position": {
+        "latDeg": 41.09668241,
+        "lonDeg": -102.98299272
+      },
+      "elevationFt": 4288.6,
+      "freqMHz": 115.9,
+      "declinationEastDeg": 13,
+      "declinationYear": 1965,
+      "serviceVolume": "H",
+      "dmeChannel": "106X",
+      "dmePosition": {
+        "latDeg": 41.09668241,
+        "lonDeg": -102.98299272
+      }
+    },
+    "MTJ": {
+      "id": "MTJ",
+      "name": "MONTROSE",
+      "type": "VOR/DME",
+      "position": {
+        "latDeg": 38.50643661,
+        "lonDeg": -107.89928855
+      },
+      "elevationFt": 5713,
+      "freqMHz": 117.1,
+      "declinationEastDeg": 12,
+      "declinationYear": 1995,
+      "serviceVolume": "H",
+      "dmeChannel": "118X",
+      "dmePosition": {
+        "latDeg": 38.50630833,
+        "lonDeg": -107.89920277
+      }
+    },
+    "JNC": {
+      "id": "JNC",
+      "name": "GRAND JUNCTION",
+      "type": "VOR/DME",
+      "position": {
+        "latDeg": 39.05956555,
+        "lonDeg": -108.79257388
+      },
+      "elevationFt": 7100,
+      "freqMHz": 112.4,
+      "declinationEastDeg": 15,
+      "declinationYear": 1965,
+      "serviceVolume": "H",
+      "dmeChannel": "71X",
+      "dmePosition": {
+        "latDeg": 39.05956555,
+        "lonDeg": -108.79257388
+      }
+    },
+    "CYS": {
+      "id": "CYS",
+      "name": "CHEYENNE",
+      "type": "VORTAC",
+      "position": {
+        "latDeg": 41.21096702,
+        "lonDeg": -104.77291497
+      },
+      "elevationFt": 6211,
+      "freqMHz": 113.1,
+      "declinationEastDeg": 13,
+      "declinationYear": 1965,
+      "serviceVolume": "H",
+      "dmeChannel": "78X",
+      "dmePosition": {
+        "latDeg": 41.21096702,
+        "lonDeg": -104.77291497
+      }
+    },
+    "DVV": {
+      "id": "DVV",
+      "name": "MILE HIGH",
+      "type": "VORTAC",
+      "position": {
+        "latDeg": 39.89468941,
+        "lonDeg": -104.624335
+      },
+      "elevationFt": 5278.6,
+      "freqMHz": 114.7,
+      "declinationEastDeg": 8,
+      "declinationYear": 2015,
+      "serviceVolume": "H",
+      "dmeChannel": "94X",
+      "dmePosition": {
+        "latDeg": 39.89468941,
+        "lonDeg": -104.624335
+      }
+    }
+  },
+  "localizers": {
+    "I-FTG": {
+      "id": "I-FTG",
+      "airport": "CFO",
+      "runway": "26",
+      "systemType": "LD",
+      "position": {
+        "latDeg": 39.79414777,
+        "lonDeg": -104.57443366
+      },
+      "elevationFt": 5431,
+      "freqMHz": 109.3,
+      "courseMagDeg": 263.17,
+      "magVarEastDeg": 8,
+      "glideslope": {
+        "position": {
+          "latDeg": 39.79471444,
+          "lonDeg": -104.54031641
+        },
+        "elevationFt": 5480.8,
+        "angleDeg": 3
+      },
+      "dme": {
+        "position": {
+          "latDeg": 39.7934355,
+          "lonDeg": -104.57451161
+        },
+        "elevationFt": 5434.6,
+        "channel": "30X"
+      }
+    },
+    "I-DCI": {
+      "id": "I-DCI",
+      "airport": "GXY",
+      "runway": "35",
+      "systemType": "LD",
+      "position": {
+        "latDeg": 40.4590548,
+        "lonDeg": -104.6323793
+      },
+      "elevationFt": 4697.6,
+      "freqMHz": 110.3,
+      "courseMagDeg": 349.81,
+      "magVarEastDeg": 8,
+      "glideslope": {
+        "position": {
+          "latDeg": 40.43435458,
+          "lonDeg": -104.62966525
+        },
+        "elevationFt": 4652.9,
+        "angleDeg": 3
+      },
+      "dme": {
+        "position": {
+          "latDeg": 40.45906897,
+          "lonDeg": -104.63334388
+        },
+        "elevationFt": 4710,
+        "channel": "40X"
+      }
+    },
+    "I-MTJ": {
+      "id": "I-MTJ",
+      "airport": "MTJ",
+      "runway": "17",
+      "systemType": "LG",
+      "position": {
+        "latDeg": 38.49956002,
+        "lonDeg": -107.89261775
+      },
+      "elevationFt": 5740.4,
+      "freqMHz": 111.3,
+      "courseMagDeg": 167.82,
+      "magVarEastDeg": 12,
+      "glideslope": {
+        "position": {
+          "latDeg": 38.5271863,
+          "lonDeg": -107.89141927
+        },
+        "elevationFt": 5693,
+        "angleDeg": 3
+      }
+    }
+  },
+  "fixes": {
+    "SKIPI": {
+      "id": "SKIPI",
+      "state": "CO",
+      "position": {
+        "latDeg": 39.79173055,
+        "lonDeg": -104.42403611
+      },
+      "use": "RP"
+    },
+    "CFNRM": {
+      "id": "CFNRM",
+      "state": "CO",
+      "position": {
+        "latDeg": 39.79033611,
+        "lonDeg": -104.33756666
+      },
+      "use": "CN"
+    },
+    "WELDS": {
+      "id": "WELDS",
+      "state": "CO",
+      "position": {
+        "latDeg": 40.217375,
+        "lonDeg": -104.62033333
+      },
+      "use": "RP"
+    },
+    "BUFFS": {
+      "id": "BUFFS",
+      "state": "CO",
+      "position": {
+        "latDeg": 40.33262777,
+        "lonDeg": -104.62605555
+      },
+      "use": "RP"
+    },
+    "ARTSS": {
+      "id": "ARTSS",
+      "state": "CO",
+      "position": {
+        "latDeg": 40.39684444,
+        "lonDeg": -104.62926388
+      },
+      "use": "RP"
+    },
+    "CEDUK": {
+      "id": "CEDUK",
+      "state": "CO",
+      "position": {
+        "latDeg": 40.27444444,
+        "lonDeg": -104.374775
+      },
+      "use": "RP"
+    },
+    "WAVDI": {
+      "id": "WAVDI",
+      "state": "CO",
+      "position": {
+        "latDeg": 40.25363888,
+        "lonDeg": -104.35868333
+      },
+      "use": "RP"
+    },
+    "KROMM": {
+      "id": "KROMM",
+      "state": "CO",
+      "position": {
+        "latDeg": 40.784725,
+        "lonDeg": -104.63978333
+      },
+      "use": "RP"
+    },
+    "BRUUK": {
+      "id": "BRUUK",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.75265277,
+        "lonDeg": -107.89363611
+      },
+      "use": "RP"
+    },
+    "WIDRU": {
+      "id": "WIDRU",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.65292777,
+        "lonDeg": -107.89323888
+      },
+      "use": "RP"
+    },
+    "ZIMVI": {
+      "id": "ZIMVI",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.58484166,
+        "lonDeg": -107.89296111
+      },
+      "use": "RP"
+    },
+    "PAGRE": {
+      "id": "PAGRE",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.66033333,
+        "lonDeg": -108.14528333
+      },
+      "use": "RP"
+    },
+    "HAQHY": {
+      "id": "HAQHY",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.82005277,
+        "lonDeg": -108.08861666
+      },
+      "use": "RP"
+    },
+    "GEJYU": {
+      "id": "GEJYU",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.78829166,
+        "lonDeg": -107.68545
+      },
+      "use": "RP"
+    },
+    "DIRDY": {
+      "id": "DIRDY",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.93005,
+        "lonDeg": -107.51508611
+      },
+      "use": "RP"
+    },
+    "MEYRS": {
+      "id": "MEYRS",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.47965833,
+        "lonDeg": -107.46275833
+      },
+      "use": "RP"
+    },
+    "GERON": {
+      "id": "GERON",
+      "state": "CO",
+      "position": {
+        "latDeg": 40.06387222,
+        "lonDeg": -102.99831944
+      },
+      "use": "RP"
+    },
+    "POVOH": {
+      "id": "POVOH",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.44480277,
+        "lonDeg": -105.34853055
+      },
+      "use": "RP"
+    },
+    "JESAR": {
+      "id": "JESAR",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.28634444,
+        "lonDeg": -105.32873888
+      },
+      "use": "RP"
+    },
+    "ECECU": {
+      "id": "ECECU",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.16259722,
+        "lonDeg": -105.39802222
+      },
+      "use": "RP"
+    },
+    "DMYIH": {
+      "id": "DMYIH",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.09471666,
+        "lonDeg": -105.27383055
+      },
+      "use": "CN"
+    },
+    "FLEMS": {
+      "id": "FLEMS",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.00981111,
+        "lonDeg": -105.25605555
+      },
+      "use": "RP"
+    },
+    "GARBE": {
+      "id": "GARBE",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.28000555,
+        "lonDeg": -105.61401111
+      },
+      "use": "RP"
+    },
+    "HEMBI": {
+      "id": "HEMBI",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.22861111,
+        "lonDeg": -105.519275
+      },
+      "use": "RP"
+    },
+    "DUCBE": {
+      "id": "DUCBE",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.20035,
+        "lonDeg": -105.46730555
+      },
+      "use": "RP"
+    },
+    "JUNAD": {
+      "id": "JUNAD",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.24315555,
+        "lonDeg": -103.12927222
+      },
+      "use": "RP"
+    },
+    "CHAKO": {
+      "id": "CHAKO",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.16325,
+        "lonDeg": -103.04938055
+      },
+      "use": "RP"
+    },
+    "JIKUT": {
+      "id": "JIKUT",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.10762777,
+        "lonDeg": -102.99391666
+      },
+      "use": "RP"
+    },
+    "RIYOP": {
+      "id": "RIYOP",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.09356111,
+        "lonDeg": -102.74055277
+      },
+      "use": "RP"
+    },
+    "OGJUN": {
+      "id": "OGJUN",
+      "state": "CO",
+      "position": {
+        "latDeg": 40.94596944,
+        "lonDeg": -103.12111111
+      },
+      "use": "RP"
+    }
+  }
+}
