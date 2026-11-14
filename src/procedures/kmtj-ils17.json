@@ -345,6 +345,7 @@
     "Circling minimums are on the chart and not part of V1 scoring."
   ],
   "expandedServiceVolumeNm": {
-    "JNC": 50
+    "JNC": 50,
+    "I-MTJ": 25
   }
 }

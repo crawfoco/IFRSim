@@ -56,6 +56,8 @@ export interface ScenarioProgress {
   /** Missed approach: when it started, and when the aircraft arrived at the holding fix. */
   missedTick: number | null;
   holdArrivalTick: number | null;
+  /** Lowest altitude while on final (for detecting a missed approach started early). */
+  lowestOnFinalFt: number;
   inboundCrossings: number;
   prevPosition: LatLon | null;
 }
@@ -72,6 +74,7 @@ export function initialProgress(): ScenarioProgress {
     hold: watch(),
     missedTick: null,
     holdArrivalTick: null,
+    lowestOnFinalFt: Infinity,
     inboundCrossings: 0,
     prevPosition: null,
   };
@@ -92,7 +95,9 @@ function crossing(w: FixWatch, dNm: number): [FixWatch, boolean] {
 
 /** Ignore holding-fix crossings this soon after the missed approach starts (KSNY flies
  *  straight over the station before turning back to it). */
-const ARRIVAL_AFTER_S = 90;
+const ARRIVAL_AFTER_S = 45;
+/** Climbing this far above the lowest altitude on final starts the missed approach early. */
+const EARLY_MISSED_CLIMB_FT = 300;
 
 /** Inside the FAF and heading roughly down the final approach course. */
 export function onFinal(s: SimState, sc: Scenario): boolean {
@@ -118,8 +123,9 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
       p.map,
       distanceNm(s.aircraft.position, sc.fixes[sc.final.map.fix]!),
     );
-    const next = { ...p, map };
     const final = onFinal(s, sc);
+    const lowest = final ? Math.min(p.lowestOnFinalFt, s.aircraft.altitudeFt) : p.lowestOnFinalFt;
+    const next = { ...p, map, lowestOnFinalFt: lowest };
     const atMinimums = final && s.aircraft.altitudeFt <= min.altFt + (min.kind === 'MDA' ? 50 : 0);
     const label = `${min.kind} ${min.altFt.toLocaleString('en-US')}`;
 
@@ -150,12 +156,31 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
       };
     }
     if (mapCrossed && final) {
-      const text = `Missed approach point ${sc.final.map.fix}: no runway in sight. Go missed: ${sc.procedure.missedText}`;
+      // Identifying the MAP is the learner's job: no prompt, unless the weather was good
+      // and the aircraft is simply too high to land.
+      const high = sc.options.ceiling === 'above';
+      const text = high
+        ? `Missed approach point ${sc.final.map.fix} passed above the ${label}: too high to land straight in. Go missed.`
+        : null;
+      return {
+        ...next,
+        phase: 'missed',
+        callout: text ?? next.callout,
+        events: [
+          ...p.events,
+          ev('mapPassed', `Crossed ${sc.final.map.fix}`),
+          ev('goMissed', text ?? 'Missed approach (MAP passed, no runway in sight)'),
+        ],
+      };
+    }
+    // Climbing away on final before DA/MDA or the MAP: the learner went missed early.
+    if (final && s.aircraft.altitudeFt > lowest + EARLY_MISSED_CLIMB_FT) {
+      const text = `Missed approach started. ${sc.procedure.missedText}`;
       return {
         ...next,
         phase: 'missed',
         callout: text,
-        events: [...p.events, ev('mapPassed', `Crossed ${sc.final.map.fix}`), ev('goMissed', text)],
+        events: [...p.events, ev('goMissed', text)],
       };
     }
     return next;

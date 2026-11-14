@@ -11,6 +11,7 @@ import { sense } from '../sensors';
 import type { Command, SimState } from '../state';
 import { belowMinimums, segmentMinimum, segmentMinimums } from './rules/altitude';
 import { finalCourse, glideslope } from './rules/course';
+import { movingMap } from './rules/map';
 import { dmeSource, tuneAndIdentify } from './rules/radios';
 import { holdEntry, noPtReversal, procedureTurn } from './rules/reversal';
 import { fixOrder, missedApproach } from './rules/sequence';
@@ -31,6 +32,7 @@ const RULES: Rule<unknown>[] = [
   belowMinimums,
   missedApproach,
   noPtReversal,
+  movingMap,
 ] as Rule<unknown>[];
 
 export interface TimelineEvent {
@@ -74,6 +76,8 @@ function commandText(c: Command): string | null {
       return `DME source NAV${c.radio}`;
     case 'timer':
       return `Timer ${c.action === 'reset' ? 'reset' : 'start/stop'}`;
+    case 'map':
+      return `Moving map ${c.on ? 'on' : 'off'}`;
     default:
       return null;
   }

@@ -22,6 +22,9 @@ export interface NavReading {
   gs: GsIndication | null;
 }
 
+/** How far a localizer's Morse ident can be heard (beyond its usable course coverage). */
+const LOC_IDENT_RANGE_NM = 25;
+
 const sameFreq = (a: number, b: number) => Math.abs(a - b) < 0.005;
 
 /** The nearest station on this frequency (VORs and localizers), or null. */
@@ -49,20 +52,27 @@ export function readNav(
 ): NavReading {
   const station = tuneStation(world, freqMHz, ac);
   if (!station) return { freqMHz, station: null, ident: null, indication: null, gs: null };
+  // The ident is only heard within reception range (the needle may still be flagged
+  // overhead or abeam a VOR, but the station is received).
   if (station.kind === 'VOR') {
+    const n = station.navaid;
+    const range =
+      world.serviceRangeNm[n.id] ??
+      vorServiceRangeNm(n.serviceVolume, ac.altitudeFt - n.elevationFt);
     return {
       freqMHz,
       station,
-      ident: station.navaid.id,
-      indication: vorIndication(ac, station.navaid, obsDegMag, world.vorRangeNm[station.navaid.id]),
+      ident: distanceNm(n.position, ac.position) <= range ? n.id : null,
+      indication: vorIndication(ac, n, obsDegMag, world.serviceRangeNm[n.id]),
       gs: null,
     };
   }
+  const locRange = Math.max(LOC_IDENT_RANGE_NM, world.serviceRangeNm[station.loc.id] ?? 0);
   return {
     freqMHz,
     station,
-    ident: station.loc.id,
-    indication: locIndication(ac, station.loc),
+    ident: distanceNm(station.loc.position, ac.position) <= locRange ? station.loc.id : null,
+    indication: locIndication(ac, station.loc, world.serviceRangeNm[station.loc.id]),
     gs: station.glidePath ? gsIndication(ac, station.glidePath) : null,
   };
 }
@@ -71,7 +81,7 @@ export function readNav(
 export function readDme(
   station: TunedStation | null,
   ac: AircraftFix,
-  world?: Pick<World, 'vorRangeNm'>,
+  world?: Pick<World, 'serviceRangeNm'>,
 ): number | null {
   if (!station) return null;
   let antenna: DmeAntenna;
@@ -81,7 +91,8 @@ export function readDme(
     if (!n.dmeChannel) return null;
     antenna = { position: n.dmePosition ?? n.position, elevationFt: n.elevationFt };
     rangeNm =
-      world?.vorRangeNm[n.id] ?? vorServiceRangeNm(n.serviceVolume, ac.altitudeFt - n.elevationFt);
+      world?.serviceRangeNm[n.id] ??
+      vorServiceRangeNm(n.serviceVolume, ac.altitudeFt - n.elevationFt);
   } else {
     if (!station.loc.dme) return null;
     antenna = station.loc.dme;

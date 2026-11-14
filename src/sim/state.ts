@@ -20,6 +20,8 @@ export interface SimState {
     altPreselectFt: number;
     /** Power selector target airspeed. */
     iasCmdKt: number;
+    /** Moving map shown (a training aid; its use is noted in the debrief). */
+    mapOn: boolean;
   };
   radios: { nav1: NavRadio; nav2: NavRadio; dmeSource: 1 | 2 };
   timer: { running: boolean; elapsedS: number };
@@ -40,7 +42,8 @@ export type Command =
   | { type: 'dmeSource'; radio: RadioId }
   | { type: 'timer'; action: 'startStop' | 'reset' }
   /** Learner listened to a radio's Morse ident. No state change; logged for scoring. */
-  | { type: 'ident'; radio: RadioId };
+  | { type: 'ident'; radio: RadioId }
+  | { type: 'map'; on: boolean };
 
 /** What the instruments show this step, derived from state + world. */
 export interface Sensors {

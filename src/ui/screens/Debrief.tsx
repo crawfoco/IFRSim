@@ -103,7 +103,7 @@ export function Debrief({
           <PlanView
             scenario={scenario}
             route={a.sequencer.route}
-            samples={a.samples}
+            track={a.samples}
             cursor={replay.index}
           />
           <div className="replay" role="group" aria-label="Replay">

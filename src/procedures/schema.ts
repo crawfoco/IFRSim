@@ -297,8 +297,9 @@ export const ProcedureSchema = z
     /** Navaids the procedure is flown on (used for tuning/ident checks). */
     navaids: z.array(Id).min(1),
     /**
-     * Expanded service volume: a charted route uses a VOR beyond its standard service
-     * volume (KMTJ: the HAQHY feeder on JNC R-098 out to 46 NM). Range in NM by navaid id.
+     * Expanded service volume: a charted route uses a VOR or localizer beyond its standard
+     * service volume (KMTJ: the HAQHY feeder on JNC R-098 out to 46 NM, and the procedure
+     * turn at BRUUK on the I-MTJ localizer beyond 18 NM). Range in NM by navaid id.
      */
     expandedServiceVolumeNm: z.record(z.string(), z.number().positive().max(130)).optional(),
     fixes: z.record(z.string(), FixSchema),

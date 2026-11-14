@@ -52,6 +52,8 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
       return { ...s, radios: { ...s.radios, dmeSource: c.radio } };
     case 'ident':
       return s;
+    case 'map':
+      return { ...s, panel: { ...s.panel, mapOn: c.on } };
     case 'timer':
       return {
         ...s,

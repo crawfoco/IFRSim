@@ -19,6 +19,10 @@ type Screen =
 export function App() {
   const [hash, setHash] = useState(() => window.location.hash);
   const [screen, setScreen] = useState<Screen>({ name: 'select' });
+  // Load every plate up front, so the app keeps working with no network after loading.
+  useEffect(() => {
+    for (const p of PROCEDURES) new Image().src = `${import.meta.env.BASE_URL}${p.chart.image}`;
+  }, []);
   useEffect(() => {
     const onHash = () => setHash(window.location.hash);
     window.addEventListener('hashchange', onHash);

@@ -10,8 +10,8 @@ export interface World {
   glidePaths: Record<string, GlidePath>;
   /** Scripted glideslope outage ("LOC only" scenarios). */
   gsOutOfService: boolean;
-  /** Expanded service volumes by VOR id, NM. */
-  vorRangeNm: Record<string, number>;
+  /** Expanded service volumes by VOR or localizer id, NM. */
+  serviceRangeNm: Record<string, number>;
 }
 
 export interface WorldOptions {
@@ -37,6 +37,6 @@ export function buildWorld(navdata: NavData, opts: WorldOptions): World {
     magVarEastDeg: opts.magVarEastDeg,
     glidePaths,
     gsOutOfService: opts.gsOutOfService ?? false,
-    vorRangeNm: opts.expandedServiceVolumeNm ?? {},
+    serviceRangeNm: opts.expandedServiceVolumeNm ?? {},
   };
 }

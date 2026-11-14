@@ -39,7 +39,12 @@ export function initialState(start: StartCondition, world: World): SimState {
       ias,
     ),
     ap: { ...AP_OFF, holdAltFt: start.altitudeFt },
-    panel: { headingBugDeg: start.headingMagDeg, altPreselectFt: start.altitudeFt, iasCmdKt: ias },
+    panel: {
+      headingBugDeg: start.headingMagDeg,
+      altPreselectFt: start.altitudeFt,
+      iasCmdKt: ias,
+      mapOn: false,
+    },
     radios: {
       nav1: { activeMHz: nav1, standbyMHz: nav1, obsDeg: start.obs1Deg ?? 0 },
       nav2: { activeMHz: nav2, standbyMHz: nav2, obsDeg: start.obs2Deg ?? 0 },

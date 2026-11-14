@@ -58,3 +58,32 @@ describe('NoPT reversal note', () => {
     expect(noPtReversal.finish(s, ctxAt(40, 120, 120))).toEqual([]);
   });
 });
+
+describe('moving map use', () => {
+  it('is noted as information and does not change the score', async () => {
+    const { Flight } = await import('../scripted');
+    const run = (map: boolean) => {
+      const f = new Flight(
+        buildScenario(procedureById('kcfo-ils26')!, NAVDATA, {
+          startId: 'vectors-final',
+          ceiling: 'above',
+          gsOutOfService: false,
+        }),
+      );
+      f.tune(1, 109.3, 263);
+      if (map) f.send({ type: 'map', on: true });
+      f.wait(30);
+      if (map) f.send({ type: 'map', on: false });
+      f.wait(10);
+      return f.analyze();
+    };
+    const without = run(false);
+    const withMap = run(true);
+    expect(without.items.some((x) => x.id === 'moving-map')).toBe(false);
+    const item = withMap.items.find((x) => x.id === 'moving-map')!;
+    expect(item).toMatchObject({ status: 'info' });
+    expect(item.measured).toMatch(/^Map on for 0 min 30 s/);
+    expect(withMap.scorePct).toBe(without.scorePct);
+    expect(withMap.timeline.some((e) => e.text === 'Moving map on')).toBe(true);
+  });
+});

@@ -1,9 +1,12 @@
-/** Debrief plan view: the procedure, the flown track and the replay position, north up. */
+/**
+ * Plan view, north up: the procedure, the flown track and the aircraft. Used by the
+ * debrief (fitted to procedure + track, with a replay cursor) and by the optional moving
+ * map during flight (fitted to the procedure and the start, so it does not jump around).
+ */
 import { useMemo } from 'react';
 import { LocalFrame } from '../../sim/geo/projection';
 import { METRES_PER_NM, type LatLon } from '../../sim/geo/geodesy';
 import type { Scenario } from '../../sim/scenario/scenario';
-import type { DebriefSample } from '../../sim/scoring/analyze';
 import type { RouteLeg } from '../../sim/scoring/sequencer';
 import { drawRoute } from './procedureGeometry';
 
@@ -11,18 +14,32 @@ const W = 640;
 const H = 520;
 const PAD = 30;
 
+export interface TrackPoint {
+  latDeg: number;
+  lonDeg: number;
+  headingTrueDeg: number;
+}
+
 export function PlanView({
   scenario,
   route,
-  samples,
+  track,
   cursor,
+  fitTrack = true,
+  label = 'Plan view of the procedure and the flown track',
+  testId = 'plan-view',
 }: {
   scenario: Scenario;
   route: RouteLeg[];
-  samples: DebriefSample[];
-  /** Index into samples of the replay position. */
-  cursor: number;
+  track: readonly TrackPoint[];
+  /** Index into `track` of the aircraft marker; defaults to the last point. */
+  cursor?: number;
+  /** Include the track in the fitted bounds (debrief); off for the live map. */
+  fitTrack?: boolean;
+  label?: string;
+  testId?: string;
 }) {
+  const boundsTrack = fitTrack ? track : null;
   const geo = useMemo(() => {
     const frame = new LocalFrame(scenario.fixes[scenario.final.map.fix]!);
     const toNm = (p: LatLon) => {
@@ -30,12 +47,14 @@ export function PlanView({
       return { x: l.eastM / METRES_PER_NM, y: l.northM / METRES_PER_NM };
     };
     const legs = drawRoute(route, scenario).map((d) => ({ ...d, pts: d.points.map(toNm) }));
-    const track = samples.map((s) => toNm({ latDeg: s.latDeg, lonDeg: s.lonDeg }));
     // The runway threshold sits under the MAP; label named fixes only.
     const fixes = Object.entries(scenario.fixes)
       .filter(([name]) => scenario.procedure.fixes[name]?.def.kind !== 'threshold')
       .map(([name, p]) => ({ name, ...toNm(p) }));
-    const all = [...legs.flatMap((l) => l.pts), ...track];
+    const extra = boundsTrack
+      ? boundsTrack.map((s) => toNm(s))
+      : [toNm(scenario.initial.aircraft.position)];
+    const all = [...legs.flatMap((l) => l.pts), ...extra];
     const xs = all.map((p) => p.x);
     const ys = all.map((p) => p.y);
     const minX = Math.min(...xs);
@@ -51,16 +70,18 @@ export function PlanView({
     });
     return {
       scale,
+      project: (p: LatLon) => px(toNm(p)),
       legs: legs.map((l) => ({ ...l, pts: l.pts.map(px) })),
-      track: track.map(px),
       fixes: fixes.map((f) => ({ ...f, ...px(f) })),
     };
-  }, [scenario, route, samples]);
+  }, [scenario, route, boundsTrack]);
 
-  const poly = (pts: { x: number; y: number }[]) =>
-    pts.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
-  const here = geo.track[Math.min(cursor, geo.track.length - 1)];
-  const hdg = samples[Math.min(cursor, samples.length - 1)]?.headingTrueDeg ?? 0;
+  const pts = track.map((s) => geo.project(s));
+  const poly = (p: { x: number; y: number }[]) =>
+    p.map((q) => `${q.x.toFixed(1)},${q.y.toFixed(1)}`).join(' ');
+  const i = Math.min(cursor ?? track.length - 1, track.length - 1);
+  const here = pts[i];
+  const hdg = track[i]?.headingTrueDeg ?? 0;
   const barNm = geo.scale * 5 > 160 ? 2 : 5;
 
   return (
@@ -68,8 +89,8 @@ export function PlanView({
       className="plan"
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label="Plan view of the procedure and the flown track"
-      data-testid="plan-view"
+      aria-label={label}
+      data-testid={testId}
     >
       <rect className="plan-bg" x={0} y={0} width={W} height={H} />
       {geo.legs.map((l) => (
@@ -79,7 +100,7 @@ export function PlanView({
           points={poly(l.pts)}
         />
       ))}
-      <polyline className="plan-track" points={poly(geo.track)} />
+      <polyline className="plan-track" points={poly(pts)} />
       {geo.fixes.map((f) => (
         <g key={f.name}>
           <path
@@ -92,7 +113,10 @@ export function PlanView({
         </g>
       ))}
       {here && (
-        <g transform={`translate(${here.x} ${here.y}) rotate(${hdg})`} data-testid="plan-aircraft">
+        <g
+          transform={`translate(${here.x} ${here.y}) rotate(${hdg})`}
+          data-testid={`${testId}-aircraft`}
+        >
           <path className="plan-ac" d="M 0 -9 L 6 7 L 0 3 L -6 7 Z" />
         </g>
       )}

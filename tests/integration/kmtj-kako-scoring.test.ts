@@ -52,6 +52,48 @@ describe('KMTJ ILS 17: DME from the MTJ VOR/DME', () => {
   });
 });
 
+describe('KMTJ ILS 17: procedure turn at BRUUK (over MTJ start)', () => {
+  it('perfect run scores 100%: the localizer is usable out to the PT (expanded service volume)', () => {
+    const f = new Flight(
+      buildScenario(procedureById('kmtj-ils17')!, NAVDATA, {
+        startId: 'over-mtj',
+        ceiling: 'above',
+        gsOutOfService: false,
+      }),
+    );
+    f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
+    f.send({ type: 'altPreselect', ft: 12500 });
+    f.wait(0.1);
+    f.send({ type: 'button', button: 'ALT' }, { type: 'course', radio: 1, deg: 349 });
+    f.send({ type: 'ident', radio: 1 }, { type: 'dmeSource', radio: 1 }); // MTJ on NAV1
+    f.tune(2, 111.3, 168); // I-MTJ on NAV2 for now
+    f.send({ type: 'button', button: 'NAV' }); // already on heading 349 over MTJ
+    f.crossFix('BRUUK', 1.0, 900);
+    // PT: a minute outbound on 348, left to the 303 barb for a minute, right turn to 123.
+    f.turn(348);
+    f.wait(60);
+    f.turn(303);
+    f.wait(60);
+    f.turn(33, 123);
+    f.send({ type: 'standby', radio: 1, mhz: 111.3 }, { type: 'swap', radio: 1 });
+    f.send({ type: 'course', radio: 1, deg: 168 }, { type: 'dmeSource', radio: 2 });
+    f.send({ type: 'standby', radio: 2, mhz: 117.1 }, { type: 'swap', radio: 2 });
+    f.wait(0.1);
+    f.send({ type: 'ident', radio: 2 }, { type: 'button', button: 'APR' });
+    const dev = () => Math.abs(f.sensors.nav1.indication?.deviationDeg ?? 10);
+    expect(f.until(() => f.r.state.ap.lateral === 'APR' && dev() < 0.5, 600)).toBe(true);
+    f.descendOrClimb(9400, -800); // established inbound: down to 9400 to BRUUK
+    f.crossFix('BRUUK', 1.0, 600);
+    f.descendOrClimb(8100, -800); // to WIDRU, the glideslope intercept altitude
+    expect(f.until(() => f.progress.phase === 'ended', 900)).toBe(true);
+    const a = f.analyze();
+    expect(failed(a), summary(a)).toEqual([]);
+    expect(a.items.find((x) => x.id.startsWith('procedure-turn:BRUUK'))).toMatchObject({
+      status: 'pass',
+    });
+  });
+});
+
 describe('KAKO VOR 29: barbed procedure turn at AKO', () => {
   const sc = () =>
     buildScenario(procedureById('kako-vor29')!, NAVDATA, {
@@ -95,6 +137,8 @@ describe('KAKO VOR 29: barbed procedure turn at AKO', () => {
     const a = f.analyze();
     expect(failed(a), summary(a)).toEqual([]);
     expect(a.items.map((x) => x.id)).toContain('procedure-turn:AKO:0');
+    // The final course is judged even though the MDA comes within 1 NM of AKO.
+    expect(a.items.find((x) => x.id === 'final-course')).toMatchObject({ status: 'pass' });
     expect(a.items.find((x) => x.id === 'procedure-turn:AKO:0')!.measured).toMatch(/^Left side/);
   });
 

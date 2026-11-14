@@ -376,3 +376,44 @@ body {
   margin: 8px 12px;
   font-size: 13px;
 }
+.moving-map {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--line);
+  flex: 0 0 auto;
+}
+.moving-map .plan {
+  max-height: 38vh;
+}
+.sim-controls > button.on {
+  background: #2ec4f0;
+  color: #001018;
+  border-color: #2ec4f0;
+}
+
+/* Tablet landscape (1024–1199 px): narrower plate pane and a tighter panel. */
+@media (max-width: 1199px) {
+  .flight {
+    grid-template-columns: minmax(280px, 1fr) 700px;
+    min-width: 1000px;
+  }
+  .briefing-screen {
+    grid-template-columns: minmax(320px, 1fr) minmax(380px, 460px);
+  }
+  .inst-grid {
+    grid-template-columns: 150px 226px 150px;
+    gap: 4px 8px;
+  }
+  .panel-pane {
+    padding: 8px 10px;
+  }
+  .topbar {
+    gap: 12px;
+    padding: 6px 10px;
+  }
+  .topbar .disclaimer {
+    font-size: 12px;
+  }
+  .debrief-main {
+    grid-template-columns: minmax(460px, 1.2fr) minmax(320px, 1fr);
+  }
+}

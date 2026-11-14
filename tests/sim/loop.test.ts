@@ -74,7 +74,9 @@ describe('commands', () => {
       W,
     );
     expect(s.radios.nav1).toMatchObject({ activeMHz: 114.2, standbyMHz: 116.3, obsDeg: 136 });
-    expect(sense(s, W).nav1.ident).toBe('GLL');
+    const n1 = sense(s, W).nav1;
+    expect(n1.station).toMatchObject({ kind: 'VOR', navaid: { id: 'GLL' } });
+    expect(n1.ident).toBeNull(); // GLL is out of reception range from here: no ident
     expect(apply({ type: 'standby', radio: 2, mhz: 99 }).radios.nav2.standbyMHz).toBe(109.3);
   });
 

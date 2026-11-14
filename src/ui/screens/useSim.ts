@@ -84,6 +84,10 @@ export class BrowserSim {
   get tick() {
     return this.runner.state.tick;
   }
+  /** One sample per second, for the moving map. */
+  get track() {
+    return this.runner.track;
+  }
   get ended() {
     return this.progress.phase === 'ended';
   }

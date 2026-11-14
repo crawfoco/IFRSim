@@ -6,30 +6,26 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 
 ## Current status (updated 2026-11-14)
 
-**Where we are:** M0–M6 are committed. All six V1 approaches have encodings, golden
-receiver tests, and scripted perfect and bad runs. Next: M7 (polish and V1 acceptance).
-The M5 checkpoint, where the user flies an approach and reads the debrief, is still open.
+**Where we are:** V1 is built. M0–M7 are committed. The acceptance results are in
+`docs/v1-acceptance.md`: all seven success criteria are met, except that Firefox
+performance needs a manual check. Open gaps are listed there for the user to decide.
 
 | Item | Status | Notes |
 |---|---|---|
-| M0–M5 | ✅ committed | through `3c2e491` |
-| M6 (T23–T28) | ✅ committed | integration runs for KGXY (arc), KLAR (PT and step-downs), KSNY (arc and missed); KCFO, KMTJ and KAKO were done in M5; T25 (PT) is covered by the procedure-turn rule |
-| M7 | ⏭ next | see the M7 tasks below |
+| M0–M6 | ✅ committed | through `b712099` |
+| M7 (T29–T32) | ✅ committed | moving map; tablet layout and measured performance; offline e2e; V1 acceptance with a fresh-eyes review (5 bugs fixed, KMTJ PT made flyable) |
 
-**Last verified:** 424 unit and integration tests pass. Typecheck and lint are clean.
+**Last verified:** 431 unit and integration tests and 7 e2e tests pass. Typecheck and lint
+are clean. Performance: 60.1 fps, and 80.1 steps/s at 4×.
 
-Scripted perfect runs score 100% on all six approaches. A bad run on each approach fails
-only its own rule:
-- KCFO: several rules;
-- KMTJ: DME source;
-- KAKO: procedure-turn side;
-- KGXY: arc altitude, and fix order;
-- KLAR: step-down;
-- KSNY: missed-approach turn.
-
-**Next steps (in order):**
-1. The user's checkpoint flight and debrief review (M3/M5 checkpoints).
-2. M7.
+**Next steps:**
+1. The user's checkpoint flight and debrief review.
+2. The user decides on the open gaps in `docs/v1-acceptance.md`: hold leg timing, the
+   KAKO timing MAP, a start where a direct hold entry is correct, a distance-based
+   profile, a stricter tuning rule, hold `maxAltFt`, Firefox performance, and the plate
+   on the debrief.
+3. Optional: move the review's scratch flights of the other 11 starts into
+   `tests/integration/`.
 
 **Known gaps / decisions:**
 - KCFO chart note "Autopilot coupled approach NA below 6250 MSL": the trainer's
@@ -146,7 +142,7 @@ Each task: encode JSON, start conditions, golden receiver tests at every fix, an
 
 ## M7 — Polish + V1 acceptance
 
-- [ ] **T29 Optional moving map.** Toggle, aircraft over procedure; usage recorded for the debrief.
-- [ ] **T30 Layout + performance.** Desktop and tablet-landscape layouts; 60 fps at 1× and the sim keeping up at 4× (measured).
-- [ ] **T31 Offline + no-network check.** e2e test that blocks all non-localhost requests and flies a scenario.
-- [ ] **T32 V1 acceptance.** Walk through every SPEC.md success criterion and record the results in `docs/v1-acceptance.md`. _(🤖 fresh-eyes review of the whole V1)_
+- [x] **T29 Optional moving map.** Toggle, aircraft over procedure; usage recorded for the debrief.
+- [x] **T30 Layout + performance.** Desktop and tablet-landscape layouts; 60 fps at 1× and the sim keeping up at 4× (measured).
+- [x] **T31 Offline + no-network check.** e2e test that blocks all non-localhost requests and flies a scenario.
+- [x] **T32 V1 acceptance.** Walk through every SPEC.md success criterion and record the results in `docs/v1-acceptance.md`. _(🤖 fresh-eyes review of the whole V1)_

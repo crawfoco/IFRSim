@@ -1,6 +1,10 @@
 /** Flight screen: briefing and plate on the left, instrument panel and autopilot on the right. */
 import { TRAINING_DISCLAIMER } from '../../app-info';
+import { useMemo } from 'react';
 import { TIME_SCALES, type LoggedCommand } from '../../sim/recorder';
+import { buildRoute } from '../../sim/scoring/sequencer';
+import { PlanView } from '../map/PlanView';
+import '../map/map.css';
 import type { Scenario } from '../../sim/scenario/scenario';
 import { ChartViewer } from '../chart/ChartViewer';
 import { Altimeter } from '../instruments/Altimeter';
@@ -38,9 +42,10 @@ export function Flight({
   const cdi1 = courseDeviation(sensors.nav1);
   const gs1 = glideslopeDeviation(sensors.nav1);
   const cdi2 = courseDeviation(sensors.nav2);
+  const route = useMemo(() => buildRoute(scenario), [scenario]);
 
   return (
-    <div className="flight">
+    <div className="flight" data-tick={state.tick}>
       <header className="topbar">
         <button type="button" className="link-btn" onClick={onExit} data-testid="exit">
           ← Briefing
@@ -75,6 +80,16 @@ export function Flight({
           </div>
           <button type="button" data-testid="restart" onClick={() => sim.restart()}>
             Restart
+          </button>
+          <button
+            type="button"
+            className={state.panel.mapOn ? 'on' : ''}
+            aria-pressed={state.panel.mapOn}
+            title="Moving map (a training aid; noted in the debrief)"
+            data-testid="map-toggle"
+            onClick={() => send({ type: 'map', on: !state.panel.mapOn })}
+          >
+            Map
           </button>
           <button
             type="button"
@@ -113,6 +128,25 @@ export function Flight({
                 </button>
               </div>
             )}
+          </div>
+        )}
+        {state.panel.mapOn && (
+          <div className="moving-map">
+            <PlanView
+              scenario={scenario}
+              route={route}
+              track={[
+                ...sim.track,
+                {
+                  latDeg: state.aircraft.position.latDeg,
+                  lonDeg: state.aircraft.position.lonDeg,
+                  headingTrueDeg: state.aircraft.headingTrueDeg,
+                },
+              ]}
+              fitTrack={false}
+              label="Moving map"
+              testId="moving-map"
+            />
           </div>
         )}
         <ChartViewer procedure={scenario.procedure} />

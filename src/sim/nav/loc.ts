@@ -22,12 +22,17 @@ export interface LocIndication {
 }
 
 /** Standard service volume: ±10° to 18 NM, ±35° to 10 NM (AIM 1-1-9). */
-function inCoverage(offsetDeg: number, distanceNm: number): boolean {
+function inCoverage(offsetDeg: number, distanceNm: number, rangeNm = 18): boolean {
   const a = Math.abs(offsetDeg);
-  return (a <= 10 && distanceNm <= 18) || (a <= 35 && distanceNm <= 10);
+  return (a <= 10 && distanceNm <= Math.max(18, rangeNm)) || (a <= 35 && distanceNm <= 10);
 }
 
-export function locIndication(ac: AircraftFix, loc: Localizer): LocIndication {
+export function locIndication(
+  ac: AircraftFix,
+  loc: Localizer,
+  /** Expanded service volume along the course (charted procedures beyond 18 NM), NM. */
+  rangeOverrideNm?: number,
+): LocIndication {
   const g = inverse(loc.position, ac.position);
   const distanceNm = g.distanceM / METRES_PER_NM;
   const outboundTrue = magToTrue(normalize360(loc.courseMagDeg + 180), loc.magVarEastDeg);
@@ -35,7 +40,7 @@ export function locIndication(ac: AircraftFix, loc: Localizer): LocIndication {
   // left, so a clockwise offset means the course lies to the pilot's right (+).
   const offsetDeg = signedAngleDiff(g.initialBearingDeg, outboundTrue);
   const backCourse = Math.abs(offsetDeg) > 90;
-  const flag = backCourse || !inCoverage(offsetDeg, distanceNm);
+  const flag = backCourse || !inCoverage(offsetDeg, distanceNm, rangeOverrideNm);
   return {
     kind: 'LOC',
     flag,

@@ -5,6 +5,7 @@
  *   reach the missed-approach holding fix.
  */
 import { signedAngleDiff } from '../../geo/angles';
+import { distanceNm } from '../../geo/geodesy';
 import { clock, type Rule, type ScoreItem } from './types';
 
 export const fixOrder: Rule<null> = {
@@ -34,7 +35,13 @@ export const fixOrder: Rule<null> = {
   },
 };
 
+/** A non-precision missed approach must start (climb) by this far past the MAP. */
+const LATE_CLIMB_NM = 0.5;
+
 interface MissedState {
+  /** Lowest altitude since the FAF, and where the climb away from it started. */
+  lowestFt?: number;
+  climbStart?: { tick: number; latDeg: number; lonDeg: number } | null;
   startHeadingTrue: number | null;
   turnedBeforeClimbTick: number | null;
   /** Cumulative signed heading change after the climb altitude (+ = right). */
@@ -52,8 +59,15 @@ export const missedApproach: Rule<MissedState> = {
     firstTurnTick: null,
   }),
   step(s, { seq, state, prev, scenario }) {
-    if (seq.missedTick === null) return s;
     let n = s;
+    if (seq.fafTick !== null && !n.climbStart) {
+      const alt = state.aircraft.altitudeFt;
+      const lowest = Math.min(n.lowestFt ?? Infinity, alt);
+      n = { ...n, lowestFt: lowest };
+      if (alt > lowest + 100)
+        n = { ...n, climbStart: { tick: state.tick, ...state.aircraft.position } };
+    }
+    if (seq.missedTick === null) return n;
     if (n.startHeadingTrue === null) n = { ...n, startHeadingTrue: prev.aircraft.headingTrueDeg };
     const climb = scenario.procedure.missed.find((l) => l.type === 'climb');
     const alt = state.aircraft.altitudeFt;
@@ -90,6 +104,18 @@ export const missedApproach: Rule<MissedState> = {
       faults.push(
         `turned ${s.firstTurn === 'L' ? 'left' : 'right'} (charted: ${charted === 'L' ? 'left' : 'right'})`,
       );
+    // Non-precision: the climb must start at the MAP, not well past it.
+    const mapFix = scenario.final.map.fix;
+    const mapPass = seq.passages.find((x) => x.fix === mapFix && x.tick >= (seq.fafTick ?? 0));
+    const precision = !!scenario.final.glideslope && !scenario.options.gsOutOfService;
+    if (!precision && mapPass && s.climbStart && s.climbStart.tick > mapPass.tick) {
+      const past = distanceNm(
+        { latDeg: s.climbStart.latDeg, lonDeg: s.climbStart.lonDeg },
+        scenario.fixes[mapFix]!,
+      );
+      if (past > LATE_CLIMB_NM)
+        faults.push(`started the climb ${past.toFixed(1)} NM past the MAP (${mapFix})`);
+    }
     if (charted && s.firstTurn === null)
       faults.push(`did not make the ${charted === 'L' ? 'left' : 'right'} turn`);
     // Reaching the hold = the sequencer got to the missed-approach hold leg (an overflight

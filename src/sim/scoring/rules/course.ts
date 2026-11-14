@@ -3,8 +3,9 @@
  * - course deviation within half scale (LOC ±1.25°, VOR ±5°);
  * - glideslope deviation within half scale (±0.35°), ILS with the glideslope in service.
  * Measured geometrically from the FAF until the missed approach or the end (the
- * glideslope only above the DA; a VOR course not within 1 NM of the station).
+ * glideslope only above the DA; within 1 NM of a VOR, by cross-track distance instead).
  */
+import { DEG } from '../../geo/angles';
 import { activeMinimums } from '../../scenario/scenario';
 import { GS_FULL_SCALE_DEG, gsIndication } from '../../nav/gs';
 import { LOC_FULL_SCALE_DEG } from '../../nav/loc';
@@ -30,9 +31,12 @@ export const finalCourse: Rule<DevState & { isLoc: boolean }> = {
     if (!inFinalSegment(seq.fafTick, seq.missedTick)) return s;
     const ac = { position: state.aircraft.position, altitudeFt: state.aircraft.altitudeFt };
     const pos = coursePosition(scenario.final.course, ac, scenario.world.navdata);
-    // Over a VOR (KAKO's FAF is the station) the angle means nothing: skip the first NM.
-    if (!s.isLoc && pos.distanceNm < NEAR_STATION_NM) return s;
-    const d = Math.abs(pos.offsetDeg);
+    // Near a VOR (KAKO's FAF is the station) the angle means nothing: inside 1 NM judge
+    // the cross-track distance as if at 1 NM.
+    const d =
+      !s.isLoc && pos.distanceNm < NEAR_STATION_NM
+        ? Math.atan2(Math.abs(pos.xtkNm), NEAR_STATION_NM) / DEG
+        : Math.abs(pos.offsetDeg);
     return d > s.maxDeg
       ? { ...s, maxDeg: d, maxTick: state.tick, samples: s.samples + 1 }
       : { ...s, samples: s.samples + 1 };

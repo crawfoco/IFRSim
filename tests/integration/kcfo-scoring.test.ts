@@ -229,6 +229,35 @@ describe('KCFO bad runs on the final and the missed approach', () => {
   });
 });
 
+describe('KCFO LOC-only: the learner identifies the MAP', () => {
+  it('climbing well past the MAP fails the missed approach item', () => {
+    const f = new Flight(
+      scenario({ startId: 'vectors-final', ceiling: 'below', gsOutOfService: true }),
+    );
+    flyVectors(f);
+    expect(f.until(() => f.progress.phase === 'missed', 900)).toBe(true);
+    expect(f.progress.callout ?? '').not.toMatch(/Missed approach point/); // no prompt
+    f.wait(25); // level at the MDA, past the MAP
+    flyMissed(f);
+    const a = f.analyze();
+    expect(failed(a), summary(a)).toEqual(['missed-approach']);
+    expect(a.items.find((x) => x.id === 'missed-approach')!.measured).toMatch(
+      /started the climb \d\.\d NM past the MAP \(I-FTG 1\.7\)/,
+    );
+  });
+
+  it('climbing at the MAP passes', () => {
+    const f = new Flight(
+      scenario({ startId: 'vectors-final', ceiling: 'below', gsOutOfService: true }),
+    );
+    flyVectors(f);
+    expect(f.until(() => f.progress.phase === 'missed', 900)).toBe(true);
+    flyMissed(f);
+    const a = f.analyze();
+    expect(failed(a), summary(a)).toEqual([]);
+  });
+});
+
 describe('KCFO regressions from the M5 review', () => {
   it('a tight hold (outbound never 2.5 NM away) still completes and sequences the final', () => {
     const f = new Flight(scenario({}));

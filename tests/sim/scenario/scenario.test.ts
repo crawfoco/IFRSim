@@ -109,6 +109,17 @@ describe('scenario end conditions (KCFO)', () => {
     expect(f.distTo('I-FTG 1.7')).toBeLessThan(0.2);
   });
 
+  it('climbing away on final before DA starts the missed approach early', () => {
+    const f = new Flight(buildScenario(p, nav, opts({ ceiling: 'below' })));
+    flyFinal(f);
+    expect(f.until(() => f.alt < 6000, 900)).toBe(true);
+    f.send({ type: 'button', button: 'VS' }, { type: 'altPreselect', ft: 7200 });
+    f.until(() => false, 0.1);
+    f.send({ type: 'vsTarget', fpm: 800 });
+    expect(f.until(() => f.progress.phase === 'missed', 120)).toBe(true);
+    expect(f.progress.callout).toMatch(/^Missed approach started/);
+  });
+
   it('ILS, ceiling below: missed at DA, then hold entry and one circuit ends it', () => {
     const f = new Flight(buildScenario(p, nav, opts({ ceiling: 'below' })));
     flyFinal(f);
