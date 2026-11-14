@@ -6,30 +6,31 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 
 ## Current status (updated 2026-11-14)
 
-**Where we are:** M0–M4 are committed. The M6 data encodings are finished on two
-worktree branches and are **not merged** into `main` yet (waiting for the user's OK).
+**Where we are:** M0–M4 are committed. The M6 data encodings (all five remaining
+approaches) are merged and registered, so all six V1 approaches can be selected and
+flown. M6's integration runs (perfect/bad scripted runs) wait for M5.
 
 | Item | Status | Notes |
 |---|---|---|
 | M0–M2 | ✅ committed | through `16d8f90` |
 | M3 (T12–T14) | ✅ committed `cd98a9e` | T14 checkpoint: user test-flight feedback still pending |
-| M4 (T15–T19) | ✅ committed | T15 `d3a62c9`; T16–T19 in the M4 commit |
-| M6 data, ILS (T23/T24 data half) | ✅ done on branch `claude/trusting-stonebraker-1f2987` (`748d256`) | KGXY ILS 35, KMTJ ILS 17; gaps in `docs/encoding-gaps-m6-ils.md` |
-| M6 data, VOR (T26–T28 data half) | ✅ done on branch `claude/elegant-yonath-cb6b9c` (`79e79b4`) | KAKO, KLAR, KSNY; gaps doc on that branch |
+| M4 (T15–T19) | ✅ committed | T15 `d3a62c9`, T16–T19 `7ee2756` |
+| M6 data (T23, T24, T26–T28) | ✅ merged | ILS branch `748d256`, VOR branch `79e79b4`; registered in `src/procedures/index.ts` |
+| M6 rest | ⏳ after M5 | integration tests (one perfect run and one bad run each), T25 PT sequencer/scoring |
 | M5 (T20–T22) | ⏭ next | leg sequencer, scoring, debrief |
 
-**Last verified (M4 commit):** 284 unit tests and both e2e tests pass (the e2e flies KCFO
-from vectors to DA). Typecheck and lint are clean. Flight screen layout checked at
-1366×860, including a long missed-approach callout.
+**Last verified (M6 data merge):** 392 unit tests pass. `tests/procedures/all.test.ts`
+builds every start condition of all six approaches. Typecheck, lint and Prettier are
+clean. In the browser, all six briefings load with their plates.
 
 **Next steps (in order):**
-1. Review both M6 branches (JSON, golden tests, gaps docs). With the user's OK, merge
-   them into `main` (use `refs/heads/...` names), run all tests, and register the new
-   procedures in `src/procedures/index.ts`.
-2. Decide on the schema gaps the M6 sessions reported. Known so far:
-   - KMTJ needs a separate procedure-turn altitude and inbound altitude.
-   - The JNC service volume flags the last 6 NM of the HAQHY feeder.
-   - DME source per segment is only implied by `dmeFrom`.
+1. Close the schema gaps from `docs/encoding-gaps-m6-ils.md` and
+   `docs/encoding-gaps-m6-vor.md` before the sequencer depends on them:
+   - a separate procedure-turn altitude and inbound altitude (KMTJ 12500/9400, KAKO);
+   - `turn` and `climbToFt` on `direct` legs (KAKO and KSNY missed approaches turn right);
+   - an explicit DME source per segment (the KMTJ wrong-source rule);
+   - descent angle and TCH for non-precision finals (notes only for now).
+2. Decide on the JNC service volume (it flags the last 6 NM of the KMTJ HAQHY feeder).
 3. M5: T20 leg sequencer, T21 scoring rules, T22 debrief.
 
 **Known gaps / decisions:**
@@ -129,12 +130,12 @@ from vectors to DA). Typecheck and lint are clean. Flight screen layout checked 
 
 Each task: encode JSON, start conditions, golden receiver tests at every fix, and one scripted perfect run plus one bad run.
 
-- [ ] **T23 KGXY ILS/LOC 35.** GLL 17.5 arc (NoPT), WELDS hold-in-lieu, missed to CEDUK. _(🤖 chart verification; data part may run in a parallel worktree)_
-- [ ] **T24 KMTJ ILS/LOC 17.** DME from MTJ VOR (wrong-source rule), MTJ 14.8 arc, HAQHY feeder, climb-in-hold at PAGRE; GPS feeders excluded. _(🤖 chart verification; data part may run in a parallel worktree)_
+- [ ] **T23 KGXY ILS/LOC 35.** GLL 17.5 arc (NoPT), WELDS hold-in-lieu, missed to CEDUK. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
+- [ ] **T24 KMTJ ILS/LOC 17.** DME from MTJ VOR (wrong-source rule), MTJ 14.8 arc, HAQHY feeder, climb-in-hold at PAGRE; GPS feeders excluded. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
 - [ ] **T25 Barbed procedure turn support.** Sequencer + scoring for 45°/180° PT (side, distance, altitude). Needed by T26–T28.
-- [ ] **T26 KAKO VOR 29.** FROM-station final, MAP by DME and by timing table, AKO 10 arcs, GERON PT. _(🤖 chart verification; data part may run in a parallel worktree)_
-- [ ] **T27 KLAR VOR/DME 30.** Step-downs, LAR 18 arc, ECECU PT, FLEMS heading-to-intercept, climb-in-hold. _(🤖 chart verification; data part may run in a parallel worktree)_
-- [ ] **T28 KSNY VOR/DME 13.** On-field VOR, JIKUT MAP, VDP, SNY 11 arcs, CHAKO PT. _(🤖 chart verification; data part may run in a parallel worktree)_
+- [ ] **T26 KAKO VOR 29.** FROM-station final, MAP by DME and by timing table, AKO 10 arcs, GERON PT. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
+- [ ] **T27 KLAR VOR/DME 30.** Step-downs, LAR 18 arc, ECECU PT, FLEMS heading-to-intercept, climb-in-hold. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
+- [ ] **T28 KSNY VOR/DME 13.** On-field VOR, JIKUT MAP, VDP, SNY 11 arcs, CHAKO PT. _(🤖 chart verification; data part may run in a parallel worktree)_ _Data half done (JSON, plate, golden tests); integration runs wait for M5._
   - Files (each): `src/procedures/<id>.json`, `tests/procedures/<id>.test.ts`, `tests/integration/<id>.test.ts`, `public/charts/<id>.png`
 
 ## M7 — Polish + V1 acceptance
