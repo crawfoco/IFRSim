@@ -51,15 +51,16 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 
 ## M3 — Thin flyable slice
 
-- [ ] **T12 Instrument components.** HSI, altimeter, VSI, ASI, DME readout as SVG components driven by snapshot props. _(🤖 parallel worktree (with M6 data encoding))_
+- [x] **T12 Instrument components.** HSI, altimeter, VSI, ASI, DME readout as SVG components driven by snapshot props. _(🤖 parallel worktree (with M6 data encoding))_
   - Acceptance: visual check in a dev gallery page; snapshot tests of rendered needle angles.
   - Files: `src/ui/instruments/*.tsx`, `src/ui/dev/Gallery.tsx`
-- [ ] **T13 Autopilot panel + nav radios + power selector.** Knobs (drag/scroll/keyboard), mode buttons with armed/active annunciation, active/standby frequency flip-flop. _(🤖 parallel worktree (with M6 data encoding))_
+- [x] **T13 Autopilot panel + nav radios + power selector.** Knobs (drag/scroll/keyboard), mode buttons with armed/active annunciation, active/standby frequency flip-flop. _(🤖 parallel worktree (with M6 data encoding))_
   - Acceptance: every control sends the right command; keyboard accessible.
   - Files: `src/ui/panel/*.tsx`
-- [ ] **T14 Flight screen wiring.** rAF render loop reading sim snapshots; KCFO vectors-to-final start.
+- [x] **T14 Flight screen wiring.** rAF render loop reading sim snapshots; KCFO vectors-to-final start.
   - Acceptance: user can fly to DA in the browser; e2e test arms APR and sees LOC capture.
-  - Verify: `npm run test:e2e`. **Checkpoint: user flies it and gives feedback.**
+  - Verify: `npm run test:e2e`. **Checkpoint: user flies it and gives feedback.** _(awaiting feedback)_
+  - Also added early (from T19): pause, 1×/2×/4×, restart.
   - Files: `src/ui/screens/Flight.tsx`, `e2e/fly-kcfo-vectors.spec.ts`
 
 ## M4 — Full procedure + scenario

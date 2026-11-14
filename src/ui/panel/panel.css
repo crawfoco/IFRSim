@@ -1,0 +1,247 @@
+/* Panel hardware: dark in both themes. */
+.ap,
+.radios,
+.power {
+  background: #1d2026;
+  border: 1px solid #343a42;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #e9ecef;
+}
+
+.ap {
+  display: grid;
+  gap: 8px;
+}
+.ap-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.ap-annunciator {
+  display: grid;
+  grid-template-columns: 34px 52px 52px 96px 64px 1fr;
+  gap: 6px;
+  align-items: center;
+  background: #000;
+  border-radius: 4px;
+  padding: 6px 8px;
+  min-height: 22px;
+  font:
+    700 14px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+}
+.ann {
+  white-space: nowrap;
+}
+.ann-ap {
+  color: #3a3f46;
+}
+.ann-ap.on {
+  color: #4fd17a;
+}
+.ann-active {
+  color: #4fd17a;
+}
+.ann-armed {
+  color: #f4f5f6;
+}
+.ann-sel {
+  color: #2ec4f0;
+  text-align: right;
+}
+.ap-buttons {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.ap-btn,
+.radio-swap {
+  font:
+    700 13px system-ui,
+    sans-serif;
+  color: #e9ecef;
+  background: linear-gradient(#3a4049, #2b3037);
+  border: 1px solid #4a515b;
+  border-radius: 5px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+.ap-btn:active,
+.radio-swap:active {
+  background: #22262c;
+}
+.ap-knobs {
+  display: flex;
+  gap: 12px;
+}
+
+.knob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+.knob-cap {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #59616c, #23272d 70%);
+  border: 2px solid #4a515b;
+  cursor: ns-resize;
+  touch-action: none;
+}
+.knob-small .knob-cap {
+  width: 34px;
+  height: 34px;
+}
+.knob-grip {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.knob-grip::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 1.5px);
+  top: 4px;
+  width: 3px;
+  height: 30%;
+  background: #f4f5f6;
+  border-radius: 2px;
+}
+.knob-cap:focus-visible,
+.ap-btn:focus-visible,
+.radio-swap:focus-visible,
+.seg-btn:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 2px;
+}
+.knob-label {
+  font:
+    600 11px system-ui,
+    sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.knob-disabled .knob-cap {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.radios {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 6px 10px;
+}
+.radio {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+.radio-name {
+  font:
+    700 12px system-ui,
+    sans-serif;
+  color: #aab2bb;
+}
+.radio-freq {
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+.radio-label {
+  font-size: 9px;
+  color: #8a929c;
+}
+.radio-active {
+  font-size: 18px;
+  color: #4fd17a;
+}
+.radio-standby {
+  font-size: 18px;
+  color: #f4f5f6;
+}
+.radio-swap {
+  padding: 6px 10px;
+  font-size: 16px;
+}
+.radio-knobs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.radio-knobs .knob-label {
+  display: none;
+}
+
+.power {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+.power-readout {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 4px;
+  align-items: baseline;
+  background: #000;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+.power-value {
+  font-size: 22px;
+  color: #f4f5f6;
+}
+.power-unit {
+  font-size: 10px;
+  color: #8a929c;
+}
+.power-cat {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  color: #2ec4f0;
+  text-align: center;
+}
+
+.dme-unit-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.seg {
+  display: inline-flex;
+  border: 1px solid #4a515b;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.seg-btn {
+  font:
+    600 12px system-ui,
+    sans-serif;
+  padding: 5px 10px;
+  border: 0;
+  background: #2b3037;
+  color: #aab2bb;
+  cursor: pointer;
+}
+.seg-btn.on {
+  background: #2ec4f0;
+  color: #001018;
+}

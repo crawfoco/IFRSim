@@ -1,11 +1,14 @@
-import { APP_NAME, TRAINING_DISCLAIMER } from '../app-info';
+import { useEffect, useState } from 'react';
+import { Gallery } from './dev/Gallery';
+import { Flight } from './screens/Flight';
 
+/** Hash routes: #/gallery is the dev instrument gallery; everything else is the flight screen. */
 export function App() {
-  return (
-    <main className="app">
-      <h1>{APP_NAME}</h1>
-      <p className="disclaimer">{TRAINING_DISCLAIMER}</p>
-      <p>IFR approach trainer: under construction.</p>
-    </main>
-  );
+  const [hash, setHash] = useState(() => window.location.hash);
+  useEffect(() => {
+    const onHash = () => setHash(window.location.hash);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+  return hash === '#/gallery' ? <Gallery /> : <Flight />;
 }

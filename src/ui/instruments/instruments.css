@@ -1,0 +1,144 @@
+/* Instrument faces are dark in both themes, like a real panel. */
+.inst {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.inst svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.inst-caption {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.inst-bezel {
+  fill: #2a2e34;
+  stroke: #3b4048;
+  stroke-width: 2;
+}
+.inst-face {
+  fill: #0d0f12;
+}
+.inst-mark {
+  stroke: #e9ecef;
+  stroke-linecap: butt;
+}
+.inst-label {
+  fill: #e9ecef;
+  font:
+    600 15px system-ui,
+    sans-serif;
+}
+.inst-small-label {
+  font-size: 13px;
+}
+.inst-unit {
+  fill: #aab2bb;
+  font:
+    600 10px system-ui,
+    sans-serif;
+  letter-spacing: 0.06em;
+}
+.inst-small {
+  font-size: 8px;
+}
+.inst-needle {
+  fill: #f4f5f6;
+}
+.inst-hub {
+  fill: #3b4048;
+  stroke: #0d0f12;
+  stroke-width: 2;
+}
+.inst-window {
+  fill: #000;
+  stroke: #555c66;
+  stroke-width: 1;
+}
+.inst-digits {
+  fill: #f4f5f6;
+  font:
+    600 13px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+}
+.inst-course,
+.inst-tofrom {
+  fill: #e04ef0;
+}
+.inst-course-text {
+  fill: #e98cf5;
+}
+.inst-tofrom-text {
+  fill: #f4f5f6;
+  font:
+    700 12px system-ui,
+    sans-serif;
+}
+.inst-bug {
+  fill: #2ec4f0;
+}
+.inst-dot {
+  fill: none;
+  stroke: #e9ecef;
+  stroke-width: 1.5;
+}
+.inst-dot-ring {
+  fill: none;
+  stroke: #e9ecef;
+  stroke-width: 2;
+}
+.inst-gs {
+  fill: #4fd17a;
+}
+.inst-flag {
+  fill: #d7322e;
+}
+.inst-flag-text {
+  fill: #fff;
+  font:
+    700 10px system-ui,
+    sans-serif;
+}
+.inst-lubber {
+  fill: #f2a33a;
+}
+.inst-aircraft {
+  stroke: #f2a33a;
+  stroke-width: 3;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.dme {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #000;
+  border: 2px solid #3b4048;
+  border-radius: 6px;
+  color: #f4f5f6;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+.dme-src {
+  font-size: 11px;
+  color: #aab2bb;
+}
+.dme-value {
+  font-size: 26px;
+  color: #ff9f43;
+  min-width: 4.5ch;
+  text-align: right;
+}
+.dme-unit {
+  font-size: 11px;
+  color: #aab2bb;
+}

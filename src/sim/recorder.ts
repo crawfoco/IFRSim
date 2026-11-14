@@ -55,6 +55,11 @@ export class SimRunner {
     this.track.push(sampleOf(initial));
   }
 
+  /** Commands queued for the next step (the UI previews their effect before it runs). */
+  get pendingCommands(): readonly Command[] {
+    return this.pending;
+  }
+
   /** Queue a command; it applies at the start of the next step. */
   enqueue(command: Command): void {
     this.pending.push(command);
