@@ -245,3 +245,51 @@
   background: #2ec4f0;
   color: #001018;
 }
+
+.radio-ident {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+.radio-ident .seg-btn {
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.radio-morse {
+  font:
+    700 15px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  letter-spacing: 0.15em;
+  color: #f2a33a;
+}
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.timer-value {
+  font:
+    600 18px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  background: #000;
+  color: #f4f5f6;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.timer .seg-btn {
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+}
+.dme-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}

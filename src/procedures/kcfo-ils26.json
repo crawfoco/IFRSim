@@ -134,7 +134,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Turn left heading 293, maintain 7000 until established on the localizer, cleared ILS runway 26 approach.",
+      "clearance": "Turn left heading 293, maintain 8000 until established on the localizer, cleared ILS runway 26 approach.",
       "position": { "kind": "radialDme", "navaid": "I-FTG", "radialMag": 94, "dmeNm": 16 },
       "altitudeFt": 8000,
       "headingMag": 330,
@@ -147,6 +147,6 @@
     "DME required.",
     "Procedure NA for arrival on FQF VORTAC airway radials 038 CW 078.",
     "Autopilot coupled approach NA below 6250 MSL.",
-    "MSA FQF 25 NM: 8400 east (360°–180°), 9600 west (180°–360°)."
+    "MSA FQF 25 NM: 8400 for bearings 180°–360° to FQF (east), 9600 for 360°–180° (west)."
   ]
 }

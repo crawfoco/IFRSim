@@ -104,7 +104,10 @@ describe('panel rendering', () => {
   });
 
   it('shows active and standby frequencies', () => {
-    const html = renderToStaticMarkup(<NavRadios state={s0} send={noop} />);
+    const html = renderToStaticMarkup(
+      <NavRadios state={s0} send={noop} idents={{ 1: 'FQF', 2: null }} />,
+    );
+    expect(html).toContain('data-testid="nav1-ident"');
     expect(html).toMatch(/data-testid="nav1-active"[^>]*>116.30</);
     expect(html).toMatch(/data-testid="nav2-standby"[^>]*>109.30</);
   });
@@ -113,12 +116,15 @@ describe('panel rendering', () => {
 describe('BrowserSim', () => {
   it('several knob turns before the next step all count', async () => {
     const { BrowserSim } = await import('../../src/ui/screens/useSim');
-    const sim = new BrowserSim(W, {
-      position: onRadial('FQF', 90, 12),
-      altitudeFt: 8000,
-      headingMagDeg: 330,
-      nav1MHz: 116.3,
-    });
+    const { buildScenario } = await import('../../src/sim/scenario/scenario');
+    const { PROCEDURES } = await import('../../src/procedures');
+    const sim = new BrowserSim(
+      buildScenario(PROCEDURES[0]!, nav, {
+        startId: 'vectors-final',
+        ceiling: 'above',
+        gsOutOfService: false,
+      }),
+    );
     for (let i = 0; i < 7; i++) sim.send((s) => frequencyKnob(s, 1, 'mhz', -1));
     for (let i = 0; i < 3; i++) sim.send((s) => headingKnob(s, -1, true));
     expect(sim.view().radios.nav1.standbyMHz).toBe(109.3);

@@ -42,9 +42,9 @@ describe('KCFO ILS 26, vectors to final', () => {
     r.enqueue({ type: 'course', radio: 1, deg: 263 });
     r.enqueue({ type: 'dmeSource', radio: 1 });
     r.runSeconds(10);
-    // ATC: "turn left heading 293, maintain 7000 until established, cleared ILS 26".
+    // ATC: "turn left heading 293, maintain 7200 until established, cleared ILS 26".
     r.enqueue({ type: 'headingBug', deg: 293 });
-    r.enqueue({ type: 'altPreselect', ft: 7000 });
+    r.enqueue({ type: 'altPreselect', ft: 7200 });
     r.enqueue({ type: 'button', button: 'VS' });
     r.enqueue({ type: 'vsTarget', fpm: -500 });
     r.enqueue({ type: 'button', button: 'APR' });

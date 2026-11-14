@@ -38,7 +38,9 @@ export type Command =
   | { type: 'standby'; radio: RadioId; mhz: number }
   | { type: 'swap'; radio: RadioId }
   | { type: 'dmeSource'; radio: RadioId }
-  | { type: 'timer'; action: 'startStop' | 'reset' };
+  | { type: 'timer'; action: 'startStop' | 'reset' }
+  /** Learner listened to a radio's Morse ident. No state change; logged for scoring. */
+  | { type: 'ident'; radio: RadioId };
 
 /** What the instruments show this step, derived from state + world. */
 export interface Sensors {

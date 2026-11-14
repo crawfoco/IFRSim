@@ -49,6 +49,8 @@ export class SimRunner {
   constructor(
     initial: SimState,
     private readonly world: World,
+    /** Called after every step (scenario progress, scoring). */
+    private readonly onStep?: (s: SimState) => void,
   ) {
     this.initial = initial;
     this.state = initial;
@@ -72,6 +74,7 @@ export class SimRunner {
     for (const command of cmds) this.log.push({ tick: this.state.tick, command });
     this.state = step(this.state, cmds, this.world);
     if (this.state.tick % 20 === 0) this.track.push(sampleOf(this.state));
+    this.onStep?.(this.state);
   }
 
   /** Advance by real elapsed seconds; returns the number of steps run. */

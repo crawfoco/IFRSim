@@ -4,6 +4,42 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 `npm test && npm run typecheck && npm run lint` unless it says otherwise.
 🤖 marks tasks that use a subagent (see plan.md → Subagent use).
 
+## Current status (updated 2026-11-14)
+
+**Where we are:** M0–M4 are committed. The M6 data encodings are finished on two
+worktree branches and are **not merged** into `main` yet (waiting for the user's OK).
+
+| Item | Status | Notes |
+|---|---|---|
+| M0–M2 | ✅ committed | through `16d8f90` |
+| M3 (T12–T14) | ✅ committed `cd98a9e` | T14 checkpoint: user test-flight feedback still pending |
+| M4 (T15–T19) | ✅ committed | T15 `d3a62c9`; T16–T19 in the M4 commit |
+| M6 data, ILS (T23/T24 data half) | ✅ done on branch `claude/trusting-stonebraker-1f2987` (`748d256`) | KGXY ILS 35, KMTJ ILS 17; gaps in `docs/encoding-gaps-m6-ils.md` |
+| M6 data, VOR (T26–T28 data half) | ✅ done on branch `claude/elegant-yonath-cb6b9c` (`79e79b4`) | KAKO, KLAR, KSNY; gaps doc on that branch |
+| M5 (T20–T22) | ⏭ next | leg sequencer, scoring, debrief |
+
+**Last verified (M4 commit):** 284 unit tests and both e2e tests pass (the e2e flies KCFO
+from vectors to DA). Typecheck and lint are clean. Flight screen layout checked at
+1366×860, including a long missed-approach callout.
+
+**Next steps (in order):**
+1. Review both M6 branches (JSON, golden tests, gaps docs). With the user's OK, merge
+   them into `main` (use `refs/heads/...` names), run all tests, and register the new
+   procedures in `src/procedures/index.ts`.
+2. Decide on the schema gaps the M6 sessions reported. Known so far:
+   - KMTJ needs a separate procedure-turn altitude and inbound altitude.
+   - The JNC service volume flags the last 6 NM of the HAQHY feeder.
+   - DME source per segment is only implied by `dmeFrom`.
+3. M5: T20 leg sequencer, T21 scoring rules, T22 debrief.
+
+**Known gaps / decisions:**
+- KCFO chart note "Autopilot coupled approach NA below 6250 MSL": the trainer's
+  autopilot flies to DA anyway. It is shown as a briefing note only.
+- Scenario end conditions are geometric (fix passage within 1 NM, inbound heading
+  within 30°). Hold-entry correctness is scored in M5, not checked here.
+- If the learner goes missed early (before DA/MDA or the MAP), the scenario does
+  not switch to the missed phase. Revisit with the T20 sequencer.
+
 ## M0 — Scaffold
 
 - [x] **T01 Project scaffold.** Vite + React + TS (strict), Vitest, Playwright, ESLint, Prettier, npm scripts from the spec.
@@ -68,14 +104,14 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
 - [x] **T15 Procedure schema.** Zod schema for legs (feeder, arc, hold-in-lieu, heading-to-intercept, barbed PT, final with step-downs/VDP/MAP, missed with hold/climb-in-hold), minimums, start conditions.
   - Acceptance: schema documented in `docs/procedure-encoding.md`; invalid sample files fail with clear errors.
   - Files: `src/procedures/schema.ts`, `docs/procedure-encoding.md`, tests
-- [ ] **T16 Encode KCFO ILS/LOC 26 fully.** Feeder FQF R-045, SKIPI hold-in-lieu, ILS + LOC-only minimums, missed to SKIPI; 3 start conditions. _(🤖 independent chart-verification subagent)_
+- [x] **T16 Encode KCFO ILS/LOC 26 fully.** Feeder FQF R-045, SKIPI hold-in-lieu, ILS + LOC-only minimums, missed to SKIPI; 3 start conditions. _(🤖 independent chart-verification subagent)_
   - Acceptance: fix positions within 0.1 NM of FAA data; validates against the schema.
   - Files: `src/procedures/kcfo-ils26.json`, tests
-- [ ] **T17 Scenario engine.** Start conditions, briefing text, ceiling/visibility, GS outage, runway-in-sight at DA/MDA, end conditions (landed / missed + hold entry + 1 lap).
+- [x] **T17 Scenario engine.** Start conditions, briefing text, ceiling/visibility, GS outage, runway-in-sight at DA/MDA, end conditions (landed / missed + hold entry + 1 lap).
   - Files: `src/sim/scenario/*.ts`, tests
-- [ ] **T18 Approach select + briefing screens + chart viewer.** Pan/zoom plate with the "Training use only" banner and cycle dates.
+- [x] **T18 Approach select + briefing screens + chart viewer.** Pan/zoom plate with the "Training use only" banner and cycle dates.
   - Files: `src/ui/screens/Select.tsx`, `Briefing.tsx`, `src/ui/chart/*.tsx`, `public/charts/*`
-- [ ] **T19 Timer, Morse ident (audio + text), pause/1×/2×/4×, restart.**
+- [x] **T19 Timer, Morse ident (audio + text), pause/1×/2×/4×, restart.**
   - Files: `src/ui/panel/Timer.tsx`, `src/sim/nav/morse.ts`, `src/ui/audio/ident.ts`, tests
 
 ## M5 — Scoring + debrief

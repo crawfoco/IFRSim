@@ -1,0 +1,68 @@
+.chart {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+.chart-banner {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fff3cd;
+  color: #6b4500;
+  border-bottom: 1px solid #e8d48a;
+}
+.chart-box {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+  cursor: grab;
+  touch-action: none;
+}
+.chart-box:active {
+  cursor: grabbing;
+}
+.chart-box:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: -3px;
+}
+.chart-box img {
+  display: block;
+  width: 100%;
+  transform-origin: 0 0;
+  user-select: none;
+  pointer-events: none;
+}
+.chart-tools {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  background: rgba(20, 24, 30, 0.85);
+  padding: 4px;
+  border-radius: 6px;
+}
+.chart-tools button {
+  min-width: 30px;
+  padding: 4px 8px;
+  font:
+    600 13px system-ui,
+    sans-serif;
+  color: #e9ecef;
+  background: #2b3037;
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.chart-zoom {
+  color: #aab2bb;
+  font-size: 12px;
+  padding: 0 4px;
+  min-width: 3.5em;
+  text-align: right;
+}

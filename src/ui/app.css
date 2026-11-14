@@ -179,3 +179,200 @@ body {
   max-width: 172px;
   margin: 0 auto;
 }
+
+.link-btn {
+  font:
+    600 13px system-ui,
+    sans-serif;
+  background: none;
+  border: 0;
+  color: var(--fg);
+  cursor: pointer;
+  padding: 4px 6px;
+}
+.topbar h1 {
+  white-space: nowrap;
+}
+
+/* Approach select */
+.select {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+.select-head h1 {
+  margin: 0 0 4px;
+}
+.select-intro {
+  color: var(--muted);
+}
+.select-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+.select-card {
+  width: 100%;
+  text-align: left;
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--fg);
+  cursor: pointer;
+  font: inherit;
+}
+.select-card:hover,
+.select-card:focus-visible {
+  border-color: #2ec4f0;
+  outline: none;
+}
+.select-airport {
+  font-weight: 700;
+  font-size: 18px;
+}
+.select-name {
+  font-weight: 600;
+}
+.select-cycle,
+.select-starts {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Briefing */
+.briefing-screen {
+  display: grid;
+  grid-template-columns: minmax(380px, 1fr) minmax(420px, 560px);
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+.briefing-main {
+  overflow: auto;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.choice {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: grid;
+  gap: 6px;
+}
+.choice legend {
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0 4px;
+}
+.choice label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.briefing-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.briefing-actions button {
+  font:
+    600 14px system-ui,
+    sans-serif;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--fg);
+  cursor: pointer;
+}
+.briefing-actions .primary {
+  background: #1f7a45;
+  border-color: #1f7a45;
+  color: #fff;
+}
+.brief {
+  font-size: 14px;
+}
+.brief h2 {
+  font-size: 16px;
+  margin: 0 0 2px;
+}
+.brief-start {
+  margin: 0 0 6px;
+  color: var(--muted);
+}
+.brief dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 8px 0;
+}
+.brief dt {
+  font-weight: 600;
+  color: var(--muted);
+}
+.brief dd {
+  margin: 0;
+}
+.brief-notes {
+  font-size: 13px;
+  color: var(--muted);
+  padding-left: 18px;
+}
+.brief-compact {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+}
+.brief-compact h2 {
+  display: none;
+}
+.brief-compact dl {
+  margin: 4px 0 0;
+}
+
+/* Flight callouts */
+.callout {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #1d3b57;
+  color: #e9f3fb;
+}
+.callout p {
+  margin: 0;
+}
+.callout-missed {
+  background: #6b3a12;
+  color: #fff3e6;
+}
+.callout-end {
+  background: #1f5130;
+  color: #e9fbe9;
+}
+.callout-end-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+}
+.callout-end-row button {
+  font:
+    600 13px system-ui,
+    sans-serif;
+  padding: 4px 12px;
+  border-radius: 5px;
+  border: 1px solid #ffffff55;
+  background: #ffffff22;
+  color: inherit;
+  cursor: pointer;
+}
+.plate-pane .callout {
+  margin: 8px 12px;
+  font-size: 13px;
+}
