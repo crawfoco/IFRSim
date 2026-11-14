@@ -30,6 +30,7 @@ kcfo-ils26.json is invalid:
 | `airport`, `runway` | ICAO airport (`KCFO`) and runway (`26`) |
 | `name` | chart title |
 | `chart` | `number` (AL-6851), `amendment`, `validFrom`/`validTo` (chart cycle, ISO dates), `image` (path under `public/`) |
+| `expandedServiceVolumeNm` | optional: `{ "JNC": 50 }` when a charted route uses a VOR beyond its standard service volume |
 | `navaids` | every navaid the procedure is flown on (used by the tuning/ident checks) |
 | `fixes` | named fixes, defined chart-style (below) |
 | `transitions` | feeder / initial routes, each ending where `approach` starts |
@@ -69,10 +70,15 @@ coordinate, which catches typos in radials and DME values.
 | `arc` | `to`, `navaid`, `radiusNm`, `fromRadialMag`, `toRadialMag`, `turn`, `leadRadialMag?`, alt | DME arc (flown in HDG; no arc mode) |
 | `heading` | `headingMag`, `turn?`, `intercept?`, `climbToFt?`, alt | heading to intercept, missed-approach heading |
 | `climb` | `toAltFt` | straight-ahead climb before the first missed-approach turn |
-| `direct` | `to`, alt | "direct AKO" |
+| `direct` | `to`, `turn?`, `climbToFt?`, alt | "climbing right turn to 6100 direct AKO" |
 | `hold` | `fix`, `inboundCourseMag`, `course`, `turn`, `legMinutes` or `legNm`, `climbInHold?`, alt | hold-in-lieu of PT, missed-approach hold |
-| `procedureTurn` | `fix`, `course`, `outboundCourseMag`, `barbHeadingMag`, `inboundCourseMag`, `side`, `maxDistanceNm`, `minAltFt` | barbed PT |
-| `final` | `faf`, `course`, `fafAltFt`, `glideslope?` (`angleDeg`, `tchFt`), `stepDowns[]` (`fix`, `minAltFt`, `locOnly?`), `vdp?`, `map` (`fix`, `timing?` table of `groundspeedKt`/`seconds`) | final approach segment |
+| `procedureTurn` | `fix`, `course`, `outboundCourseMag`, `barbHeadingMag`, `inboundCourseMag`, `side`, `maxDistanceNm`, `minAltFt`, `inboundMinAltFt?` | barbed PT; `inboundMinAltFt` when the chart gives a lower altitude once established inbound |
+| `final` | `faf`, `course`, `fafAltFt`, `glideslope?` (`angleDeg`, `tchFt`), `descentAngle?` (`angleDeg`, `tchFt`; advisory, non-precision), `stepDowns[]` (`fix`, `minAltFt`, `locOnly?`), `vdp?`, `map` (`fix`, `timing?` table of `groundspeedKt`/`seconds`) | final approach segment |
+
+`track`, `procedureTurn` and `final` take an optional `dme`: the navaid whose DME the
+learner must read on that leg, when the chart names one (KMTJ: `"dme": "MTJ"`). Without
+it, `expectedDmeSource()` infers the source from the leg's fixes (an arc's navaid, a
+`radialDme` fix's VOR, a `locDme` fix's `dmeFrom` or localizer).
 
 The course reversal belongs to the transition that needs it (KCFO: the FQF feeder
 ends with the SKIPI hold-in-lieu). A route marked NoPT on the chart sets

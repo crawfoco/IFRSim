@@ -1,5 +1,7 @@
 # Encoding gaps: M6 VOR procedures (KAKO, KLAR, KSNY)
 
+> **Resolved after the merge (schema update):** items 1 (`turn` and `climbToFt` on `direct`), 5 (`final.descentAngle`) and 7 (`procedureTurn.inboundMinAltFt`).
+
 Places where `src/procedures/schema.ts` cannot say exactly what the chart says, and the
 approximation used in `kako-vor29.json`, `klar-vor30.json` and `ksny-vor13.json`.
 

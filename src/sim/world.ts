@@ -10,6 +10,8 @@ export interface World {
   glidePaths: Record<string, GlidePath>;
   /** Scripted glideslope outage ("LOC only" scenarios). */
   gsOutOfService: boolean;
+  /** Expanded service volumes by VOR id, NM. */
+  vorRangeNm: Record<string, number>;
 }
 
 export interface WorldOptions {
@@ -17,6 +19,7 @@ export interface WorldOptions {
   /** Plate TCH by localizer id; defaults to NASR's VGSI TCH, then 50 ft. */
   tchFt?: Record<string, number>;
   gsOutOfService?: boolean;
+  expandedServiceVolumeNm?: Record<string, number>;
 }
 
 export function buildWorld(navdata: NavData, opts: WorldOptions): World {
@@ -34,5 +37,6 @@ export function buildWorld(navdata: NavData, opts: WorldOptions): World {
     magVarEastDeg: opts.magVarEastDeg,
     glidePaths,
     gsOutOfService: opts.gsOutOfService ?? false,
+    vorRangeNm: opts.expandedServiceVolumeNm ?? {},
   };
 }

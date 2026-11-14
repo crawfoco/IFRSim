@@ -95,3 +95,15 @@ describe('navdata cross-check', () => {
     expect(distanceNm(vdp, thr)).toBeLessThan(1.3);
   });
 });
+
+describe('DME source per leg', () => {
+  const p = parseProcedure(kcfo);
+  it('is inferred from the fixes when not given', async () => {
+    const { expectedDmeSource } = await import('../../src/procedures/resolve');
+    const final = p.approach[0]!;
+    expect(expectedDmeSource(final, p)).toBe('I-FTG');
+    expect(expectedDmeSource(p.transitions[0]!.legs[0]!, p)).toBe('I-FTG'); // SKIPI is I-FTG 7
+    expect(expectedDmeSource({ type: 'climb', toAltFt: 6100 }, p)).toBeNull();
+    expect(expectedDmeSource({ ...final, dme: 'FQF' } as typeof final, p)).toBe('FQF');
+  });
+});

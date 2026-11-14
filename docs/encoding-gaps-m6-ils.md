@@ -1,5 +1,7 @@
 # Encoding gaps: KGXY ILS 35 and KMTJ ILS 17
 
+> **Resolved after the merge (schema update):** items 1 (`procedureTurn.inboundMinAltFt`), 9 (leg `dme` + `expectedDmeSource()`) and 10 (`expandedServiceVolumeNm`, JNC 50 NM).
+
 What the procedure schema (`src/procedures/schema.ts`) or the sim cannot express exactly
 for `kgxy-ils35.json` (AL-325, Amdt 3A) and `kmtj-ils17.json` (AL-668, Amdt 3A), and how
 each was approximated.

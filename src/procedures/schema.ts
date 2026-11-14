@@ -57,6 +57,12 @@ const LocCourse = z.object({ loc: Id }).strict();
 export const CourseRefSchema = z.union([VorCourse, LocCourse]);
 export type CourseRef = z.infer<typeof CourseRefSchema>;
 
+/**
+ * DME the learner should read on a leg, when the chart names one (KMTJ: MTJ VOR/DME, not
+ * the localizer). Optional; `expectedDmeSource()` infers it from the leg's fixes otherwise.
+ */
+const DmeSource = { dme: Id.optional() };
+
 const Altitude = {
   /** At or above. */
   minAltFt: Ft.optional(),
@@ -68,7 +74,13 @@ const Altitude = {
 
 /** Track a course to a fix (feeder, initial, intermediate, missed). */
 const TrackLeg = z
-  .object({ type: z.literal('track'), to: Id, course: CourseRefSchema, ...Altitude })
+  .object({
+    type: z.literal('track'),
+    to: Id,
+    course: CourseRefSchema,
+    ...DmeSource,
+    ...Altitude,
+  })
   .strict();
 
 /** Fly a DME arc to a fix. The autopilot has no arc mode: flown in HDG. */
@@ -105,7 +117,17 @@ const HeadingLeg = z
 const ClimbLeg = z.object({ type: z.literal('climb'), toAltFt: Ft }).strict();
 
 /** Direct to a fix (e.g. "direct AKO"). */
-const DirectLeg = z.object({ type: z.literal('direct'), to: Id, ...Altitude }).strict();
+const DirectLeg = z
+  .object({
+    type: z.literal('direct'),
+    to: Id,
+    /** Turn direction when charted ("climbing right turn … direct AKO"). */
+    turn: z.enum(['L', 'R']).optional(),
+    /** Climb (missed approach) to this altitude while proceeding direct. */
+    climbToFt: Ft.optional(),
+    ...Altitude,
+  })
+  .strict();
 
 /** A hold: course reversal (hold-in-lieu of PT) or the missed-approach hold. */
 const HoldLeg = z
@@ -140,7 +162,11 @@ const ProcedureTurnLeg = z
     side: z.enum(['L', 'R']),
     /** "Remain within 10 NM". */
     maxDistanceNm: Nm,
+    /** Procedure-turn altitude (outbound, barb and turn). */
     minAltFt: Ft,
+    /** Lower altitude charted on the inbound leg once established (KMTJ: 12500 → 9400). */
+    inboundMinAltFt: Ft.optional(),
+    ...DmeSource,
   })
   .strict();
 
@@ -177,9 +203,18 @@ const FinalLeg = z
       .object({ angleDeg: z.number().min(2).max(4), tchFt: z.number().positive() })
       .strict()
       .optional(),
+    /**
+     * Charted descent angle and TCH for a non-precision final (advisory: there is no
+     * glideslope). Not used when `glideslope` is present.
+     */
+    descentAngle: z
+      .object({ angleDeg: z.number().min(2).max(4.5), tchFt: z.number().positive() })
+      .strict()
+      .optional(),
     stepDowns: z.array(StepDown).default([]),
     vdp: Id.optional(),
     map: Map,
+    ...DmeSource,
   })
   .strict();
 
@@ -261,6 +296,11 @@ export const ProcedureSchema = z
       .strict(),
     /** Navaids the procedure is flown on (used for tuning/ident checks). */
     navaids: z.array(Id).min(1),
+    /**
+     * Expanded service volume: a charted route uses a VOR beyond its standard service
+     * volume (KMTJ: the HAQHY feeder on JNC R-098 out to 46 NM). Range in NM by navaid id.
+     */
+    expandedServiceVolumeNm: z.record(z.string(), z.number().positive().max(130)).optional(),
     fixes: z.record(z.string(), FixSchema),
     /** Feeder / initial routes into the approach, each ending at the first fix of `approach`. */
     transitions: z.array(TransitionSchema),

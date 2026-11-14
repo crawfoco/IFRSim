@@ -2,7 +2,7 @@
 import { magToTrue, normalize360 } from '../sim/geo/angles';
 import { destination, distanceNm, type LatLon } from '../sim/geo/geodesy';
 import type { Localizer, NavData, Navaid, RunwayEnd } from '../sim/navdata/types';
-import type { CourseRef, FixDef, Procedure } from './schema';
+import type { CourseRef, FixDef, Leg, Procedure } from './schema';
 
 export interface ProcedureContext {
   navdata: NavData;
@@ -143,4 +143,44 @@ export function checkAgainstNavdata(
     }
   }
   return issues;
+}
+
+/** The navaid whose DME a fix is defined by (null for a threshold or a VOR without DME use). */
+function fixDmeSource(def: FixDef): string | null {
+  switch (def.kind) {
+    case 'radialDme':
+      return def.navaid;
+    case 'locDme':
+      return def.dmeFrom ?? def.loc;
+    case 'navaid':
+    case 'threshold':
+      return null;
+  }
+}
+
+/**
+ * The DME the learner should read on a leg: the leg's explicit `dme`, else the arc's
+ * navaid, else the DME that defines the leg's fixes. Null when the leg uses no DME.
+ */
+export function expectedDmeSource(leg: Leg, p: Procedure): string | null {
+  if ('dme' in leg && leg.dme) return leg.dme;
+  const fromFix = (name: string | undefined) => {
+    const f = name === undefined ? undefined : p.fixes[name];
+    return f ? fixDmeSource(f.def) : null;
+  };
+  switch (leg.type) {
+    case 'arc':
+      return leg.navaid;
+    case 'track':
+    case 'direct':
+      return fromFix(leg.to);
+    case 'hold':
+    case 'procedureTurn':
+      return fromFix(leg.fix);
+    case 'final':
+      return fromFix(leg.map.fix) ?? fromFix(leg.faf);
+    case 'heading':
+    case 'climb':
+      return null;
+  }
 }

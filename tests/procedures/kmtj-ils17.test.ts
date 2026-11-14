@@ -5,7 +5,11 @@
  */
 import { describe, expect, it } from 'vitest';
 import json from '../../src/procedures/kmtj-ils17.json';
-import { checkAgainstNavdata, resolveFixDef } from '../../src/procedures/resolve';
+import {
+  checkAgainstNavdata,
+  expectedDmeSource,
+  resolveFixDef,
+} from '../../src/procedures/resolve';
 import { parseProcedure } from '../../src/procedures/schema';
 import { distanceNm } from '../../src/sim/geo/geodesy';
 import { buildWorld } from '../../src/sim/world';
@@ -71,16 +75,28 @@ describe('KMTJ ILS or LOC RWY 17: golden receiver readings', () => {
     expect(Math.abs(ind.deviationDeg)).toBeLessThan(0.5);
   });
 
-  it('the JNC R-098 feeder is centred while JNC is within its service volume', () => {
-    // BRUUK is JNC 46 DME, beyond the 40 NM standard service volume the receiver models
-    // (docs/encoding-gaps-m6-ils.md); check the feeder at 39 DME.
+  it('the JNC R-098 feeder is usable to BRUUK (46 DME) with the expanded service volume', () => {
+    // JNC's standard service volume ends at 40 NM; the charted feeder implies an ESV.
     const position = resolveFixDef(
-      { kind: 'radialDme', navaid: 'JNC', radialMag: 98, dmeNm: 39 },
+      { kind: 'radialDme', navaid: 'JNC', radialMag: 98, dmeNm: 45 },
       { navdata: nav, procedure: p },
     );
-    const ind = vorAt(world, JNC, 98, { position, altitudeFt: 9400 });
+    const ac = { position, altitudeFt: 9400 };
+    expect(vorAt(world, JNC, 98, ac).flag).toBe(true); // standard volume only
+    const esv = buildWorld(nav, {
+      magVarEastDeg: 12,
+      expandedServiceVolumeNm: p.expandedServiceVolumeNm!,
+    });
+    const ind = vorAt(esv, JNC, 98, ac);
     expect(ind).toMatchObject({ flag: false, toFrom: 'FROM' });
-    expect(Math.abs(ind.deviationDeg)).toBeLessThan(0.1);
+    expect(Math.abs(ind.deviationDeg)).toBeLessThan(0.5);
+  });
+
+  it('the PT is flown at 12500, inbound at 9400; DME on the final comes from MTJ', () => {
+    const pt = p.transitions.find((t) => t.id === 'mtj')!.legs.at(-1)!;
+    expect(pt).toMatchObject({ type: 'procedureTurn', minAltFt: 12500, inboundMinAltFt: 9400 });
+    const final = p.approach.find((l) => l.type === 'final')!;
+    expect(expectedDmeSource(final, p)).toBe('MTJ');
   });
 
   it.each([

@@ -116,6 +116,9 @@ export function buildScenario(
     magVarEastDeg: airport.magVarEastDeg,
     tchFt,
     gsOutOfService: options.gsOutOfService,
+    ...(procedure.expandedServiceVolumeNm
+      ? { expandedServiceVolumeNm: procedure.expandedServiceVolumeNm }
+      : {}),
   });
   const rwy = runwayEndFor(navdata, procedure.airport, procedure.runway);
   const thresholdElevationFt = rwy.displacedThreshold?.elevationFt ?? rwy.elevationFt;

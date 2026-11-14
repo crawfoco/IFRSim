@@ -12,41 +12,86 @@
   },
   "navaids": ["I-MTJ", "MTJ", "JNC"],
   "fixes": {
-    "MTJ": { "def": { "kind": "navaid", "navaid": "MTJ" }, "faaId": "MTJ" },
+    "MTJ": {
+      "def": {
+        "kind": "navaid",
+        "navaid": "MTJ"
+      },
+      "faaId": "MTJ"
+    },
     "HAQHY": {
-      "def": { "kind": "radialDme", "navaid": "JNC", "radialMag": 98.3, "dmeNm": 36 },
+      "def": {
+        "kind": "radialDme",
+        "navaid": "JNC",
+        "radialMag": 98.3,
+        "dmeNm": 36
+      },
       "faaId": "HAQHY",
       "note": "IAF; charted JNC R-098 / 36 DME (NASR puts it on R-098.3, 0.2 NM from the whole-degree radial). Feeder JNC R-098 to BRUUK, 9400 NoPT, 10 NM."
     },
     "PAGRE": {
-      "def": { "kind": "radialDme", "navaid": "MTJ", "radialMag": 297, "dmeNm": 14.8 },
+      "def": {
+        "kind": "radialDme",
+        "navaid": "MTJ",
+        "radialMag": 297,
+        "dmeNm": 14.8
+      },
       "faaId": "PAGRE",
       "note": "IAF; start of the MTJ 14.8 DME arc (NoPT); missed-approach holding fix"
     },
     "BRUUK": {
-      "def": { "kind": "locDme", "loc": "I-MTJ", "dmeNm": 14.8, "dmeFrom": "MTJ" },
+      "def": {
+        "kind": "locDme",
+        "loc": "I-MTJ",
+        "dmeNm": 14.8,
+        "dmeFrom": "MTJ"
+      },
       "faaId": "BRUUK",
       "note": "IF/IAF; also MTJ R-349 at 14.8 and JNC R-098 at 46 DME. Procedure turn fix."
     },
     "WIDRU": {
-      "def": { "kind": "locDme", "loc": "I-MTJ", "dmeNm": 8.8, "dmeFrom": "MTJ" },
+      "def": {
+        "kind": "locDme",
+        "loc": "I-MTJ",
+        "dmeNm": 8.8,
+        "dmeFrom": "MTJ"
+      },
       "faaId": "WIDRU",
       "note": "FAF (LOC); glideslope intercept at 8100"
     },
     "ZIMVI": {
-      "def": { "kind": "locDme", "loc": "I-MTJ", "dmeNm": 4.7, "dmeFrom": "MTJ" },
+      "def": {
+        "kind": "locDme",
+        "loc": "I-MTJ",
+        "dmeNm": 4.7,
+        "dmeFrom": "MTJ"
+      },
       "faaId": "ZIMVI",
       "note": "Step-down fix, 6800"
     },
     "MTJ 2.3": {
-      "def": { "kind": "locDme", "loc": "I-MTJ", "dmeNm": 2.3, "dmeFrom": "MTJ" },
+      "def": {
+        "kind": "locDme",
+        "loc": "I-MTJ",
+        "dmeNm": 2.3,
+        "dmeFrom": "MTJ"
+      },
       "note": "VDP"
     },
     "MTJ 1.4": {
-      "def": { "kind": "locDme", "loc": "I-MTJ", "dmeNm": 1.4, "dmeFrom": "MTJ" },
+      "def": {
+        "kind": "locDme",
+        "loc": "I-MTJ",
+        "dmeNm": 1.4,
+        "dmeFrom": "MTJ"
+      },
       "note": "Missed approach point, LOC only"
     },
-    "RW17": { "def": { "kind": "threshold" } }
+    "RW17": {
+      "def": {
+        "kind": "threshold"
+      }
+    }
   },
   "transitions": [
     {
@@ -57,7 +102,11 @@
         {
           "type": "track",
           "to": "BRUUK",
-          "course": { "navaid": "JNC", "courseMag": 98, "toFrom": "FROM" },
+          "course": {
+            "navaid": "JNC",
+            "courseMag": 98,
+            "toFrom": "FROM"
+          },
           "minAltFt": 9400
         }
       ]
@@ -88,19 +137,26 @@
         {
           "type": "track",
           "to": "BRUUK",
-          "course": { "navaid": "MTJ", "courseMag": 349, "toFrom": "FROM" },
+          "course": {
+            "navaid": "MTJ",
+            "courseMag": 349,
+            "toFrom": "FROM"
+          },
           "minAltFt": 12500
         },
         {
           "type": "procedureTurn",
           "fix": "BRUUK",
-          "course": { "loc": "I-MTJ" },
+          "course": {
+            "loc": "I-MTJ"
+          },
           "outboundCourseMag": 348,
           "barbHeadingMag": 303,
           "inboundCourseMag": 168,
           "side": "L",
           "maxDistanceNm": 10,
-          "minAltFt": 12500
+          "minAltFt": 12500,
+          "inboundMinAltFt": 9400
         }
       ]
     }
@@ -109,40 +165,71 @@
     {
       "type": "track",
       "to": "WIDRU",
-      "course": { "loc": "I-MTJ" },
-      "minAltFt": 8100
+      "course": {
+        "loc": "I-MTJ"
+      },
+      "minAltFt": 8100,
+      "dme": "MTJ"
     },
     {
       "type": "final",
       "faf": "WIDRU",
-      "course": { "loc": "I-MTJ" },
+      "course": {
+        "loc": "I-MTJ"
+      },
       "fafAltFt": 8100,
-      "glideslope": { "angleDeg": 3, "tchFt": 56 },
-      "stepDowns": [{ "fix": "ZIMVI", "minAltFt": 6800 }],
+      "glideslope": {
+        "angleDeg": 3,
+        "tchFt": 56
+      },
+      "stepDowns": [
+        {
+          "fix": "ZIMVI",
+          "minAltFt": 6800
+        }
+      ],
       "vdp": "MTJ 2.3",
-      "map": { "fix": "MTJ 1.4" }
+      "map": {
+        "fix": "MTJ 1.4"
+      },
+      "dme": "MTJ"
     }
   ],
   "missed": [
-    { "type": "climb", "toAltFt": 6300 },
+    {
+      "type": "climb",
+      "toAltFt": 6300
+    },
     {
       "type": "heading",
       "headingMag": 325,
       "turn": "R",
       "climbToFt": 11000,
-      "intercept": { "navaid": "MTJ", "courseMag": 297, "toFrom": "FROM" }
+      "intercept": {
+        "navaid": "MTJ",
+        "courseMag": 297,
+        "toFrom": "FROM"
+      }
     },
     {
       "type": "track",
       "to": "PAGRE",
-      "course": { "navaid": "MTJ", "courseMag": 297, "toFrom": "FROM" },
+      "course": {
+        "navaid": "MTJ",
+        "courseMag": 297,
+        "toFrom": "FROM"
+      },
       "minAltFt": 11000
     },
     {
       "type": "hold",
       "fix": "PAGRE",
       "inboundCourseMag": 117,
-      "course": { "navaid": "MTJ", "courseMag": 117, "toFrom": "TO" },
+      "course": {
+        "navaid": "MTJ",
+        "courseMag": 117,
+        "toFrom": "TO"
+      },
       "turn": "R",
       "legMinutes": 1,
       "climbInHold": true,
@@ -154,14 +241,26 @@
     {
       "kind": "ILS",
       "label": "S-ILS 17",
-      "A": { "altFt": 5908, "visibilitySm": 0.5 },
-      "B": { "altFt": 5908, "visibilitySm": 0.5 }
+      "A": {
+        "altFt": 5908,
+        "visibilitySm": 0.5
+      },
+      "B": {
+        "altFt": 5908,
+        "visibilitySm": 0.5
+      }
     },
     {
       "kind": "LOC",
       "label": "S-LOC 17",
-      "A": { "altFt": 6020, "visibilitySm": 0.5 },
-      "B": { "altFt": 6020, "visibilitySm": 0.5 }
+      "A": {
+        "altFt": 6020,
+        "visibilitySm": 0.5
+      },
+      "B": {
+        "altFt": 6020,
+        "visibilitySm": 0.5
+      }
     }
   ],
   "starts": [
@@ -169,7 +268,12 @@
       "id": "haqhy",
       "name": "Inbound to HAQHY, via the JNC R-098 feeder",
       "clearance": "Cross HAQHY at or above 12000, cleared ILS runway 17 approach.",
-      "position": { "kind": "radialDme", "navaid": "JNC", "radialMag": 98, "dmeNm": 30 },
+      "position": {
+        "kind": "radialDme",
+        "navaid": "JNC",
+        "radialMag": 98,
+        "dmeNm": 30
+      },
       "altitudeFt": 12000,
       "headingMag": 98,
       "iasKt": 100,
@@ -181,7 +285,12 @@
       "id": "pagre-arc",
       "name": "Inbound to PAGRE, then the MTJ 14.8 DME arc",
       "clearance": "Cross PAGRE at or above 12000, cleared ILS runway 17 approach via the Montrose 14.8 DME arc.",
-      "position": { "kind": "radialDme", "navaid": "MTJ", "radialMag": 297, "dmeNm": 22 },
+      "position": {
+        "kind": "radialDme",
+        "navaid": "MTJ",
+        "radialMag": 297,
+        "dmeNm": 22
+      },
       "altitudeFt": 12000,
       "headingMag": 117,
       "iasKt": 100,
@@ -193,7 +302,12 @@
       "id": "vectors-final",
       "name": "Radar vectors to final",
       "clearance": "Turn left heading 140, maintain 10000 until established on the localizer, cleared ILS runway 17 approach.",
-      "position": { "kind": "radialDme", "navaid": "I-MTJ", "radialMag": 340, "dmeNm": 24 },
+      "position": {
+        "kind": "radialDme",
+        "navaid": "I-MTJ",
+        "radialMag": 340,
+        "dmeNm": 24
+      },
       "altitudeFt": 10000,
       "headingMag": 170,
       "iasKt": 100,
@@ -214,5 +328,8 @@
     "MSA MTJ 25 NM: 11600 west (bearings to MTJ 360°–180°), 13300 northeast (180°–270°), 14400 southeast (270°–360°).",
     "Take-off minimums and departure procedures are non-standard; alternate minimums NA (see the chart).",
     "Circling minimums are on the chart and not part of V1 scoring."
-  ]
+  ],
+  "expandedServiceVolumeNm": {
+    "JNC": 50
+  }
 }

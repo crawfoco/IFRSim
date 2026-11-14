@@ -14,7 +14,7 @@ export function sense(state: SimState, world: World): Sensors {
   return {
     nav1: r1,
     nav2: r2,
-    dmeNm: readDme((dmeSource === 1 ? r1 : r2).station, ac),
+    dmeNm: readDme((dmeSource === 1 ? r1 : r2).station, ac, world),
     headingMagDeg: trueToMag(state.aircraft.headingTrueDeg, world.magVarEastDeg),
     tasKt: tasKt(state.aircraft.iasKt, state.aircraft.altitudeFt),
   };

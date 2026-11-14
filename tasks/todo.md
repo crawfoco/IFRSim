@@ -24,14 +24,10 @@ builds every start condition of all six approaches. Typecheck, lint and Prettier
 clean. In the browser, all six briefings load with their plates.
 
 **Next steps (in order):**
-1. Close the schema gaps from `docs/encoding-gaps-m6-ils.md` and
-   `docs/encoding-gaps-m6-vor.md` before the sequencer depends on them:
-   - a separate procedure-turn altitude and inbound altitude (KMTJ 12500/9400, KAKO);
-   - `turn` and `climbToFt` on `direct` legs (KAKO and KSNY missed approaches turn right);
-   - an explicit DME source per segment (the KMTJ wrong-source rule);
-   - descent angle and TCH for non-precision finals (notes only for now).
-2. Decide on the JNC service volume (it flags the last 6 NM of the KMTJ HAQHY feeder).
-3. M5: T20 leg sequencer, T21 scoring rules, T22 debrief.
+1. ~~Close the schema gaps~~: done. Added `procedureTurn.inboundMinAltFt`, `turn`/`climbToFt`
+   on `direct`, leg `dme` + `expectedDmeSource()`, `final.descentAngle`, and
+   `expandedServiceVolumeNm` (KMTJ: JNC 50 NM, so the HAQHY feeder no longer flags).
+2. M5: T20 leg sequencer, T21 scoring rules (fresh-eyes review at the end), T22 debrief.
 
 **Known gaps / decisions:**
 - KCFO chart note "Autopilot coupled approach NA below 6250 MSL": the trainer's

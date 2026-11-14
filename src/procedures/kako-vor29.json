@@ -13,28 +13,55 @@
   "navaids": ["AKO"],
   "fixes": {
     "AKO": {
-      "def": { "kind": "navaid", "navaid": "AKO" },
+      "def": {
+        "kind": "navaid",
+        "navaid": "AKO"
+      },
       "faaId": "AKO",
       "note": "IAF and FAF (final flown FROM the station on R-289)"
     },
     "GERON": {
-      "def": { "kind": "radialDme", "navaid": "AKO", "radialMag": 110, "dmeNm": 10 },
+      "def": {
+        "kind": "radialDme",
+        "navaid": "AKO",
+        "radialMag": 110,
+        "dmeNm": 10
+      },
       "faaId": "GERON",
       "note": "IAF, AKO R-110 at 10 DME; end of both AKO 10 DME arcs"
     },
     "AKO R-050/10": {
-      "def": { "kind": "radialDme", "navaid": "AKO", "radialMag": 50, "dmeNm": 10 },
+      "def": {
+        "kind": "radialDme",
+        "navaid": "AKO",
+        "radialMag": 50,
+        "dmeNm": 10
+      },
       "note": "IAF (unnamed), start of the northern AKO 10 DME arc"
     },
     "AKO R-170/10": {
-      "def": { "kind": "radialDme", "navaid": "AKO", "radialMag": 170, "dmeNm": 10 },
+      "def": {
+        "kind": "radialDme",
+        "navaid": "AKO",
+        "radialMag": 170,
+        "dmeNm": 10
+      },
       "note": "IAF (unnamed), start of the southern AKO 10 DME arc"
     },
     "AKO 1.7": {
-      "def": { "kind": "radialDme", "navaid": "AKO", "radialMag": 289, "dmeNm": 1.7 },
+      "def": {
+        "kind": "radialDme",
+        "navaid": "AKO",
+        "radialMag": 289,
+        "dmeNm": 1.7
+      },
       "note": "Missed approach point, AKO R-289 at 1.7 DME (runway 29 threshold)"
     },
-    "RW29": { "def": { "kind": "threshold" } }
+    "RW29": {
+      "def": {
+        "kind": "threshold"
+      }
+    }
   },
   "transitions": [
     {
@@ -45,18 +72,27 @@
         {
           "type": "procedureTurn",
           "fix": "AKO",
-          "course": { "navaid": "AKO", "courseMag": 290, "toFrom": "TO" },
+          "course": {
+            "navaid": "AKO",
+            "courseMag": 290,
+            "toFrom": "TO"
+          },
           "outboundCourseMag": 110,
           "barbHeadingMag": 65,
           "inboundCourseMag": 290,
           "side": "L",
           "maxDistanceNm": 10,
-          "minAltFt": 6000
+          "minAltFt": 6000,
+          "inboundMinAltFt": 5300
         },
         {
           "type": "track",
           "to": "AKO",
-          "course": { "navaid": "AKO", "courseMag": 290, "toFrom": "TO" },
+          "course": {
+            "navaid": "AKO",
+            "courseMag": 290,
+            "toFrom": "TO"
+          },
           "minAltFt": 5300
         }
       ]
@@ -79,7 +115,11 @@
         {
           "type": "track",
           "to": "AKO",
-          "course": { "navaid": "AKO", "courseMag": 290, "toFrom": "TO" },
+          "course": {
+            "navaid": "AKO",
+            "courseMag": 290,
+            "toFrom": "TO"
+          },
           "minAltFt": 5300
         }
       ]
@@ -102,7 +142,11 @@
         {
           "type": "track",
           "to": "AKO",
-          "course": { "navaid": "AKO", "courseMag": 290, "toFrom": "TO" },
+          "course": {
+            "navaid": "AKO",
+            "courseMag": 290,
+            "toFrom": "TO"
+          },
           "minAltFt": 5300
         }
       ]
@@ -112,28 +156,60 @@
     {
       "type": "final",
       "faf": "AKO",
-      "course": { "navaid": "AKO", "courseMag": 289, "toFrom": "FROM" },
+      "course": {
+        "navaid": "AKO",
+        "courseMag": 289,
+        "toFrom": "FROM"
+      },
       "fafAltFt": 5300,
       "stepDowns": [],
       "map": {
         "fix": "AKO 1.7",
         "timing": [
-          { "groundspeedKt": 60, "seconds": 102 },
-          { "groundspeedKt": 90, "seconds": 68 },
-          { "groundspeedKt": 120, "seconds": 51 },
-          { "groundspeedKt": 150, "seconds": 41 },
-          { "groundspeedKt": 180, "seconds": 34 }
+          {
+            "groundspeedKt": 60,
+            "seconds": 102
+          },
+          {
+            "groundspeedKt": 90,
+            "seconds": 68
+          },
+          {
+            "groundspeedKt": 120,
+            "seconds": 51
+          },
+          {
+            "groundspeedKt": 150,
+            "seconds": 41
+          },
+          {
+            "groundspeedKt": 180,
+            "seconds": 34
+          }
         ]
+      },
+      "descentAngle": {
+        "angleDeg": 3.22,
+        "tchFt": 50
       }
     }
   ],
   "missed": [
-    { "type": "direct", "to": "AKO" },
+    {
+      "type": "direct",
+      "to": "AKO",
+      "turn": "R",
+      "climbToFt": 6100
+    },
     {
       "type": "hold",
       "fix": "AKO",
       "inboundCourseMag": 290,
-      "course": { "navaid": "AKO", "courseMag": 290, "toFrom": "TO" },
+      "course": {
+        "navaid": "AKO",
+        "courseMag": 290,
+        "toFrom": "TO"
+      },
       "turn": "R",
       "legMinutes": 1,
       "minAltFt": 6100
@@ -144,8 +220,14 @@
     {
       "kind": "VOR",
       "label": "S-29",
-      "A": { "altFt": 5120, "visibilitySm": 1 },
-      "B": { "altFt": 5120, "visibilitySm": 1 }
+      "A": {
+        "altFt": 5120,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 5120,
+        "visibilitySm": 1
+      }
     }
   ],
   "starts": [
@@ -153,7 +235,12 @@
       "id": "direct-ako",
       "name": "Direct AKO from the northwest, procedure turn",
       "clearance": "Proceed direct Akron, cross Akron at or above 6000, cleared VOR runway 29 approach.",
-      "position": { "kind": "radialDme", "navaid": "AKO", "radialMag": 315, "dmeNm": 8 },
+      "position": {
+        "kind": "radialDme",
+        "navaid": "AKO",
+        "radialMag": 315,
+        "dmeNm": 8
+      },
       "altitudeFt": 7000,
       "headingMag": 135,
       "iasKt": 100,
@@ -165,7 +252,12 @@
       "id": "north-arc",
       "name": "Inbound on AKO R-050, 10 DME arc",
       "clearance": "Proceed inbound on the Akron 050 radial, cross the Akron 10 DME arc at or above 6000, cleared VOR runway 29 approach via the 10 DME arc.",
-      "position": { "kind": "radialDme", "navaid": "AKO", "radialMag": 50, "dmeNm": 16 },
+      "position": {
+        "kind": "radialDme",
+        "navaid": "AKO",
+        "radialMag": 50,
+        "dmeNm": 16
+      },
       "altitudeFt": 7000,
       "headingMag": 230,
       "iasKt": 100,
@@ -177,7 +269,12 @@
       "id": "south-arc",
       "name": "Inbound on AKO R-170, 10 DME arc",
       "clearance": "Proceed inbound on the Akron 170 radial, cross the Akron 10 DME arc at or above 6000, cleared VOR runway 29 approach via the 10 DME arc.",
-      "position": { "kind": "radialDme", "navaid": "AKO", "radialMag": 170, "dmeNm": 16 },
+      "position": {
+        "kind": "radialDme",
+        "navaid": "AKO",
+        "radialMag": 170,
+        "dmeNm": 16
+      },
       "altitudeFt": 7000,
       "headingMag": 350,
       "iasKt": 100,

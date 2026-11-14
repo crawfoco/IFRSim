@@ -54,7 +54,7 @@ export function readNav(
       freqMHz,
       station,
       ident: station.navaid.id,
-      indication: vorIndication(ac, station.navaid, obsDegMag),
+      indication: vorIndication(ac, station.navaid, obsDegMag, world.vorRangeNm[station.navaid.id]),
       gs: null,
     };
   }
@@ -68,7 +68,11 @@ export function readNav(
 }
 
 /** DME paired with the tuned station, if it has one. */
-export function readDme(station: TunedStation | null, ac: AircraftFix): number | null {
+export function readDme(
+  station: TunedStation | null,
+  ac: AircraftFix,
+  world?: Pick<World, 'vorRangeNm'>,
+): number | null {
   if (!station) return null;
   let antenna: DmeAntenna;
   let rangeNm: number;
@@ -76,7 +80,8 @@ export function readDme(station: TunedStation | null, ac: AircraftFix): number |
     const n = station.navaid;
     if (!n.dmeChannel) return null;
     antenna = { position: n.dmePosition ?? n.position, elevationFt: n.elevationFt };
-    rangeNm = vorServiceRangeNm(n.serviceVolume, ac.altitudeFt - n.elevationFt);
+    rangeNm =
+      world?.vorRangeNm[n.id] ?? vorServiceRangeNm(n.serviceVolume, ac.altitudeFt - n.elevationFt);
   } else {
     if (!station.loc.dme) return null;
     antenna = station.loc.dme;

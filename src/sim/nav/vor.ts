@@ -43,7 +43,13 @@ export function vorServiceRangeNm(sv: ServiceVolume, aglFt: number): number {
   }
 }
 
-export function vorIndication(ac: AircraftFix, station: Navaid, obsDegMag: number): VorIndication {
+export function vorIndication(
+  ac: AircraftFix,
+  station: Navaid,
+  obsDegMag: number,
+  /** Expanded service volume for this station, NM (charted routes beyond the standard one). */
+  rangeOverrideNm?: number,
+): VorIndication {
   const g = inverse(station.position, ac.position);
   const distanceNm = g.distanceM / METRES_PER_NM;
   const radialMagDeg = trueToMag(g.initialBearingDeg, station.declinationEastDeg);
@@ -60,7 +66,7 @@ export function vorIndication(ac: AircraftFix, station: Navaid, obsDegMag: numbe
   const aglFt = ac.altitudeFt - station.elevationFt;
   const elevationAngle = Math.atan2(aglFt, distanceNm * FT_PER_NM) / DEG;
   const flag =
-    distanceNm > vorServiceRangeNm(station.serviceVolume, aglFt) ||
+    distanceNm > (rangeOverrideNm ?? vorServiceRangeNm(station.serviceVolume, aglFt)) ||
     elevationAngle > CONE_DEG ||
     Math.abs(Math.abs(diff) - 90) < AMBIGUITY_DEG;
 
