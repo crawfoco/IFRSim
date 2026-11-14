@@ -56,6 +56,16 @@ and checkable.
 5. **Magnetic variation:** each VOR uses its published station declination from
    NASR; the localizer course is the published magnetic course; the HSI and heading
    use the airport's magnetic variation. Tested per navaid.
+6. **Aircraft position is integrated in latitude/longitude** (WGS84 radii of
+   curvature), not in the local map frame. A flat frame bends true headings by up to
+   ~0.4° at 30 NM from its origin, which is more than the ±0.1° needle tolerance. The
+   local frame is used only for drawing the map. *(Decided in M2.)*
+7. **Airspeed is IAS, groundspeed is TAS** (IAS + 2% per 1000 ft, no wind). This
+   matters for the FAF-to-MAP timing tables at high-elevation airports (KLAR, KMTJ).
+   *(Decided in M2.)*
+8. **Instrument scales:** the HSI shows 2 dots each side, so 1 dot = 5° VOR, 1.25° LOC,
+   0.35° GS. Receivers use standard service volumes (VOR T/L/H; LOC ±10° to 18 NM and
+   ±35° to 10 NM; GS ±8° to 10 NM). *(Decided in M2.)*
 
 ## Proposed dependencies (approval of this plan = approval of these)
 

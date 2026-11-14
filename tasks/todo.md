@@ -20,32 +20,32 @@ Plan: [plan.md](plan.md). Tasks are in dependency order. "Verify" always include
   - Acceptance: parsers tested on small checked-in sample snippets; script prints the source cycle.
   - Verify: `npm run navdata` (network, dev-only) + unit tests
   - Files: `scripts/navdata/*.ts`, `tests/scripts/navdata/*.test.ts`, `tests/fixtures/navdata/*`
-- [ ] **T04 Extract navdata.json for the six airports.** Every navaid, fix and runway on the six plates.
+- [x] **T04 Extract navdata.json for the six airports.** Every navaid, fix and runway on the six plates.
   - Acceptance: list matches the charts (identifier, frequency, position, declination); source cycle recorded.
   - Verify: unit test cross-checks frequencies/identifiers against a hand-typed list from the plates. **Checkpoint: user reviews the list.**
   - Files: `src/procedures/navdata.json`, `tests/procedures/navdata.test.ts`
 
 ## M2 — Sim core (test-first)
 
-- [ ] **T05 VOR + DME receivers.** Deviation, to/from, flag, range, DME slant range.
+- [x] **T05 VOR + DME receivers.** Deviation, to/from, flag, range, DME slant range.
   - Acceptance: golden tests (e.g. FQF R-045 at 11 DME → centred FROM with OBS 045).
   - Files: `src/sim/nav/vor.ts`, `dme.ts`, tests
-- [ ] **T06 LOC + GS receivers.** Localizer deviation (±2.5° full scale; back-course flagged), GS deviation (±0.7°), flags.
+- [x] **T06 LOC + GS receivers.** Localizer deviation (±2.5° full scale; back-course flagged), GS deviation (±0.7°), flags.
   - Acceptance: golden tests on KCFO I-FTG final; GS centred at TCH 50 over threshold.
   - Files: `src/sim/nav/loc.ts`, `gs.ts`, tests
-- [ ] **T07 Aircraft model.** Turn rate/bank ramp, VS limits, speed changes, position update in the local frame.
+- [x] **T07 Aircraft model.** Turn rate/bank ramp, VS limits, speed changes, position update in lat/lon (see plan decision 6).
   - Acceptance: 360° turn takes 120 s ±2 s; VS capture and speed change rates as specified.
   - Files: `src/sim/aircraft/*.ts`, tests
-- [ ] **T08 Autopilot mode state machine.** ROL/HDG/NAV/APR lateral; PIT/VS/ALT/GS vertical; arm/capture transitions; annunciator state.
+- [x] **T08 Autopilot mode state machine.** ROL/HDG/NAV/APR lateral; PIT/VS/ALT/GS vertical; arm/capture transitions; annunciator state.
   - Acceptance: transition table test covers every mode pair; invalid presses are ignored.
   - Files: `src/sim/autopilot/modes.ts`, tests
-- [ ] **T09 Autopilot control laws.** Heading hold, VOR/LOC intercept and track (45° max), GS track, ALT capture. _(🤖 fresh-eyes review of T08–T09 at end of M2)_
+- [x] **T09 Autopilot control laws.** Heading hold, VOR/LOC intercept and track (45° max), GS track, ALT capture. _(🤖 fresh-eyes review of T08–T09 at end of M2)_
   - Acceptance: LOC intercept from 30°/45° settles with < 1 dot overshoot; ALT capture ±20 ft; GS tracking within ¼ dot.
   - Files: `src/sim/autopilot/laws.ts`, tests
-- [ ] **T10 Sim loop, commands, recorder, replay.** Fixed 20 Hz step; command queue; time scale; input log; deterministic replay.
+- [x] **T10 Sim loop, commands, recorder, replay.** Fixed 20 Hz step; command queue; time scale; input log; deterministic replay.
   - Acceptance: replay of an input log reproduces the track exactly (1e-9).
   - Files: `src/sim/loop.ts`, `src/sim/commands.ts`, `src/sim/recorder.ts`, tests
-- [ ] **T11 Headless KCFO vectors-to-final run.** Minimal hard-coded scenario; scripted inputs fly to DA.
+- [x] **T11 Headless KCFO vectors-to-final run.** Minimal hard-coded scenario; scripted inputs fly to DA.
   - Acceptance: at DA, LOC and GS within ½ scale.
   - Files: `tests/integration/kcfo-vectors.test.ts`
 
