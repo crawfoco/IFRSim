@@ -83,6 +83,23 @@ No other network use.
 encoding for the other airports (M6 data part) are independent and can proceed
 side by side. Scoring (M5) needs the procedure model (M4).
 
+## Subagent use
+
+Default: the main session does the work. Subagents are used only where an
+independent read or real parallelism adds accuracy or saves time, with at most
+1–3 running at once. They run on the same model and service as the main session,
+so they add no new destination for project data.
+
+| Use | Tasks | How |
+|---|---|---|
+| **Chart verification** | T16, T23, T24, T26, T27, T28 | A subagent gets **only the chart image and the encoding checklist** (not my JSON) and returns its own reading of every value: frequencies, courses, altitudes, DME distances, minimums, missed approach. The main session compares it field by field with the JSON; every mismatch is resolved against the plate before the task is done. |
+| **Fresh-eyes review** | End of M2 (T08–T09), end of M5 (T20–T21), T32 | A reviewer gets the code, SPEC.md and the relevant tests, but not the reasoning behind them. It looks for aviation-logic errors (to/from, hold-entry sectors, PT geometry, scoring false positives) and correctness bugs. Findings are checked before they are acted on. |
+| **Research** | T03 | A subagent reads the FAA NASR/CIFP documentation and returns only the record layouts we need (navaids, fixes, ILS, runways, magvar). |
+| **Parallel build** | T12–T13 alongside the data half of T23–T28 | After M2, the instrument/panel UI and the encoding of the remaining approaches run in **separate git worktrees** (no shared files). Branches are merged in the main session at the M3 and M6 checkpoints, with all tests run after each merge. |
+
+Not delegated: the sequential test-first core (T05–T11), scoring rules (T21), and
+any task that is only a few edits.
+
 ## Risks and mitigations
 
 | Risk | Impact | Mitigation |
