@@ -1,0 +1,204 @@
+{
+  "id": "ksny-vor13",
+  "airport": "KSNY",
+  "runway": "13",
+  "name": "VOR/DME RWY 13",
+  "chart": {
+    "number": "AL-875",
+    "amendment": "Amdt 5D",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/ksny-vor13.png"
+  },
+  "navaids": ["SNY"],
+  "fixes": {
+    "SNY": {
+      "def": { "kind": "navaid", "navaid": "SNY" },
+      "faaId": "SNY",
+      "note": "On the field; feeder to CHAKO (R-310, 5 NM, 6200) and missed-approach holding fix"
+    },
+    "RIYOP": {
+      "def": { "kind": "radialDme", "navaid": "SNY", "radialMag": 78, "dmeNm": 11 },
+      "faaId": "RIYOP",
+      "note": "IAF, SNY R-078 at 11 DME"
+    },
+    "OGJUN": {
+      "def": { "kind": "radialDme", "navaid": "SNY", "radialMag": 202, "dmeNm": 11 },
+      "faaId": "OGJUN",
+      "note": "IAF, SNY R-202 at 11 DME"
+    },
+    "JUNAD": {
+      "def": { "kind": "radialDme", "navaid": "SNY", "radialMag": 310, "dmeNm": 11 },
+      "faaId": "JUNAD",
+      "note": "IF, SNY R-310 at 11 DME; end of both SNY 11 DME arcs"
+    },
+    "CHAKO": {
+      "def": { "kind": "radialDme", "navaid": "SNY", "radialMag": 310, "dmeNm": 5 },
+      "faaId": "CHAKO",
+      "note": "IAF and FAF, SNY 5 DME"
+    },
+    "SNY 1.9": {
+      "def": { "kind": "radialDme", "navaid": "SNY", "radialMag": 310, "dmeNm": 1.9 },
+      "note": "VDP, SNY 1.9 DME"
+    },
+    "JIKUT": {
+      "def": { "kind": "radialDme", "navaid": "SNY", "radialMag": 310, "dmeNm": 0.8 },
+      "faaId": "JIKUT",
+      "note": "Missed approach point, SNY 0.8 DME (runway 13 threshold)"
+    },
+    "RW13": { "def": { "kind": "threshold" } }
+  },
+  "transitions": [
+    {
+      "id": "sny-pt",
+      "name": "From SNY on R-310, procedure turn at CHAKO",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "CHAKO",
+          "course": { "navaid": "SNY", "courseMag": 310, "toFrom": "FROM" },
+          "minAltFt": 6200
+        },
+        {
+          "type": "procedureTurn",
+          "fix": "CHAKO",
+          "course": { "navaid": "SNY", "courseMag": 130, "toFrom": "TO" },
+          "outboundCourseMag": 310,
+          "barbHeadingMag": 265,
+          "inboundCourseMag": 130,
+          "side": "L",
+          "maxDistanceNm": 10,
+          "minAltFt": 6200
+        }
+      ]
+    },
+    {
+      "id": "riyop-arc",
+      "name": "SNY 11 DME arc from RIYOP via JUNAD",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "arc",
+          "to": "JUNAD",
+          "navaid": "SNY",
+          "radiusNm": 11,
+          "fromRadialMag": 78,
+          "toRadialMag": 310,
+          "turn": "L",
+          "minAltFt": 6200
+        },
+        {
+          "type": "track",
+          "to": "CHAKO",
+          "course": { "navaid": "SNY", "courseMag": 130, "toFrom": "TO" },
+          "minAltFt": 5800
+        }
+      ]
+    },
+    {
+      "id": "ogjun-arc",
+      "name": "SNY 11 DME arc from OGJUN via JUNAD",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "arc",
+          "to": "JUNAD",
+          "navaid": "SNY",
+          "radiusNm": 11,
+          "fromRadialMag": 202,
+          "toRadialMag": 310,
+          "turn": "R",
+          "minAltFt": 6200
+        },
+        {
+          "type": "track",
+          "to": "CHAKO",
+          "course": { "navaid": "SNY", "courseMag": 130, "toFrom": "TO" },
+          "minAltFt": 5800
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "final",
+      "faf": "CHAKO",
+      "course": { "navaid": "SNY", "courseMag": 130, "toFrom": "TO" },
+      "fafAltFt": 5800,
+      "stepDowns": [],
+      "vdp": "SNY 1.9",
+      "map": { "fix": "JIKUT" }
+    }
+  ],
+  "missed": [
+    { "type": "climb", "toAltFt": 6200 },
+    { "type": "direct", "to": "SNY" },
+    {
+      "type": "hold",
+      "fix": "SNY",
+      "inboundCourseMag": 130,
+      "course": { "navaid": "SNY", "courseMag": 130, "toFrom": "TO" },
+      "turn": "R",
+      "legMinutes": 1,
+      "minAltFt": 6200
+    }
+  ],
+  "missedText": "Climb to 6200 then right turn direct SNY VOR/DME and hold.",
+  "minimums": [
+    {
+      "kind": "VOR",
+      "label": "S-13",
+      "A": { "altFt": 4700, "visibilitySm": 1 },
+      "B": { "altFt": 4700, "visibilitySm": 1 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "riyop-arc",
+      "name": "Inbound on SNY R-078, 11 DME arc from RIYOP",
+      "clearance": "Proceed inbound on the Sidney 078 radial, cross RIYOP at or above 6200, cleared VOR/DME runway 13 approach.",
+      "position": { "kind": "radialDme", "navaid": "SNY", "radialMag": 78, "dmeNm": 16 },
+      "altitudeFt": 7000,
+      "headingMag": 258,
+      "iasKt": 100,
+      "transition": "riyop-arc",
+      "nav1MHz": 115.9,
+      "nav2MHz": 114.4
+    },
+    {
+      "id": "ogjun-arc",
+      "name": "Inbound on SNY R-202, 11 DME arc from OGJUN",
+      "clearance": "Proceed inbound on the Sidney 202 radial, cross OGJUN at or above 6200, cleared VOR/DME runway 13 approach.",
+      "position": { "kind": "radialDme", "navaid": "SNY", "radialMag": 202, "dmeNm": 16 },
+      "altitudeFt": 7000,
+      "headingMag": 22,
+      "iasKt": 100,
+      "transition": "ogjun-arc",
+      "nav1MHz": 114.4,
+      "nav2MHz": 114.4
+    },
+    {
+      "id": "direct-sny",
+      "name": "Direct SNY, R-310 outbound and procedure turn at CHAKO",
+      "clearance": "Proceed direct Sidney, cross Sidney at or above 6200, cleared VOR/DME runway 13 approach.",
+      "position": { "kind": "radialDme", "navaid": "SNY", "radialMag": 140, "dmeNm": 10 },
+      "altitudeFt": 7000,
+      "headingMag": 320,
+      "iasKt": 100,
+      "transition": "sny-pt",
+      "nav1MHz": 114.4,
+      "nav2MHz": 114.4
+    }
+  ],
+  "notes": [
+    "SNY VOR/DME is on the field; final approach course 130° inbound.",
+    "MAP at JIKUT (SNY 0.8 DME). VDP at SNY 1.9 DME.",
+    "Procedure turn at CHAKO: outbound on SNY R-310, remain within 10 NM, 6200.",
+    "Descent angle 3.25°/TCH 44. VGSI and descent angles not coincident (VGSI angle 3.00/TCH 45).",
+    "VDP NA when using IBM altimeter setting.",
+    "When local altimeter setting not received, use IBM altimeter setting and increase all MDAs 160 feet and S-13 visibility Cat C 1/2 SM, S-13 visibility Cat D 3/8 SM, and circling visibility Cats C/D 1/2 SM.",
+    "MSA SNY 25 NM: 6300.",
+    "Non-standard takeoff minimums and alternate minimums published."
+  ]
+}
