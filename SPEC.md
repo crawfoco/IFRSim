@@ -30,7 +30,8 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
    - The approach list shows each procedure by airport, name and chart cycle.
    - Start conditions are defined per procedure (e.g. "over FQF VOR, heading 360,
      8000 ft, cleared ILS 26 via the FQF R-045 feeder"; "radar vectors to final";
-     "arriving on the GLL 17.5 DME arc").
+     "arriving on the GLL 17.5 DME arc"). Starts that fly to an initial fix begin
+     about 5 NM before it, so the learner has time to set up.
    - The briefing shows the clearance text, the reported weather (a ceiling and
      visibility range around minimums, and the cloud tops) and whether the
      glideslope is in service. The actual weather is picked at random when the
@@ -59,12 +60,15 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
    - Generic panel (not a replica of any brand) with AP on/off, HDG, NAV, APR, ALT,
      VS, and knobs for heading bug, course, altitude preselect and vertical-speed
      target.
+   - NAV/APR use the HSI course pointer (CRS) as the course datum, also on a
+     localizer, as an HSI-coupled autopilot does: the learner must set CRS to the
+     localizer course. The HSI shows reverse sensing with CRS on the reciprocal.
    - Mode logic includes **armed vs. active** states: NAV/APR arm and then capture
      when the needle comes alive; GS arms in APR and captures from below; ALT
      preselect captures and levels off. The mode annunciator shows lateral and
      vertical modes, active and armed.
-   - Power selector for target airspeed (90–120 KIAS, default 100). Speed
-     determines the approach category used for minimums (A ≤ 90, B 91–120).
+   - Power selector for target airspeed (80–110 KIAS, default 100). Speed
+     determines the approach category used for minimums (A ≤ 90, B 91–110).
 
 4. **Fly the whole procedure.**
    *As a learner, I want to fly feeder routes, DME arcs, holds, the final approach
@@ -97,15 +101,20 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
 
 5. **Debrief and score.**
    *As a learner, I want an objective debrief so that I know what I did wrong.*
-   - Debrief shows the flown track over a plan view of the procedure, an altitude
-     profile against the chart profile, and a timeline of events.
+   - Debrief shows the flown track over a plan view of the procedure (or the
+     plate), an altitude profile over time, a final-approach profile against
+     distance with the chart's descent path, and a timeline of events.
    - Scored items, each with pass/fail and the measured value:
      - descended below a segment's minimum altitude (by more than 100 ft);
-     - wrong or missed navaid tuning/identification before use;
+     - wrong or missed navaid tuning/identification before use, or the navaid
+       not tuned for more than 10 s while a leg depends on it;
      - fixes flown out of order or skipped;
      - localizer deviation more than half scale inside the FAF;
      - glideslope deviation more than half scale inside the FAF (ILS only);
      - hold entry type matches the correct entry for the arrival heading;
+     - hold outbound legs timed to the charted leg time (±15 s);
+     - not more than 100 ft above a hold's maximum altitude;
+     - climb-in-hold: at the charted altitude by the end of the hold circuit;
      - procedure turn flown on the correct side, within the charted distance,
        and not below its minimum altitude;
      - DME read from the wrong source (e.g. KMTJ: DME on the localizer instead
@@ -121,7 +130,8 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
 6. **Control time.**
    *As a learner, I want to pause and speed up time so that long legs don't waste
    my practice time.*
-   - Pause, 1×, 2× and 4× simulation speed. Restart the scenario.
+   - Pause, 1×, 2× and 4× simulation speed. Restart the scenario (with new
+     hidden weather).
 
 ### Non-goals (V1)
 See **Out of Scope** below.

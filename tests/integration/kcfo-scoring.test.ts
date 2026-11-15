@@ -33,7 +33,7 @@ export interface FeederOptions {
 export function flyFeederAndHold(f: Flight, o: FeederOptions = {}) {
   const identify = o.identify ?? true;
   f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
-  f.send({ type: 'headingBug', deg: 75 }, { type: 'altPreselect', ft: 8000 }); // 30° cut
+  f.send({ type: 'headingBug', deg: 360 }, { type: 'altPreselect', ft: 8000 });
   f.wait(0.1);
   f.send({ type: 'button', button: 'ALT' });
   // NAV1 stays on FQF (already tuned): identify it and set the radial. NAV2 → I-FTG for DME.
@@ -44,6 +44,9 @@ export function flyFeederAndHold(f: Flight, o: FeederOptions = {}) {
   f.wait(0.1);
   if (identify) f.send({ type: 'ident', radio: 2 });
   f.send({ type: 'standby', radio: 1, mhz: 109.3 });
+  // The start is 5 NM south of FQF: cross it, then a 30° cut onto R-045.
+  f.crossFix('FQF', 1.0, 600);
+  f.send({ type: 'headingBug', deg: 75 });
   f.wait(20);
   f.send({ type: 'button', button: 'NAV' });
   if (o.feederAltFt !== undefined) {
@@ -61,7 +64,7 @@ export function flyFeederAndHold(f: Flight, o: FeederOptions = {}) {
   }
   // Down to 7200 on the outbound leg, so the glideslope is intercepted from below.
   f.descendOrClimb(7200, -500);
-  f.wait(90);
+  f.wait(60);
   if (o.entry === 'teardrop')
     f.turn(353, 263, 223); // teardrop: turn back in the holding direction
   // Parallel: turn back toward the holding side (right, through south), intercept at 40°.
@@ -83,6 +86,8 @@ describe('KCFO ILS 26 scoring', () => {
       'fix-order',
       'segment-minimums',
       'hold-entry:SKIPI:1',
+      'hold-timing:SKIPI:1',
+      'hold-max-altitude:SKIPI:1',
       'final-course',
       'glideslope',
       'decision',
@@ -152,6 +157,7 @@ function flyMissed(f: Flight, turn: 'L' | 'R' = 'L') {
   expect(f.progress.phase).toBe('missed');
   f.send({ type: 'button', button: 'HDG' }, { type: 'headingBug', deg: 263 });
   expect(f.until(() => f.alt >= 6100, 120)).toBe(true);
+  f.tune(2, 109.3); // keep I-FTG on NAV2 for the hold at SKIPI
   f.tune(1, 116.3, 45);
   if (turn === 'R') {
     f.turn(350, 80); // the wrong way round: joins R-045 beyond SKIPI
@@ -185,6 +191,8 @@ describe('KCFO bad runs on the final and the missed approach', () => {
       'fix-order',
       'segment-minimums',
       'hold-entry:SKIPI:4',
+      'hold-timing:SKIPI:4',
+      'hold-max-altitude:SKIPI:4',
       'final-course',
       'glideslope',
       'decision',
@@ -271,7 +279,7 @@ describe('KCFO regressions from the M5 review', () => {
     const f = new Flight(scenario({}));
     f.send({ type: 'speed', kt: 90 });
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
-    f.send({ type: 'headingBug', deg: 75 }, { type: 'altPreselect', ft: 8000 });
+    f.send({ type: 'headingBug', deg: 360 }, { type: 'altPreselect', ft: 8000 });
     f.wait(0.1);
     f.send({ type: 'button', button: 'ALT' }, { type: 'course', radio: 1, deg: 45 });
     f.send({ type: 'ident', radio: 1 });
@@ -279,6 +287,8 @@ describe('KCFO regressions from the M5 review', () => {
     f.send({ type: 'dmeSource', radio: 2 }, { type: 'standby', radio: 1, mhz: 109.3 });
     f.wait(0.1);
     f.send({ type: 'ident', radio: 2 });
+    f.crossFix('FQF', 1.0, 600);
+    f.send({ type: 'headingBug', deg: 75 });
     f.wait(20);
     f.send({ type: 'button', button: 'NAV' });
     f.crossFix('SKIPI', 1.0, 900);

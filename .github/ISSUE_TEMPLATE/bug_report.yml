@@ -1,0 +1,40 @@
+name: Bug report
+description: Something in the app is broken or behaves wrongly.
+labels: [bug]
+body:
+  - type: input
+    id: approach
+    attributes:
+      label: Approach and start condition
+      placeholder: e.g. KCFO ILS 26, vectors to final
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Select ...
+        2. Arm APR ...
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: e.g. Chrome 131 on Windows, Safari on iPad
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag images here if you have them.

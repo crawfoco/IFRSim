@@ -61,6 +61,9 @@ describe('building a scenario', () => {
     expect(b.minimums).toMatch(/S-LOC 26, category B at 100 KIAS: MDA 5,900 ft/);
     expect(b.missedApproach).toMatch(/^Climb to 6100/);
     expect(b.notes).toContain('DME required.');
+    expect(b.hints).toEqual([
+      expect.stringMatching(/^Set the HSI course \(CRS\) to the localizer course, 263°/),
+    ]);
   });
 });
 
@@ -196,5 +199,19 @@ describe('scenario end conditions (KCFO)', () => {
     expect(f.progress.phase).toBe('missed');
     lap([173, 83]); // left turn outbound from the fix
     expect(f.progress).toMatchObject({ phase: 'ended', outcome: 'missedComplete' });
+  });
+});
+
+describe('briefing hints', () => {
+  it('KAKO: the MAP is identified by DME; the timing table is a backup', async () => {
+    const { procedureById, NAVDATA } = await import('../../../src/procedures');
+    const b = briefing(
+      buildScenario(procedureById('kako-vor29')!, NAVDATA, {
+        startId: 'direct-ako',
+        ceiling: 'above',
+        gsOutOfService: false,
+      }),
+    );
+    expect(b.hints).toEqual([expect.stringMatching(/MAP by DME \(AKO 1\.7\)/)]);
   });
 });

@@ -58,7 +58,7 @@ describe('KCFO start conditions', () => {
   const ctx = { navdata: nav, procedure: p };
   const pos = (id: string) => resolveFixDef(p.starts.find((s) => s.id === id)!.position, ctx);
 
-  it('over FQF: the VOR is directly below (flagged)', () => {
+  it('over-fqf start fix: over FQF the VOR is directly below (flagged)', () => {
     const r = readNav(W, 116.3, 45, { position: pos('over-fqf'), altitudeFt: 8000 });
     expect(r.indication!.flag).toBe(true);
   });

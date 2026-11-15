@@ -2,8 +2,8 @@
 
 Date: 2026-11-14.
 
-**Commands:** `npm test` (431 tests), `npm run typecheck`, `npm run lint` and
-`npm run test:e2e` (7 tests) all pass. `src/sim` line coverage is about 99%.
+**Commands:** `npm test` (473 tests), `npm run typecheck`, `npm run lint` and
+`npm run test:e2e` (8 tests, including a Firefox performance run) all pass. `src/sim` line coverage is about 99%.
 
 **Independent review:** a fresh-eyes review checked the implementation against every
 SPEC.md acceptance and success criterion. It flew every start condition in scratch
@@ -14,32 +14,19 @@ acceptance").
 
 | # | Criterion | Result | Evidence |
 |---|---|---|---|
-| 1 | Every start condition of all six procedures can be flown to DA/MDA, or through the missed approach to the holding fix, with only the panel, radios and instruments | **Met**, with 11 starts not yet in the repo's tests (see below) | All 20 starts were flown in the review. Integration tests in `tests/integration/` fly 9 starts end to end |
+| 1 | Every start condition of all six procedures can be flown to DA/MDA, or through the missed approach to the holding fix, with only the panel, radios and instruments | **Met** | Repo tests fly all 21 starts end to end, several through the missed approach and one hold circuit (see below) |
 | 2 | Needles, flags and DME agree with golden geometry to ±0.1° (VOR/LOC), ±0.02° (GS) and ±0.05 NM (DME) | **Met** | `tests/sim/nav/{vor,loc,gs,dme}.test.ts` use 0.1° / 0.02° / 0.002 NM. Chart-fix golden tests (`tests/procedures/*`) allow up to 0.5° and 0.1 NM where the chart rounds radials and DME |
 | 3 | Scripted perfect runs score 100%; each wrong run loses points on exactly the expected rule | **Met** | Perfect runs for all six procedures. Bad runs cover these rules: ident, DME source, fix order (two kinds), segment minimum (feeder, arc, step-down), hold entry, procedure-turn side, LOC and GS deviation, below DA, missed-approach turn, and a late climb past the MAP |
 | 4 | Deterministic: same scenario and inputs, same track within 1e-9 | **Met** | `tests/sim/loop.test.ts` (replay) |
-| 5 | ≥ 60 fps in Chrome, Edge and Firefox; the sim keeps up at 4× | **Met in Chromium; Firefox not measured** | `e2e/layout-performance.spec.ts`: 60.1 fps, worst frame 16.8 ms, 80.1 steps/s at 4× (80 needed). Edge uses the same engine. Firefox needs a manual check (Playwright's Firefox is not installed here) |
+| 5 | ≥ 60 fps in Chrome, Edge and Firefox; the sim keeps up at 4× | **Met** in headless runs, Chromium and Firefox | `e2e/layout-performance.spec.ts` (80 steps/s needed at 4×). Chromium: 60.1 fps, worst frame 16.8 ms, 80.1 steps/s. Edge uses the same engine. Firefox 159 (Playwright project `firefox-perf`): 59.6–60.2 fps, worst frame 17.4 ms (one run 32.9 ms), 79.9–80.3 steps/s. Headless Firefox is not tied to a display refresh: left alone it ran at about 85 frames/s, so the project sets `layout.frame_rate` to 60 to stand in for a 60 Hz display. Headed Firefox on this machine's 120 Hz display ran at 102–106 fps |
 | 6 | Static `dist/` that runs with no network after loading | **Met** | `e2e/offline.spec.ts`: no external requests are made. With the network cut after loading, all six plates still open (they are preloaded) and a fly → debrief cycle works |
 | 7 | All four commands pass | **Met** | See above |
 
 ### Starts flown by repo tests
 
-- KCFO: `over-fqf`, `vectors-final`
-- KGXY: `wavdi-arc` (and `over-gll` in a bad run)
-- KMTJ: `vectors-final`, `over-mtj`
-- KAKO: `direct-ako`
-- KLAR: `direct-lar`
-- KSNY: `riyop-arc`
-
-The review flew the other 11 starts in scratch scripts, and all reached DA/MDA at 100%:
-- KCFO `join-feeder`
-- KGXY `over-gll`, `vectors-final`
-- KMTJ `haqhy`, `pagre-arc`
-- KAKO `north-arc`, `south-arc`
-- KLAR `povoh-arc`, `flems`
-- KSNY `ogjun-arc`, `direct-sny`
-
-Moving those scripts into `tests/integration/` would lock this in.
+All 21 start conditions, including the new KCFO `direct-skipi`, are flown by repo tests.
+Most score 100%; the rest are deliberate bad runs. The tests are in `tests/integration/`
+(including `starts-*.test.ts`) and `tests/sim/scenario/starts.test.ts`.
 
 ## User stories
 
@@ -61,16 +48,23 @@ Moving those scripts into `tests/integration/` would lock this in.
 - **The MAP is no longer announced.** On a non-precision approach the learner identifies the MAP. The missed-approach item now fails when the climb starts more than 0.5 NM past it. When the weather was good, there is still a callout if the aircraft passes the MAP too high to land.
 - **The KMTJ procedure turn at BRUUK could not be flown** (the localizer flagged beyond 18 NM). The expanded service volume now applies to localizers too, set to 25 NM for I-MTJ. A scripted run scores 100%.
 
-## Open gaps: decisions for V1 or later
+## Open gaps: decided by the user (2026-11-14)
 
-1. **Hold leg timing is not scored.** The SPEC says missed-approach hold entry and leg timing are scored. Entry is scored; outbound leg time (about 1 minute) is not.
-2. **KAKO timing-table MAP.** The table is encoded but not used: the MAP is identified by DME (AKO 1.7). A learner can fly the timing with the stopwatch, but it is not checked.
-3. **No start condition makes a direct hold entry the correct one.** All arrivals at SKIPI, WELDS and the missed-approach holds call for parallel or teardrop. A start that arrives from the holding side would let learners practise direct entries.
-4. **The debrief profile is altitude against time**, with the minimum altitude in force at each moment. The SPEC's "against the chart profile" suggests distance on the x-axis with the descent path.
-5. **The tuning rule checks for an identification before use**, not that the station is still tuned while the leg is flown.
-6. **Not scored:** hold maximum altitudes (`maxAltFt`, e.g. 8000 at SKIPI) and climb-in-hold completion.
-7. **Firefox performance** needs a manual check.
-8. **The plate is not shown on the debrief screen.** The plan view is.
+1. **Hold leg timing:** now scored. Each outbound leg must be 1 min ±15 s, timed from wings level outbound (or abeam the fix) to the turn back (`hold-timing`).
+2. **KAKO timing-table MAP:** kept as DME only. The briefing says the timing table is a backup.
+3. **Direct hold entry:** new start, KCFO `direct-skipi`. It joins the route at SKIPI from the north, where a direct entry is correct.
+4. **Debrief profile:** the time profile stays. A final-approach profile, altitude against distance to the threshold, now shows the FAF, step-downs, the glideslope or descent angle, DA/MDA, VDP and MAP.
+5. **Tuning rule:** the navaid must also stay tuned. More than 10 s untuned while a leg depends on it fails. Re-tuning early for the next leg, on the same radio, is allowed.
+6. **Hold altitudes:** now scored. One item fails when the aircraft is more than 100 ft above a hold's maximum (`hold-max-altitude`). Another fails when it hasn't reached the climb-in-hold altitude by the end of the circuit (`climb-in-hold`).
+7. **Firefox performance:** measured with Playwright's Firefox, as a headless run held at 60 Hz (see criterion 5). It has not been checked by eye on a real 60 Hz display.
+8. **Plate on the debrief:** a Plan / Plate toggle.
+
+Other changes the user asked for at the same time:
+- The autopilot holds the HSI course (CRS) on a localizer, and the briefing tells the learner to set it.
+- Restart picks new hidden weather.
+- The power selector covers 80–110 KIAS. Category A and B minimums are the same on all six plates.
+- Starts that began over their initial fix now begin 5 NM before it.
+- Every start condition is flown by a repo integration test.
 
 ## After acceptance: the decision at minimums (2026-11-14)
 

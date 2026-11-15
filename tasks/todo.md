@@ -14,14 +14,19 @@ performance needs a manual check. Open gaps are listed there for the user to dec
 |---|---|---|
 | M0–M6 | ✅ committed | through `b712099` |
 | M7 (T29–T32) | ✅ committed | moving map; tablet layout and measured performance; offline e2e; V1 acceptance with a fresh-eyes review (5 bugs fixed, KMTJ PT made flyable) |
-| Decision at minimums | ✅ committed | User request after V1: weather hidden and random, GA (TOGA) button, out-the-window view, `decision` score item replaces `below-minimums`. See SPEC story 4 |
+| Decision at minimums | ✅ committed (`1bee895`) | User request after V1: weather hidden and random, GA (TOGA) button, out-the-window view, `decision` score item replaces `below-minimums`. See SPEC story 4 |
 
-**Last verified:** 438 unit and integration tests and 7 e2e tests pass. Typecheck and lint
+| Open-gap decisions + follow-ups | ✅ built, not committed | AP holds the HSI CRS on a localizer, plus briefing hints; Restart picks new weather; 80–110 KIAS; starts 5 NM before their fix; hold timing, max altitude and climb-in-hold scored; stay-tuned rule; `direct-skipi` start; final-approach profile and plate tab on the debrief; all 21 starts tested; Firefox perf e2e. See docs/v1-acceptance.md |
+
+**Last verified:** 473 unit and integration tests and 8 e2e tests (Chromium, plus Firefox performance) pass. Typecheck and lint
 are clean. Performance: 60.1 fps, and 80.1 steps/s at 4×.
 
-**Open question from the user's test flight:** "reverse sensing on the HSI during an ILS".
-It could not be reproduced: the needle senses correctly when the course is set to the
-localizer course. The user will send a screenshot from the next run.
+**HSI reverse sensing (user's test flight):** most likely CRS was not set to the localizer
+course. A real HSI behaves the same way. The autopilot now also holds the CRS, and the
+briefing tells the learner to set it. Still waiting for the user's screenshot to confirm.
+
+**Decided (user, 2026-11-15):** clearance crossing altitudes at an IAF ("cross HAQHY at or
+above 12000") are not scored. Only charted segment minimums are scored.
 
 **Next steps:**
 1. The user's checkpoint flight and debrief review.

@@ -13,6 +13,7 @@ import { decision, segmentMinimum, segmentMinimums } from './rules/altitude';
 import { finalCourse, glideslope } from './rules/course';
 import { movingMap } from './rules/map';
 import { dmeSource, tuneAndIdentify } from './rules/radios';
+import { climbInHold, holdMaxAltitude, holdTiming } from './rules/hold';
 import { holdEntry, noPtReversal, procedureTurn } from './rules/reversal';
 import { fixOrder, missedApproach } from './rules/sequence';
 import type { Rule, ScoreItem, StepContext } from './rules/types';
@@ -26,6 +27,9 @@ const RULES: Rule<unknown>[] = [
   fixOrder,
   segmentMinimums,
   holdEntry,
+  holdTiming,
+  holdMaxAltitude,
+  climbInHold,
   procedureTurn,
   finalCourse,
   glideslope,

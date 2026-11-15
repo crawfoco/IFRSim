@@ -39,7 +39,7 @@ export function Flight({
 }: {
   scenario: Scenario;
   onExit: () => void;
-  /** A new flight of the same scenario, with new hidden weather. */
+  /** A new flight of the same scenario, with new hidden weather (Restart and Fly again). */
   onFlyAgain: () => void;
   onDebrief: (log: readonly LoggedCommand[], endTick: number) => void;
 }) {
@@ -84,7 +84,12 @@ export function Flight({
               </button>
             ))}
           </div>
-          <button type="button" data-testid="restart" onClick={() => sim.restart()}>
+          <button
+            type="button"
+            data-testid="restart"
+            title="Start this approach again, with new hidden weather"
+            onClick={onFlyAgain}
+          >
             Restart
           </button>
           <button

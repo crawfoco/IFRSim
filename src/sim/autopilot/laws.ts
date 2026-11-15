@@ -23,6 +23,8 @@ export const GAINS = {
 } as const;
 
 const FT_PER_NM = 6076.115;
+/** Parallel capture: heading within this of the course direction (not the reciprocal). */
+const PARALLEL_CAPTURE_MAX_DEG = 45;
 
 /** Bank command to turn the shorter way onto a heading (exactly 180° turns right). */
 export function headingBank(headingTrueDeg: number, targetTrueDeg: number): number {
@@ -54,6 +56,9 @@ export function trackCommand(ind: NavInd, courseTrueDeg: number): number {
 /**
  * Capture when the needle is alive and the tracking law would ask for no more intercept
  * than the aircraft already has (plus a small margin), so the turn-on starts on time.
+ * Flying parallel to the course, or converging slowly or diverging, the turn-on point never
+ * comes: then capture once the needle is within half scale and the heading is within 45° of
+ * the course, and let the tracking law turn in (at most a 45° intercept).
  */
 export function lateralCaptureReady(
   ind: NavInd,
@@ -69,6 +74,8 @@ export function lateralCaptureReady(
   // Closure rate goes as sin(angle): a heading nearly opposite the course closes as slowly
   // as one nearly parallel to it, so fold angles past 90° back (180° closes at zero).
   const closing = Math.abs(angle) > 90 ? Math.sign(angle) * (180 - Math.abs(angle)) : angle;
+  const alongCourse = Math.abs(angle) <= PARALLEL_CAPTURE_MAX_DEG;
+  if (alongCourse && closing < 10 && Math.abs(ind.offsetDeg) <= fullScale / 2) return true;
   return GAINS.interceptDegPerNm * Math.abs(xtk) <= Math.max(closing, 0) + 5;
 }
 

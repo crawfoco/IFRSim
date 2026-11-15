@@ -168,9 +168,10 @@
     },
     {
       "id": "over-gll",
-      "name": "Over GLL, via the R-177 feeder and the WELDS hold-in-lieu",
+      "name": "Inbound to GLL from the north, via the R-177 feeder and the WELDS hold-in-lieu",
       "clearance": "Cross Gill at or above 8000, cleared ILS runway 35 approach via the Gill 177 radial.",
       "position": { "kind": "navaid", "navaid": "GLL" },
+      "leadInNm": 5,
       "altitudeFt": 8000,
       "headingMag": 180,
       "iasKt": 100,

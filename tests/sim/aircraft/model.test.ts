@@ -44,7 +44,7 @@ describe('true airspeed', () => {
 });
 
 describe('turns', () => {
-  it.each([90, 100, 120])('a standard-rate 360° turn at %s KIAS takes 120 s ±2 s', (ias) => {
+  it.each([80, 100, 110])('a standard-rate 360° turn at %s KIAS takes 120 s ±2 s', (ias) => {
     let s = level({ iasKt: ias });
     const bank = standardRateBankDeg(tasKt(ias, s.altitudeFt));
     let turned = 0;
@@ -102,11 +102,11 @@ describe('vertical speed', () => {
 });
 
 describe('airspeed', () => {
-  it('changes at 2 kt/s and holds the power selector range 90–120 KIAS', () => {
-    const s10 = run(level(), { ...hold(level()), iasCmdKt: 120 }, 5);
+  it('changes at 2 kt/s and holds the power selector range 80–110 KIAS', () => {
+    const s10 = run(level(), { ...hold(level()), iasCmdKt: 110 }, 5);
     expect(s10.iasKt).toBeCloseTo(110, 6);
-    expect(run(level(), { ...hold(level()), iasCmdKt: 150 }, 60).iasKt).toBe(120);
-    expect(run(level(), { ...hold(level()), iasCmdKt: 50 }, 60).iasKt).toBe(90);
+    expect(run(level(), { ...hold(level()), iasCmdKt: 150 }, 60).iasKt).toBe(110);
+    expect(run(level(), { ...hold(level()), iasCmdKt: 50 }, 60).iasKt).toBe(80);
   });
 });
 

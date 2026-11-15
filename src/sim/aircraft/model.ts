@@ -31,8 +31,8 @@ export const LIMITS = {
   vsMinFpm: -1500,
   vsMaxFpm: 1000,
   vsAccelFpmPerS: 250,
-  iasMinKt: 90,
-  iasMaxKt: 120,
+  iasMinKt: 80,
+  iasMaxKt: 110,
   iasRateKtPerS: 2,
 } as const;
 

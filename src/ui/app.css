@@ -423,3 +423,12 @@ body {
   font-size: 13px;
   color: var(--muted);
 }
+
+.brief-hints {
+  margin: 6px 0 0;
+  padding: 6px 10px 6px 26px;
+  font-size: 13px;
+  border-left: 3px solid #2ec4f0;
+  background: #2ec4f014;
+  border-radius: 4px;
+}

@@ -12,7 +12,12 @@ describe('procedure schema', () => {
     const p = parseProcedure(kcfo);
     expect(p.id).toBe('kcfo-ils26');
     expect(p.transitions[0]!.noPT).toBe(false);
-    expect(p.starts.map((s) => s.id)).toEqual(['over-fqf', 'join-feeder', 'vectors-final']);
+    expect(p.starts.map((s) => s.id)).toEqual([
+      'over-fqf',
+      'join-feeder',
+      'direct-skipi',
+      'vectors-final',
+    ]);
   });
 
   it('rejects an unknown leg type with the path to it', () => {

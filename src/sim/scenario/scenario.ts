@@ -9,7 +9,8 @@
  */
 import { courseTrueDeg, resolveFixDef, resolveFixes, runwayEndFor } from '../../procedures/resolve';
 import type { Leg, Minimums, Procedure, Start } from '../../procedures/schema';
-import type { LatLon } from '../geo/geodesy';
+import { magToTrue, reciprocal } from '../geo/angles';
+import { destination, type LatLon } from '../geo/geodesy';
 import { initialState } from '../loop';
 import type { NavData } from '../navdata/types';
 import type { SimState } from '../state';
@@ -58,7 +59,7 @@ export interface Scenario {
 }
 
 export type Category = 'A' | 'B';
-/** Approach category from the target airspeed (SPEC: A ≤ 90 KIAS, B 91–120). */
+/** Approach category from the target airspeed (SPEC: A ≤ 90 KIAS, B 91–110). */
 export const categoryFor = (iasKt: number): Category => (iasKt <= 90 ? 'A' : 'B');
 
 export interface ActiveMinimums {
@@ -155,9 +156,18 @@ export function buildScenario(
   });
   const rwy = runwayEndFor(navdata, procedure.airport, procedure.runway);
   const thresholdElevationFt = rwy.displacedThreshold?.elevationFt ?? rwy.elevationFt;
+  // A lead-in starts the aircraft short of the start fix, on the reciprocal of its heading.
+  const startFix = resolveFixDef(start.position, { navdata, procedure });
+  const startPosition = start.leadInNm
+    ? destination(
+        startFix,
+        magToTrue(reciprocal(start.headingMag), airport.magVarEastDeg),
+        start.leadInNm,
+      )
+    : startFix;
   const initial = initialState(
     {
-      position: resolveFixDef(start.position, { navdata, procedure }),
+      position: startPosition,
       altitudeFt: start.altitudeFt,
       headingMagDeg: start.headingMag,
       iasKt: start.iasKt,
@@ -209,6 +219,8 @@ export interface Briefing {
   glideslope: string;
   minimums: string;
   missedApproach: string;
+  /** Trainer hints: how to set up this approach in the sim. */
+  hints: string[];
   notes: string[];
 }
 
@@ -228,6 +240,24 @@ export function briefing(sc: Scenario): Briefing {
         : 'Glideslope in service.',
     minimums: `${min.label}, category ${min.category} at ${sc.start.iasKt} KIAS: ${min.kind} ${min.altFt.toLocaleString('en-US')} ft, visibility ${fmtVis(min.visibilitySm)} SM`,
     missedApproach: p.missedText,
+    hints: briefingHints(sc),
     notes: p.notes,
   };
+}
+
+function briefingHints(sc: Scenario): string[] {
+  const hints: string[] = [];
+  const course = sc.final.course;
+  if ('loc' in course) {
+    const loc = sc.world.navdata.localizers[course.loc];
+    if (loc)
+      hints.push(
+        `Set the HSI course (CRS) to the localizer course, ${String(Math.round(loc.courseMagDeg)).padStart(3, '0')}°. The autopilot holds the course you set, and the HSI shows reverse sensing if it is set to the reciprocal.`,
+      );
+  }
+  if (sc.final.map.timing)
+    hints.push(
+      `This trainer identifies the MAP by DME (${sc.final.map.fix}). The chart's timing table is a backup.`,
+    );
+  return hints;
 }

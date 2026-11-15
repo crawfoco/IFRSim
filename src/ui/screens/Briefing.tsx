@@ -36,6 +36,13 @@ export function BriefingCard({ scenario, compact }: { scenario: Scenario; compac
         <dt>Missed approach</dt>
         <dd>{b.missedApproach}</dd>
       </dl>
+      {b.hints.length > 0 && (
+        <ul className="brief-hints" data-testid="brief-hints">
+          {b.hints.map((h) => (
+            <li key={h}>{h}</li>
+          ))}
+        </ul>
+      )}
       {!compact && b.notes.length > 0 && (
         <ul className="brief-notes">
           {b.notes.map((n) => (

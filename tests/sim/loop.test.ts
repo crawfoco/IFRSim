@@ -47,9 +47,9 @@ describe('commands', () => {
     expect(apply({ type: 'altPreselect', ft: -500 }).panel.altPreselectFt).toBe(0);
   });
 
-  it('power selector holds 90–120 KIAS', () => {
-    expect(apply({ type: 'speed', kt: 150 }).panel.iasCmdKt).toBe(120);
-    expect(apply({ type: 'speed', kt: 80 }).panel.iasCmdKt).toBe(90);
+  it('power selector holds 80–110 KIAS', () => {
+    expect(apply({ type: 'speed', kt: 150 }).panel.iasCmdKt).toBe(110);
+    expect(apply({ type: 'speed', kt: 60 }).panel.iasCmdKt).toBe(80);
   });
 
   it('VS wheel works only in VS mode', () => {

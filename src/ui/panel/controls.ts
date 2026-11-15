@@ -63,5 +63,5 @@ export const frequencyKnob = (
   mhz: stepFrequency(s.radios[radio === 1 ? 'nav1' : 'nav2'].standbyMHz, part, steps),
 });
 
-/** Approach category from the power selector (SPEC: A ≤ 90 kt, B 91–120). */
+/** Approach category from the power selector (SPEC: A ≤ 90 kt, B 91–110). */
 export const approachCategory = (iasKt: number): 'A' | 'B' => (iasKt <= 90 ? 'A' : 'B');

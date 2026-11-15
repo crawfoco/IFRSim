@@ -27,12 +27,19 @@ export function modeContext(state: SimState, sensors: Sensors): ModeContext {
   };
 }
 
-/** True course the nav source defines: OBS on a VOR (station declination), the LOC course on a localizer. */
+/**
+ * Course datum for NAV/APR: the HSI course pointer (NAV1's CRS), as on an HSI-coupled
+ * autopilot. On a VOR it is the selected radial (station declination). On a localizer the
+ * needle comes from the signal alone, but the autopilot still holds the CRS as its course:
+ * set a few degrees off, it tracks with a small offset; far off, it intercepts poorly or
+ * not at all; on the reciprocal it turns away. Setting CRS to the localizer course is the
+ * pilot's job.
+ */
 export function navCourseTrue(reading: NavReading, obsDegMag: number): number | null {
   const st = reading.station;
   if (!st) return null;
   if (st.kind === 'VOR') return magToTrue(obsDegMag, st.navaid.declinationEastDeg);
-  return magToTrue(st.loc.courseMagDeg, st.loc.magVarEastDeg);
+  return magToTrue(obsDegMag, st.loc.magVarEastDeg);
 }
 
 export function runAutopilot(

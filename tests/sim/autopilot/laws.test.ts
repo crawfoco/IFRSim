@@ -113,6 +113,7 @@ describe('localizer intercept and track (APR)', () => {
         altitudeFt: 8000,
         headingMagDeg: hdg,
         nav1MHz: 109.3,
+        obs1Deg: 263,
       },
       [...press('AP', 'HDG', 'ALT', 'APR'), { type: 'headingBug', deg: hdg }],
       KCFO,
@@ -123,6 +124,31 @@ describe('localizer intercept and track (APR)', () => {
     expect(Math.abs(final.offsetDeg)).toBeLessThan(0.1);
   });
 
+  it('the autopilot holds the HSI CRS: a mis-set course leaves an offset or never captures', () => {
+    const run = (obs: number) =>
+      interceptStats(
+        {
+          position: onLocalizer('I-FTG', 15, 6),
+          altitudeFt: 8000,
+          headingMagDeg: 293,
+          nav1MHz: 109.3,
+          obs1Deg: obs,
+        },
+        [...press('AP', 'HDG', 'ALT', 'APR'), { type: 'headingBug', deg: 293 }],
+        KCFO,
+        within(4, ftg.position),
+      );
+    const good = run(263);
+    const off = run(278); // 15° off: tracks with a steady offset
+    expect(Math.abs(good.final.offsetDeg)).toBeLessThan(0.1);
+    expect(off.captured).toBe(true);
+    expect(Math.abs(off.final.offsetDeg)).toBeGreaterThan(Math.abs(good.final.offsetDeg) + 0.05);
+    const reverse = run(83); // the reciprocal: never established on the localizer
+    expect(reverse.final.offsetDeg === undefined || Math.abs(reverse.final.offsetDeg) > 1).toBe(
+      true,
+    );
+  });
+
   it('a late 45° intercept close in (6 NM) still stays inside 1 dot', () => {
     const { overshoot, final } = interceptStats(
       {
@@ -130,6 +156,7 @@ describe('localizer intercept and track (APR)', () => {
         altitudeFt: 7500,
         headingMagDeg: 308,
         nav1MHz: 109.3,
+        obs1Deg: 263,
       },
       [...press('AP', 'HDG', 'ALT', 'APR'), { type: 'headingBug', deg: 308 }],
       KCFO,
@@ -227,7 +254,13 @@ describe('glideslope capture and track', () => {
     let capturedAt = -1;
     const gp = KCFO.glidePaths['I-FTG']!;
     const s = fly(
-      { position: onLocalizer('I-FTG', 11), altitudeFt: 7500, headingMagDeg: 263, nav1MHz: 109.3 },
+      {
+        position: onLocalizer('I-FTG', 11),
+        altitudeFt: 7500,
+        headingMagDeg: 263,
+        nav1MHz: 109.3,
+        obs1Deg: 263,
+      },
       [...press('AP', 'HDG', 'ALT', 'APR'), { type: 'headingBug', deg: 263 }],
       KCFO,
       (st) => distanceNm(st.aircraft.position, gp.gpi) < 1,
@@ -261,4 +294,41 @@ describe('capture timing (review regression)', () => {
       expect(lateralCaptureReady(ind, hdg(rel), course)).toBe(false);
     },
   );
+});
+
+describe('parallel capture', () => {
+  // GLL course 090 FROM. R-087 at 10 NM: course to the right, 3° (well inside half scale).
+  const gll = navaid('GLL');
+  const course = magToTrue(90, gll.declinationEastDeg);
+  const near = vorIndication({ position: onRadial('GLL', 87, 10), altitudeFt: 8000 }, gll, 90);
+  const far = vorIndication({ position: onRadial('GLL', 82, 10), altitudeFt: 8000 }, gll, 90);
+
+  it('parallel or diverging within half scale captures', () => {
+    expect(lateralCaptureReady(near, course, course)).toBe(true); // parallel
+    expect(lateralCaptureReady(near, course - 20, course)).toBe(true); // diverging
+    expect(lateralCaptureReady(near, course + 5, course)).toBe(true); // barely closing
+  });
+
+  it('beyond half scale, or on the reciprocal, it stays armed', () => {
+    expect(lateralCaptureReady(far, course, course)).toBe(false); // 8° off: beyond half scale
+    expect(lateralCaptureReady(near, course + 180, course)).toBe(false);
+    expect(lateralCaptureReady(near, course - 60, course)).toBe(false); // diverging steeply
+  });
+
+  it('APR armed flying parallel to the localizer, 0.8° off: captures and centres', () => {
+    const { captured, final } = interceptStats(
+      {
+        position: onLocalizer('I-FTG', 12, 0.8),
+        altitudeFt: 8000,
+        headingMagDeg: 263,
+        nav1MHz: 109.3,
+        obs1Deg: 263,
+      },
+      [...press('AP', 'HDG', 'ALT', 'APR'), { type: 'headingBug', deg: 263 }],
+      KCFO,
+      within(5, localizer('I-FTG').position),
+    );
+    expect(captured).toBe(true);
+    expect(Math.abs(final.offsetDeg)).toBeLessThan(0.1);
+  });
 });

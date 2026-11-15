@@ -109,9 +109,10 @@
   "starts": [
     {
       "id": "over-fqf",
-      "name": "Over FQF, via the R-045 feeder",
+      "name": "Inbound to FQF from the south, via the R-045 feeder",
       "clearance": "Cross FQF at or above 8000, cleared ILS runway 26 approach via the FQF 045 radial.",
       "position": { "kind": "navaid", "navaid": "FQF" },
+      "leadInNm": 5,
       "altitudeFt": 8000,
       "headingMag": 360,
       "iasKt": 100,
@@ -128,6 +129,20 @@
       "headingMag": 360,
       "iasKt": 100,
       "transition": "fqf",
+      "nav1MHz": 116.3,
+      "nav2MHz": 116.3
+    },
+    {
+      "id": "direct-skipi",
+      "name": "Direct SKIPI from the north, hold-in-lieu (direct entry)",
+      "clearance": "Proceed direct SKIPI, maintain 8000 until SKIPI, cleared ILS runway 26 approach.",
+      "position": { "kind": "locDme", "loc": "I-FTG", "dmeNm": 7 },
+      "leadInNm": 5,
+      "altitudeFt": 8000,
+      "headingMag": 180,
+      "iasKt": 100,
+      "transition": "fqf",
+      "joinAt": "SKIPI",
       "nav1MHz": 116.3,
       "nav2MHz": 116.3
     },

@@ -348,7 +348,7 @@
     },
     {
       "id": "flems",
-      "name": "Over FLEMS, heading 337° to join R-112",
+      "name": "Inbound to FLEMS on heading 337°, to join R-112",
       "clearance": "Cross FLEMS at or above 10600, cleared VOR/DME runway 30 approach.",
       "position": {
         "kind": "radialDme",
@@ -356,6 +356,7 @@
         "radialMag": 118.9,
         "dmeNm": 28.8
       },
+      "leadInNm": 5,
       "altitudeFt": 10600,
       "headingMag": 337,
       "iasKt": 100,

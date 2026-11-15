@@ -1,0 +1,30 @@
+name: Approach data error
+description: A frequency, course, altitude, fix or minimum doesn't match the chart.
+labels: [approach-data]
+body:
+  - type: input
+    id: procedure
+    attributes:
+      label: Procedure
+      placeholder: e.g. KLAR VOR/DME RWY 30
+    validations:
+      required: true
+  - type: input
+    id: cycle
+    attributes:
+      label: Chart amendment and FAA cycle you compared against
+      placeholder: e.g. Amdt 3, cycle 2026-10-29
+    validations:
+      required: true
+  - type: textarea
+    id: value
+    attributes:
+      label: What is wrong?
+      description: The item, the value IFRSim uses, and the value on the chart.
+      placeholder: 'ECECU minimum altitude: sim uses 9600, chart profile view shows 9700'
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else

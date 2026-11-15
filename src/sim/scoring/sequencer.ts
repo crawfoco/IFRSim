@@ -75,12 +75,24 @@ function legFix(leg: Leg): string | null {
   }
 }
 
+/** Transition legs from where the start joins it (`joinAt`), or all of them. */
+function joinTransition(legs: Leg[], joinAt: string | undefined): Leg[] {
+  if (!joinAt) return legs;
+  const reversal = legs.findIndex(
+    (l) => (l.type === 'hold' || l.type === 'procedureTurn') && legFix(l) === joinAt,
+  );
+  if (reversal >= 0) return legs.slice(reversal);
+  const ending = legs.findIndex((l) => legFix(l) === joinAt);
+  if (ending < 0) throw new Error(`transition does not pass ${joinAt}`);
+  return legs.slice(ending + 1);
+}
+
 export function buildRoute(sc: Scenario): RouteLeg[] {
   const t = sc.start.transition
     ? sc.procedure.transitions.find((x) => x.id === sc.start.transition)
     : undefined;
   const parts: [RoutePhase, Leg[]][] = [
-    ['transition', t?.legs ?? []],
+    ['transition', joinTransition(t?.legs ?? [], sc.start.joinAt)],
     ['approach', sc.procedure.approach],
     ['missed', sc.procedure.missed],
   ];

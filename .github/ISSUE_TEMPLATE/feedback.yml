@@ -1,0 +1,30 @@
+name: Flying feedback
+description: How did it feel to fly? Realism, usability, scoring, ideas.
+labels: [feedback]
+body:
+  - type: input
+    id: approach
+    attributes:
+      label: Approach(es) flown
+      placeholder: e.g. KAKO VOR 29, full procedure with the PT
+  - type: dropdown
+    id: experience
+    attributes:
+      label: Your instrument experience
+      options:
+        - Student pilot / working on the instrument rating
+        - Instrument rated
+        - CFII
+        - Not a pilot
+        - Prefer not to say
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Feedback
+      description: What worked, what felt wrong, what you would change.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device

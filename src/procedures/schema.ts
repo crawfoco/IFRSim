@@ -254,9 +254,19 @@ export const StartSchema = z
     clearance: z.string(),
     /** Where the aircraft starts (chart-style position). */
     position: FixDefSchema,
+    /**
+     * Start this far before `position`, flying `headingMag` toward it (so the aircraft
+     * arrives over the fix on that heading, with time to set up first).
+     */
+    leadInNm: z.number().positive().max(30).optional(),
+    /**
+     * The aircraft joins the transition at this fix (e.g. cleared direct to the holding fix):
+     * the route starts at the course reversal there, or at the leg after the one ending there.
+     */
+    joinAt: Id.optional(),
     altitudeFt: Ft,
     headingMag: Deg,
-    iasKt: z.number().min(90).max(120).default(100),
+    iasKt: z.number().min(80).max(110).default(100),
     /** Entry route flown from here; omit for radar vectors to final. */
     transition: Id.optional(),
     /** Radios as the learner finds them (usually still on the previous station). */

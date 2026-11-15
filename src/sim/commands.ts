@@ -37,7 +37,7 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
       if (s.ap.vertical !== 'VS') return s;
       return { ...s, ap: { ...s.ap, vsRefFpm: clamp(Math.round(c.fpm / 100) * 100, -1500, 1000) } };
     case 'speed':
-      return { ...s, panel: { ...s.panel, iasCmdKt: clamp(Math.round(c.kt), 90, 120) } };
+      return { ...s, panel: { ...s.panel, iasCmdKt: clamp(Math.round(c.kt), 80, 110) } };
     case 'course':
       return withRadio(s, c.radio, (r) => ({ ...r, obsDeg: normalize360(Math.round(c.deg)) }));
     case 'standby': {

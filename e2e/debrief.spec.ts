@@ -25,6 +25,19 @@ test('a short flight ends in a debrief with score, plan, profile, timeline and r
   await expect(page.getByTestId('item-ident:I-FTG')).toContainText('tuned and identified');
   await expect(page.getByTestId('plan-view')).toBeVisible();
   await expect(page.getByTestId('profile-view')).toBeVisible();
+  await expect(page.getByTestId('final-profile')).toBeVisible();
+  await expect(page.getByTestId('final-profile-fix-FAF')).toHaveCount(1);
+  await expect(page.getByTestId('final-profile-path')).toHaveCount(1); // ILS glideslope
+
+  // Plan / Plate toggle in the left panel.
+  await page.getByTestId('debrief-tab-plate').click();
+  await expect(page.getByTestId('chart')).toBeVisible();
+  await expect(page.getByTestId('plan-view')).toHaveCount(0);
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.screenshot({ path: 'test-results/debrief-plate-1024.png' });
+  await page.getByTestId('debrief-tab-plan').click();
+  await expect(page.getByTestId('plan-view')).toBeVisible();
+  await page.screenshot({ path: 'test-results/debrief-1024.png' });
   await expect(page.getByTestId('timeline').locator('li')).not.toHaveCount(0);
 
   // Replay from the start at 16×: the replay clock moves.

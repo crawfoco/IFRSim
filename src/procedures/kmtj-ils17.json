@@ -316,12 +316,13 @@
     },
     {
       "id": "over-mtj",
-      "name": "Over MTJ, outbound R-349, procedure turn at BRUUK",
+      "name": "Inbound to MTJ from the south, outbound R-349, procedure turn at BRUUK",
       "clearance": "Cross Montrose VOR at or above 12500, cleared ILS runway 17 approach via the Montrose 349 radial and the procedure turn.",
       "position": {
         "kind": "navaid",
         "navaid": "MTJ"
       },
+      "leadInNm": 5,
       "altitudeFt": 12500,
       "headingMag": 349,
       "iasKt": 100,

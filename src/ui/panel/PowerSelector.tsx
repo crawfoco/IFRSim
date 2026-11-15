@@ -1,5 +1,5 @@
 /**
- * Power selector: target airspeed 90–120 KIAS, which also sets the approach category. The
+ * Power selector: target airspeed 80–110 KIAS, which also sets the approach category. The
  * GA (TOGA) button sits here, as on a throttle: pressing it is the go-around decision.
  */
 import type { SimState } from '../../sim/state';

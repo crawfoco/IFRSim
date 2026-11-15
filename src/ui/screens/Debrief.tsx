@@ -1,12 +1,16 @@
 /**
- * Debrief: score table, plan view of the flown track over the procedure, altitude profile
- * against the minimum altitudes, event timeline, and a replay at 1×, 4× or 16×.
+ * Debrief: score table, plan view of the flown track over the procedure (or the approach
+ * plate), altitude profile against the minimum altitudes, a chart-style final-approach
+ * profile against distance to the threshold, event timeline, and a replay at 1×, 4× or 16×.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LoggedCommand } from '../../sim/recorder';
 import { activeMinimums, type Scenario } from '../../sim/scenario/scenario';
 import { analyzeFlight } from '../../sim/scoring/analyze';
 import { clock } from '../../sim/scoring/rules/types';
+import { ChartViewer } from '../chart/ChartViewer';
+import { finalProfile } from '../map/finalProfile';
+import { FinalProfileView } from '../map/FinalProfileView';
 import { PlanView } from '../map/PlanView';
 import { ProfileView } from '../map/ProfileView';
 import '../map/map.css';
@@ -75,11 +79,15 @@ export function Debrief({
   const replay = useReplay(a.samples.length);
   const t0 = a.samples[0]?.tick ?? 0;
   const seekTick = (tick: number) => replay.seek(Math.round((tick - t0) / 20));
-  const mins = activeMinimums(
-    scenario.procedure,
-    scenario.options.gsOutOfService,
-    scenario.start.iasKt,
+  const mins = useMemo(
+    () => activeMinimums(scenario.procedure, scenario.options.gsOutOfService, scenario.start.iasKt),
+    [scenario],
   );
+  const fp = useMemo(
+    () => finalProfile(scenario, mins, a.sequencer.route, a.samples),
+    [scenario, mins, a],
+  );
+  const [leftTab, setLeftTab] = useState<'plan' | 'plate'>('plan');
   const cur = a.samples[Math.min(replay.index, a.samples.length - 1)];
   const scored = a.items.filter((x) => x.status !== 'info');
 
@@ -101,12 +109,33 @@ export function Debrief({
 
       <main className="debrief-main">
         <section className="debrief-left">
-          <PlanView
-            scenario={scenario}
-            route={a.sequencer.route}
-            track={a.samples}
-            cursor={replay.index}
-          />
+          <div className="seg debrief-tabs" role="tablist" aria-label="Left panel">
+            {(['plan', 'plate'] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={leftTab === t}
+                className={`seg-btn${leftTab === t ? ' on' : ''}`}
+                onClick={() => setLeftTab(t)}
+                data-testid={`debrief-tab-${t}`}
+              >
+                {t === 'plan' ? 'Plan' : 'Plate'}
+              </button>
+            ))}
+          </div>
+          {leftTab === 'plan' ? (
+            <PlanView
+              scenario={scenario}
+              route={a.sequencer.route}
+              track={a.samples}
+              cursor={replay.index}
+            />
+          ) : (
+            <div className="debrief-plate">
+              <ChartViewer procedure={scenario.procedure} />
+            </div>
+          )}
           <div className="replay" role="group" aria-label="Replay">
             <button type="button" onClick={replay.toggle} data-testid="replay-play">
               {replay.playing ? 'Pause' : 'Replay'}
@@ -146,6 +175,9 @@ export function Debrief({
             minimums={{ label: `${mins.kind} ${mins.altFt}`, altFt: mins.altFt }}
             cursor={replay.index}
           />
+          {a.samples.length >= 2 && (
+            <FinalProfileView data={fp} minimums={mins} cursor={replay.index} />
+          )}
         </section>
 
         <section className="debrief-right">

@@ -196,3 +196,68 @@
 .tl-scenario .tl-btn {
   color: #e98c2a;
 }
+
+/* Final-approach profile (altitude vs distance to the threshold). */
+.fp-ground {
+  stroke: #8a6a3d;
+  stroke-width: 2;
+}
+.fp-path {
+  stroke: #2ec4f0;
+  stroke-width: 1.5;
+  stroke-dasharray: 8 4;
+}
+.fp-path-label {
+  fill: #7fd8f5;
+}
+.fp-fix {
+  stroke: #6b7480;
+  stroke-width: 1;
+}
+.fp-vdp {
+  stroke: #6b7480;
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.fp-map {
+  stroke: #d7322e;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.fp-map-label {
+  fill: #ff7b78;
+}
+.fp-axis {
+  font-weight: 500;
+  fill: #8b949e;
+}
+
+/* Debrief left panel: plan view / approach plate toggle. */
+.debrief-tabs {
+  display: flex;
+  flex: none;
+  align-self: flex-start;
+}
+/*
+ * The left panel scrolls rather than squeezing everything: the plan / plate may shrink to
+ * a usable minimum and the profiles are capped in height.
+ */
+.debrief-left > * {
+  flex: none;
+}
+.debrief-left > .plan,
+.debrief-left > .debrief-plate {
+  flex: 0 1 auto;
+  min-height: 300px;
+}
+.debrief-left > .profile {
+  max-height: 180px;
+}
+.debrief-plate {
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 640 / 520;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
