@@ -66,6 +66,15 @@ export class Flight {
     this.send({ type: 'vsTarget', fpm });
   }
   /** Tune a radio's active frequency (via standby + swap) and listen to the ident. */
+  /** Wait for the "Minimums." callout (DA, or the MDA on final). */
+  untilMinimums(maxS = 900) {
+    return this.until(() => this.progress.events.some((e) => e.kind === 'minimums'), maxS);
+  }
+  /** Go around (GA/TOGA) with the ALT preselect set to the missed-approach altitude. */
+  goAround(altFt: number) {
+    this.send({ type: 'altPreselect', ft: altFt }, { type: 'button', button: 'GA' });
+    this.wait(0.1);
+  }
   tune(radio: 1 | 2, mhz: number, courseDeg?: number) {
     this.send({ type: 'standby', radio, mhz }, { type: 'swap', radio });
     if (courseDeg !== undefined) this.send({ type: 'course', radio, deg: courseDeg });

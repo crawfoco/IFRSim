@@ -12,6 +12,8 @@ import { Asi } from '../instruments/Asi';
 import { Cdi } from '../instruments/Cdi';
 import { courseDeviation, glideslopeDeviation } from '../instruments/geometry';
 import { Hsi } from '../instruments/Hsi';
+import { OutsideView } from '../instruments/OutsideView';
+import { outsideView } from '../../sim/scenario/outside';
 import '../instruments/instruments.css';
 import { Vsi } from '../instruments/Vsi';
 import { ApPanel } from '../panel/ApPanel';
@@ -24,7 +26,8 @@ import { BriefingCard } from './Briefing';
 import { useSim } from './useSim';
 
 const OUTCOME_TEXT = {
-  runwayInSight: 'Runway in sight at minimums. Approach complete.',
+  landed: 'Landed with the runway in sight. Approach complete.',
+  belowMinimums: 'Continued below minimums without the runway in sight.',
   missedComplete: 'Missed approach and hold flown. Scenario complete.',
 } as const;
 
@@ -32,9 +35,12 @@ export function Flight({
   scenario,
   onExit,
   onDebrief,
+  onFlyAgain,
 }: {
   scenario: Scenario;
   onExit: () => void;
+  /** A new flight of the same scenario, with new hidden weather. */
+  onFlyAgain: () => void;
   onDebrief: (log: readonly LoggedCommand[], endTick: number) => void;
 }) {
   const { sim, state, sensors, progress } = useSim(scenario);
@@ -120,7 +126,7 @@ export function Flight({
                 >
                   Debrief
                 </button>
-                <button type="button" onClick={() => sim.restart()}>
+                <button type="button" onClick={onFlyAgain}>
                   Fly again
                 </button>
                 <button type="button" onClick={onExit}>
@@ -153,6 +159,11 @@ export function Flight({
       </aside>
 
       <main className="panel-pane">
+        <OutsideView
+          view={outsideView(state, scenario)}
+          altitudeFt={state.aircraft.altitudeFt}
+          baseFtMsl={scenario.weather.baseFtMsl}
+        />
         <NavRadios
           state={state}
           send={send}

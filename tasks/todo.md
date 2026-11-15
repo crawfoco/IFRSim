@@ -14,9 +14,14 @@ performance needs a manual check. Open gaps are listed there for the user to dec
 |---|---|---|
 | M0–M6 | ✅ committed | through `b712099` |
 | M7 (T29–T32) | ✅ committed | moving map; tablet layout and measured performance; offline e2e; V1 acceptance with a fresh-eyes review (5 bugs fixed, KMTJ PT made flyable) |
+| Decision at minimums | ✅ committed | User request after V1: weather hidden and random, GA (TOGA) button, out-the-window view, `decision` score item replaces `below-minimums`. See SPEC story 4 |
 
-**Last verified:** 431 unit and integration tests and 7 e2e tests pass. Typecheck and lint
+**Last verified:** 438 unit and integration tests and 7 e2e tests pass. Typecheck and lint
 are clean. Performance: 60.1 fps, and 80.1 steps/s at 4×.
+
+**Open question from the user's test flight:** "reverse sensing on the HSI during an ILS".
+It could not be reproduced: the needle senses correctly when the course is set to the
+localizer course. The user will send a screenshot from the next run.
 
 **Next steps:**
 1. The user's checkpoint flight and debrief review.

@@ -31,8 +31,10 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
    - Start conditions are defined per procedure (e.g. "over FQF VOR, heading 360,
      8000 ft, cleared ILS 26 via the FQF R-045 feeder"; "radar vectors to final";
      "arriving on the GLL 17.5 DME arc").
-   - The briefing shows the clearance text, ceiling/visibility and whether the
-     glideslope is in service. In free practice, the user picks the start condition
+   - The briefing shows the clearance text, the reported weather (a ceiling and
+     visibility range around minimums, and the cloud tops) and whether the
+     glideslope is in service. The actual weather is picked at random when the
+     flight starts and is revealed only in the debrief. In free practice, the user picks the start condition
      or chooses "random".
    - The approach plate image is viewable at any time (pan/zoom, side panel or
      full screen).
@@ -80,10 +82,17 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
    - Step-down fixes on the localizer, identified by DME.
    - "LOC only" variant: glideslope out of service. The learner flies to the MDA
      using step-downs and identifies the missed approach point.
-   - At DA/MDA: if the scenario's ceiling is at or above minimums, the runway is
-     reported in sight and the approach ends. Otherwise the learner must execute
-     the published missed approach, enter the missed-approach hold and fly one full
-     circuit; the scenario then ends. Missed-approach hold entry and leg timing
+   - Weather and the decision at minimums: every flight starts above the cloud
+     tops and descends into the overcast. A small out-the-window view shows clear
+     sky, cloud, or the ground below the base with the runway once it is in sight.
+     Whether the runway comes into sight by DA/MDA is random and hidden. Going
+     missed is the learner's positive action: the GA (TOGA) button, which levels
+     the wings and climbs. Continuing below DA, below the MDA or past the MAP
+     without GA means the learner is landing: with the runway in sight the
+     approach ends as a landing; without it the flight ends and the decision is
+     scored as a failure. After GA the learner flies the published missed
+     approach, enters the missed-approach hold and flies one full circuit; the
+     scenario then ends. Missed-approach hold entry and leg timing
      are scored like any other hold.
 
 5. **Debrief and score.**
@@ -101,7 +110,8 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
        and not below its minimum altitude;
      - DME read from the wrong source (e.g. KMTJ: DME on the localizer instead
        of MTJ VOR/DME);
-     - continued below DA/MDA without runway in sight;
+     - the decision at minimums: continued below DA/MDA or past the MAP without
+       the runway in sight (going missed is always acceptable);
      - missed approach flown per the published instructions;
      - moving map used (informational, not a penalty);
      - course reversal flown on a NoPT route (informational note explaining

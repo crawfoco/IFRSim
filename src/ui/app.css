@@ -417,3 +417,9 @@ body {
     grid-template-columns: minmax(460px, 1.2fr) minmax(320px, 1fr);
   }
 }
+
+.debrief-weather {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: var(--muted);
+}

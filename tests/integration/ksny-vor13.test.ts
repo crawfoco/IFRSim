@@ -35,10 +35,12 @@ function fly(f: Flight, missedTurn: 'L' | 'R') {
   f.descendOrClimb(5800, -500); // to CHAKO
   f.crossFix('CHAKO', 1.0, 600);
   f.descendOrClimb(4700, -700); // to the MDA
-  expect(f.until(() => f.progress.phase === 'missed', 600)).toBe(true);
+  // Level at the MDA to the MAP (JIKUT), then GA.
+  expect(f.until(() => f.distTo('JIKUT') < 0.2, 600)).toBe(true);
+  f.goAround(6200);
+  expect(f.progress.phase).toBe('missed');
 
   // Missed: climb to 6200 straight ahead (over SNY), then turn back direct SNY.
-  f.descendOrClimb(6200, 800);
   f.send({ type: 'button', button: 'HDG' }, { type: 'headingBug', deg: 130 });
   expect(f.until(() => f.alt >= 6150, 300)).toBe(true);
   if (missedTurn === 'R') f.turn(220, 310);

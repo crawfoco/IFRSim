@@ -62,13 +62,14 @@ export function Debrief({
   log,
   endTick,
   onFlyAgain,
-  onBriefing,
+  onMainMenu,
 }: {
   scenario: Scenario;
   log: readonly LoggedCommand[];
   endTick: number;
   onFlyAgain: () => void;
-  onBriefing: () => void;
+  /** Back to the main menu (the approach list). */
+  onMainMenu: () => void;
 }) {
   const a = useMemo(() => analyzeFlight(scenario, log, endTick), [scenario, log, endTick]);
   const replay = useReplay(a.samples.length);
@@ -85,8 +86,8 @@ export function Debrief({
   return (
     <div className="debrief">
       <header className="topbar">
-        <button type="button" className="link-btn" onClick={onBriefing} data-testid="debrief-back">
-          ← Briefing
+        <button type="button" className="link-btn" onClick={onMainMenu} data-testid="debrief-back">
+          ← Main menu
         </button>
         <h1>
           Debrief · {scenario.procedure.airport} {scenario.procedure.name}
@@ -159,6 +160,13 @@ export function Debrief({
               {scored.filter((x) => x.status === 'pass').length} of {scored.length} items passed
             </span>
           </div>
+          <p className="debrief-weather" data-testid="debrief-weather">
+            Actual weather: ceiling {scenario.weather.ceilingFtAgl.toLocaleString('en-US')} ft,
+            visibility {scenario.weather.visibilitySm} SM:{' '}
+            {scenario.options.ceiling === 'above'
+              ? `the runway came into sight by the ${mins.kind}.`
+              : `below minimums; the runway was not in sight at the ${mins.kind}.`}
+          </p>
           <table className="score-table" data-testid="score-table">
             <tbody>
               {a.items.map((x) => (

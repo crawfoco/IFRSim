@@ -26,8 +26,6 @@ import { signedAngleDiff } from '../geo/angles';
 export const PASSAGE_NM = 2.0;
 const ARC_PASSAGE_NM = 3.0;
 const REARM_NM = 2.5;
-/** Rising this far above the lowest altitude on final starts the missed approach. */
-const EARLY_MISSED_CLIMB_FT = 300;
 
 export type RoutePhase = 'transition' | 'approach' | 'missed';
 
@@ -139,7 +137,6 @@ export interface SequencerState {
   fafTick: number | null;
   missedTick: number | null;
   /** Lowest altitude since the FAF (for detecting an early missed approach). */
-  lowestOnFinalFt: number;
   /** Aircraft position at the previous step (for along-track crossings). */
   prevPosition: LatLon;
 }
@@ -158,7 +155,6 @@ export function initialSequencer(sc: Scenario): SequencerState {
     reversal: { outboundTick: null, inboundTick: null },
     fafTick: null,
     missedTick: null,
-    lowestOnFinalFt: Infinity,
     prevPosition: sc.initial.aircraft.position,
   };
 }
@@ -168,7 +164,7 @@ export const currentLeg = (s: SequencerState): RouteLeg => s.route[s.index]!;
 export interface SequencerContext {
   state: SimState;
   scenario: Scenario;
-  /** The scenario has called the missed approach (at DA or the MAP). */
+  /** The learner has gone missed (GA pressed on the approach). */
   missedCalled: boolean;
 }
 
@@ -249,15 +245,8 @@ export function stepSequencer(prev: SequencerState, ctx: SequencerContext): Sequ
   s = { ...s, watches, passages: crossed.length ? [...s.passages, ...crossed] : s.passages };
   const crossedNow = (fix: string | null) => fix !== null && crossed.some((c) => c.fix === fix);
 
-  // 2. Missed approach: called by the scenario, or climbing away on final.
-  const leg = currentLeg(s);
-  if (s.fafTick !== null && s.missedTick === null)
-    s = { ...s, lowestOnFinalFt: Math.min(s.lowestOnFinalFt, ac.altitudeFt) };
-  const climbedAway =
-    leg.leg.type === 'final' &&
-    s.fafTick !== null &&
-    ac.altitudeFt > s.lowestOnFinalFt + EARLY_MISSED_CLIMB_FT;
-  if (s.missedTick === null && (ctx.missedCalled || climbedAway)) {
+  // 2. Missed approach: the learner pressed GA.
+  if (s.missedTick === null && ctx.missedCalled) {
     const firstMissed = s.route.findIndex((r) => r.phase === 'missed');
     // Missed-approach fixes may have been crossed on the approach (KAKO: AKO is the FAF).
     const watches = { ...s.watches };

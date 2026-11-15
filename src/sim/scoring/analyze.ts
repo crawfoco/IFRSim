@@ -5,11 +5,11 @@
 import { annunciation } from '../autopilot/modes';
 import { DT, step } from '../loop';
 import type { LoggedCommand, TrackSample } from '../recorder';
-import { initialProgress, updateProgress, type ScenarioEvent } from '../scenario/progress';
+import { initialProgress, updateProgress, type Outcome } from '../scenario/progress';
 import type { Scenario } from '../scenario/scenario';
 import { sense } from '../sensors';
 import type { Command, SimState } from '../state';
-import { belowMinimums, segmentMinimum, segmentMinimums } from './rules/altitude';
+import { decision, segmentMinimum, segmentMinimums } from './rules/altitude';
 import { finalCourse, glideslope } from './rules/course';
 import { movingMap } from './rules/map';
 import { dmeSource, tuneAndIdentify } from './rules/radios';
@@ -29,7 +29,7 @@ const RULES: Rule<unknown>[] = [
   procedureTurn,
   finalCourse,
   glideslope,
-  belowMinimums,
+  decision,
   missedApproach,
   noPtReversal,
   movingMap,
@@ -56,7 +56,7 @@ export interface FlightAnalysis {
   samples: DebriefSample[];
   sequencer: SequencerState;
   endTick: number;
-  outcome: ScenarioEvent['kind'] | null;
+  outcome: Outcome | null;
 }
 
 function modeText(s: SimState): string {
@@ -109,7 +109,7 @@ export function analyzeFlight(
     seq = stepSequencer(seq, {
       state,
       scenario: sc,
-      missedCalled: progress.phase !== 'approach' && progress.outcome !== 'runwayInSight',
+      missedCalled: progress.phase === 'missed' || progress.outcome === 'missedComplete',
     });
     const sensors = sense(state, sc.world);
     const ctx: StepContext = {
@@ -167,12 +167,7 @@ export function analyzeFlight(
     samples,
     sequencer: seq,
     endTick: state.tick,
-    outcome:
-      progress.outcome === 'runwayInSight'
-        ? 'runwayInSight'
-        : progress.outcome === 'missedComplete'
-          ? 'lapComplete'
-          : null,
+    outcome: progress.outcome,
   };
 }
 

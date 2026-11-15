@@ -85,7 +85,11 @@ describe('KCFO ILS 26 scoring', () => {
       'hold-entry:SKIPI:1',
       'final-course',
       'glideslope',
+      'decision',
     ]);
+    expect(a.items.find((x) => x.id === 'decision')!.measured).toMatch(
+      /^Runway in sight: landing\. Descended below the DA 5,689/,
+    );
     expect(a.items.find((x) => x.id === 'hold-entry:SKIPI:1')!.measured).toMatch(
       /^Flew parallel; arriving on heading 04\d° calls for parallel/,
     );
@@ -142,9 +146,10 @@ function flyVectors(f: Flight) {
   }
 }
 
-/** Published missed approach from wherever the aircraft is on final, to SKIPI. */
+/** GA, then the published missed approach from wherever the aircraft is on final, to SKIPI. */
 function flyMissed(f: Flight, turn: 'L' | 'R' = 'L') {
-  f.descendOrClimb(7200, 800);
+  f.goAround(7200);
+  expect(f.progress.phase).toBe('missed');
   f.send({ type: 'button', button: 'HDG' }, { type: 'headingBug', deg: 263 });
   expect(f.until(() => f.alt >= 6100, 120)).toBe(true);
   f.tune(1, 116.3, 45);
@@ -167,10 +172,13 @@ describe('KCFO bad runs on the final and the missed approach', () => {
   it('reference: vectors to an ILS with a published missed approach scores 100%', () => {
     const f = new Flight(vectors({ ceiling: 'below' }));
     flyVectors(f);
-    expect(f.until(() => f.progress.phase === 'missed', 900)).toBe(true);
+    expect(f.untilMinimums()).toBe(true);
     flyMissed(f);
     const a = f.analyze();
     expect(failed(a), summary(a)).toEqual([]);
+    expect(a.items.find((x) => x.id === 'decision')!.measured).toMatch(
+      /^Go-around \(GA\) at 56\d\d ft$/,
+    );
     expect(a.items.map((x) => x.id)).toEqual([
       'ident:I-FTG',
       'ident:FQF',
@@ -179,7 +187,7 @@ describe('KCFO bad runs on the final and the missed approach', () => {
       'hold-entry:SKIPI:4',
       'final-course',
       'glideslope',
-      'below-minimums',
+      'decision',
       'missed-approach',
     ]);
   });
@@ -209,17 +217,18 @@ describe('KCFO bad runs on the final and the missed approach', () => {
   it('bad run: continuing below DA without the runway', () => {
     const f = new Flight(vectors({ ceiling: 'below' }));
     flyVectors(f);
-    expect(f.until(() => f.progress.phase === 'missed', 900)).toBe(true);
-    f.wait(25); // still coupled, still descending
-    flyMissed(f);
+    expect(f.until(() => f.progress.phase === 'ended', 900)).toBe(true); // still coupled, no GA
     const a = f.analyze();
-    expect(failed(a), summary(a)).toEqual(['below-minimums']);
+    expect(failed(a), summary(a)).toEqual(['decision']);
+    expect(a.items.find((x) => x.id === 'decision')!.measured).toMatch(
+      /^Descended below the DA 5,689 without the runway in sight/,
+    );
   });
 
   it('bad run: missed approach turned right instead of left', () => {
     const f = new Flight(vectors({ ceiling: 'below' }));
     flyVectors(f);
-    expect(f.until(() => f.progress.phase === 'missed', 900)).toBe(true);
+    expect(f.untilMinimums()).toBe(true);
     flyMissed(f, 'R');
     const a = f.analyze();
     expect(failed(a), summary(a)).toEqual(['missed-approach']);
@@ -230,28 +239,27 @@ describe('KCFO bad runs on the final and the missed approach', () => {
 });
 
 describe('KCFO LOC-only: the learner identifies the MAP', () => {
-  it('climbing well past the MAP fails the missed approach item', () => {
+  it('passing the MAP at the MDA without GA, no runway: the decision fails', () => {
     const f = new Flight(
       scenario({ startId: 'vectors-final', ceiling: 'below', gsOutOfService: true }),
     );
     flyVectors(f);
-    expect(f.until(() => f.progress.phase === 'missed', 900)).toBe(true);
-    expect(f.progress.callout ?? '').not.toMatch(/Missed approach point/); // no prompt
-    f.wait(25); // level at the MDA, past the MAP
-    flyMissed(f);
+    expect(f.untilMinimums()).toBe(true);
+    expect(f.progress.callout).toBe('Minimums.'); // no MAP prompt: identifying it is the job
+    expect(f.until(() => f.progress.phase === 'ended', 300)).toBe(true);
     const a = f.analyze();
-    expect(failed(a), summary(a)).toEqual(['missed-approach']);
-    expect(a.items.find((x) => x.id === 'missed-approach')!.measured).toMatch(
-      /started the climb \d\.\d NM past the MAP \(I-FTG 1\.7\)/,
+    expect(failed(a), summary(a)).toEqual(['decision']);
+    expect(a.items.find((x) => x.id === 'decision')!.measured).toMatch(
+      /^Passed the missed approach point \(I-FTG 1\.7\) without the runway in sight/,
     );
   });
 
-  it('climbing at the MAP passes', () => {
+  it('GA at the MAP passes', () => {
     const f = new Flight(
       scenario({ startId: 'vectors-final', ceiling: 'below', gsOutOfService: true }),
     );
     flyVectors(f);
-    expect(f.until(() => f.progress.phase === 'missed', 900)).toBe(true);
+    expect(f.until(() => f.distTo('I-FTG 1.7') < 0.2, 900)).toBe(true);
     flyMissed(f);
     const a = f.analyze();
     expect(failed(a), summary(a)).toEqual([]);

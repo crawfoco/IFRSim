@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { PROCEDURES } from '../procedures';
+import { NAVDATA, PROCEDURES } from '../procedures';
 import type { Procedure } from '../procedures/schema';
 import type { LoggedCommand } from '../sim/recorder';
-import type { Scenario } from '../sim/scenario/scenario';
+import { rerollWeather, type Scenario } from '../sim/scenario/scenario';
 import { Debrief } from './screens/Debrief';
 import { Gallery } from './dev/Gallery';
 import { Briefing } from './screens/Briefing';
@@ -29,6 +29,14 @@ export function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
+  // A new flight gets new hidden weather, so the outcome at minimums is not known in advance.
+  const flyAgain = (sc: Scenario) =>
+    setScreen({
+      name: 'flight',
+      scenario: rerollWeather(sc, NAVDATA, Math.random()),
+      key: Date.now(),
+    });
+
   if (hash === '#/gallery') return <Gallery />;
   switch (screen.name) {
     case 'select':
@@ -52,6 +60,7 @@ export function App() {
           key={screen.key}
           scenario={screen.scenario}
           onExit={() => setScreen({ name: 'briefing', procedure: screen.scenario.procedure })}
+          onFlyAgain={() => flyAgain(screen.scenario)}
           onDebrief={(log, endTick) =>
             setScreen({ name: 'debrief', scenario: screen.scenario, log, endTick })
           }
@@ -63,10 +72,8 @@ export function App() {
           scenario={screen.scenario}
           log={screen.log}
           endTick={screen.endTick}
-          onFlyAgain={() =>
-            setScreen({ name: 'flight', scenario: screen.scenario, key: Date.now() })
-          }
-          onBriefing={() => setScreen({ name: 'briefing', procedure: screen.scenario.procedure })}
+          onFlyAgain={() => flyAgain(screen.scenario)}
+          onMainMenu={() => setScreen({ name: 'select' })}
         />
       );
   }

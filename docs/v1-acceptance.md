@@ -71,3 +71,14 @@ Moving those scripts into `tests/integration/` would lock this in.
 6. **Not scored:** hold maximum altitudes (`maxAltFt`, e.g. 8000 at SKIPI) and climb-in-hold completion.
 7. **Firefox performance** needs a manual check.
 8. **The plate is not shown on the debrief screen.** The plan view is.
+
+## After acceptance: the decision at minimums (2026-11-14)
+
+The user replaced the briefing's weather choice with a judgement test. The weather is
+hidden and random; the briefing reports a ceiling range around minimums and the tops.
+Every flight starts above the tops. An out-the-window view shows clear sky, cloud, or the
+ground with the runway once it is in sight (below the base and within the visibility). Going
+missed takes the GA (TOGA) button. Passing the DA, the MDA or the MAP without GA counts as
+landing, which is fine with the runway in sight. Without it, the flight ends and the new
+`decision` item fails. The early-missed detection by climbing was removed: GA is the only
+trigger. "Fly again" picks new weather.

@@ -1,19 +1,22 @@
 /**
  * Scenario progress and end conditions, updated once per sim step (pure).
  *
- * - On final (inside the FAF, tracking toward the runway), reaching the DA, or the MDA,
- *   decides the outcome. With the ceiling above minimums the runway is in sight and the
- *   scenario ends. Otherwise the missed approach is required: at the DA (ILS), or at the
- *   MAP (non-precision; the learner may level at the MDA until then).
+ * - Going missed is the learner's positive decision: pressing GA (TOGA) at any point on
+ *   the approach starts the missed approach.
+ * - Without GA, the decision point is the DA (precision), or descending below the MDA or
+ *   passing the MAP (non-precision), with a 50 ft allowance below DA/MDA. Passing it means
+ *   the learner is landing: fine with the runway in sight (the scenario ends, landed), a
+ *   failure without it (the scenario ends there).
  * - After a missed approach the scenario ends once the aircraft has entered the
  *   missed-approach hold and flown one full circuit: the arrival at the holding fix (the
- *   entry, at least 90 s after the missed approach starts), then two inbound crossings of
+ *   entry, at least 45 s after the missed approach starts), then two inbound crossings of
  *   the fix along the inbound course (established, then the lap complete).
  */
 import { signedAngleDiff } from '../geo/angles';
 import { distanceNm, type LatLon } from '../geo/geodesy';
 import { crossedInbound } from '../scoring/geometry';
 import type { SimState } from '../state';
+import { runwayInSight } from './outside';
 import { activeMinimums, type Scenario } from './scenario';
 
 /** A fix counts as crossed when the closest approach was within this distance. */
@@ -22,13 +25,15 @@ const PASSAGE_NM = 1.0;
 const REARM_NM = 1.5;
 
 export type Phase = 'approach' | 'missed' | 'ended';
-export type Outcome = 'runwayInSight' | 'missedComplete';
+export type Outcome = 'landed' | 'belowMinimums' | 'missedComplete';
 
 export interface ScenarioEvent {
   tick: number;
   kind:
     | 'minimums'
     | 'runwayInSight'
+    | 'landed'
+    | 'belowMinimums'
     | 'goMissed'
     | 'mapPassed'
     | 'holdFixCrossed'
@@ -56,8 +61,6 @@ export interface ScenarioProgress {
   /** Missed approach: when it started, and when the aircraft arrived at the holding fix. */
   missedTick: number | null;
   holdArrivalTick: number | null;
-  /** Lowest altitude while on final (for detecting a missed approach started early). */
-  lowestOnFinalFt: number;
   inboundCrossings: number;
   prevPosition: LatLon | null;
 }
@@ -74,7 +77,6 @@ export function initialProgress(): ScenarioProgress {
     hold: watch(),
     missedTick: null,
     holdArrivalTick: null,
-    lowestOnFinalFt: Infinity,
     inboundCrossings: 0,
     prevPosition: null,
   };
@@ -96,8 +98,8 @@ function crossing(w: FixWatch, dNm: number): [FixWatch, boolean] {
 /** Ignore holding-fix crossings this soon after the missed approach starts (KSNY flies
  *  straight over the station before turning back to it). */
 const ARRIVAL_AFTER_S = 45;
-/** Climbing this far above the lowest altitude on final starts the missed approach early. */
-const EARLY_MISSED_CLIMB_FT = 300;
+/** Allowance below DA/MDA before the learner is taken to be landing. */
+export const DECISION_ALLOWANCE_FT = 50;
 
 /** Inside the FAF and heading roughly down the final approach course. */
 export function onFinal(s: SimState, sc: Scenario): boolean {
@@ -123,67 +125,68 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
       p.map,
       distanceNm(s.aircraft.position, sc.fixes[sc.final.map.fix]!),
     );
-    const final = onFinal(s, sc);
-    const lowest = final ? Math.min(p.lowestOnFinalFt, s.aircraft.altitudeFt) : p.lowestOnFinalFt;
-    const next = { ...p, map, lowestOnFinalFt: lowest };
-    const atMinimums = final && s.aircraft.altitudeFt <= min.altFt + (min.kind === 'MDA' ? 50 : 0);
+    const next = { ...p, map };
+    const alt = s.aircraft.altitudeFt;
     const label = `${min.kind} ${min.altFt.toLocaleString('en-US')}`;
+    const inSight = runwayInSight(s, sc);
+    let events = p.events;
+    if (inSight && !events.some((e) => e.kind === 'runwayInSight'))
+      events = [...events, ev('runwayInSight', `Runway in sight at ${Math.round(alt)} ft`)];
 
-    if (atMinimums && sc.options.ceiling === 'above') {
-      const text = `Minimums (${label}): runway in sight.`;
-      return {
-        ...next,
-        phase: 'ended',
-        outcome: 'runwayInSight',
-        callout: text,
-        events: [...p.events, ev('minimums', `Reached ${label}`), ev('runwayInSight', text)],
-      };
-    }
-    if (atMinimums && min.kind === 'DA') {
-      const text = `Minimums (${label}): no runway in sight. Go missed: ${sc.procedure.missedText}`;
+    // The learner's go-around decision.
+    if (s.goAroundTick !== null) {
+      const text = `Going missed. ${sc.procedure.missedText}`;
       return {
         ...next,
         phase: 'missed',
         callout: text,
-        events: [...p.events, ev('minimums', `Reached ${label}`), ev('goMissed', text)],
-      };
-    }
-    if (atMinimums && !p.events.some((e) => e.kind === 'minimums')) {
-      return {
-        ...next,
-        callout: `${label}: no runway in sight yet. Level off; the MAP is ${sc.final.map.fix}.`,
-        events: [...p.events, ev('minimums', `Reached ${label}`)],
-      };
-    }
-    if (mapCrossed && final) {
-      // Identifying the MAP is the learner's job: no prompt, unless the weather was good
-      // and the aircraft is simply too high to land.
-      const high = sc.options.ceiling === 'above';
-      const text = high
-        ? `Missed approach point ${sc.final.map.fix} passed above the ${label}: too high to land straight in. Go missed.`
-        : null;
-      return {
-        ...next,
-        phase: 'missed',
-        callout: text ?? next.callout,
         events: [
-          ...p.events,
-          ev('mapPassed', `Crossed ${sc.final.map.fix}`),
-          ev('goMissed', text ?? 'Missed approach (MAP passed, no runway in sight)'),
+          ...events,
+          ev(
+            'goMissed',
+            `Go-around (GA) at ${Math.round(alt)} ft${inSight ? ', runway in sight' : ''}`,
+          ),
         ],
       };
     }
-    // Climbing away on final before DA/MDA or the MAP: the learner went missed early.
-    if (final && s.aircraft.altitudeFt > lowest + EARLY_MISSED_CLIMB_FT) {
-      const text = `Missed approach started. ${sc.procedure.missedText}`;
+
+    const final = onFinal(s, sc);
+    // Levelling at the MDA (ALT capture) counts as reaching it.
+    const reachedMinimums = final && alt <= min.altFt + (min.kind === 'MDA' ? 50 : 0);
+    if (reachedMinimums && !events.some((e) => e.kind === 'minimums'))
       return {
         ...next,
-        phase: 'missed',
+        callout: 'Minimums.',
+        events: [...events, ev('minimums', `Reached ${label}`)],
+      };
+
+    // Past the decision point without GA: the learner is landing.
+    const belowDecision = final && alt < min.altFt - DECISION_ALLOWANCE_FT;
+    const pastMap = final && mapCrossed && min.kind === 'MDA';
+    if (belowDecision || pastMap) {
+      const where = belowDecision
+        ? `Descended below the ${label}`
+        : `Passed the missed approach point (${sc.final.map.fix})`;
+      if (inSight) {
+        const text = `Runway in sight: landing. ${where} with the runway in sight.`;
+        return {
+          ...next,
+          phase: 'ended',
+          outcome: 'landed',
+          callout: text,
+          events: [...events, ev('landed', text)],
+        };
+      }
+      const text = `${where} without the runway in sight. A missed approach (GA) was required. Flight ended.`;
+      return {
+        ...next,
+        phase: 'ended',
+        outcome: 'belowMinimums',
         callout: text,
-        events: [...p.events, ev('goMissed', text)],
+        events: [...events, ev('belowMinimums', text)],
       };
     }
-    return next;
+    return events === p.events ? next : { ...next, events };
   }
 
   // Missed approach: arrival at the holding fix (the entry), then inbound crossings.

@@ -4,6 +4,7 @@ import { Asi } from '../instruments/Asi';
 import { Cdi } from '../instruments/Cdi';
 import { DmeReadout } from '../instruments/DmeReadout';
 import { Hsi, type HsiProps } from '../instruments/Hsi';
+import { OutsideView } from '../instruments/OutsideView';
 import { Vsi } from '../instruments/Vsi';
 import '../instruments/instruments.css';
 
@@ -48,6 +49,25 @@ const HSI_CASES: { title: string; props: HsiProps }[] = [
       glideslope: { dots: 0, flag: true },
     },
   },
+];
+
+const rwy = (relBearingDeg: number, distanceNm: number, aglFt: number, relAlignmentDeg = 0) => ({
+  relBearingDeg,
+  distanceNm,
+  aglFt,
+  relAlignmentDeg,
+  depressionDeg: (Math.atan2(aglFt, distanceNm * 6076) * 180) / Math.PI,
+});
+const OUTSIDE: [string, Parameters<typeof OutsideView>[0]['view'], number][] = [
+  ['above the tops', { layer: 'clear', runwayInSight: false, runway: null }, 8000],
+  ['in cloud', { layer: 'cloud', runwayInSight: false, runway: null }, 6500],
+  ['breaking out', { layer: 'cloud', runwayInSight: false, runway: null }, 6050],
+  ['at DA, on centreline', { layer: 'below', runwayInSight: true, runway: rwy(0, 0.6, 200) }, 5700],
+  [
+    'at MDA, 1.5 NM, 8° off',
+    { layer: 'below', runwayInSight: true, runway: rwy(-6, 1.5, 450, 8) },
+    5900,
+  ],
 ];
 
 export function Gallery() {
@@ -101,6 +121,14 @@ export function Gallery() {
         <div className="gallery-cell">
           <DmeReadout nm={null} source={2} />
         </div>
+      </section>
+      <section className="gallery-grid">
+        {OUTSIDE.map(([label, view, alt]) => (
+          <div className="gallery-cell" key={label}>
+            <OutsideView view={view} altitudeFt={alt} baseFtMsl={6000} />
+            <p>{label}</p>
+          </div>
+        ))}
       </section>
     </main>
   );

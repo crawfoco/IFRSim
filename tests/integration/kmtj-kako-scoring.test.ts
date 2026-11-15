@@ -151,9 +151,9 @@ describe('KAKO VOR 29: barbed procedure turn at AKO', () => {
       }),
     );
     fly(f, 65, [155, 245], false);
-    // At the MDA, level to the MAP (AKO 1.7), then the missed approach.
-    expect(f.until(() => f.progress.phase === 'missed', 600)).toBe(true);
-    f.descendOrClimb(6100, 800);
+    // At the MDA, level to the MAP (AKO 1.7), then GA and the missed approach.
+    expect(f.until(() => f.distTo('AKO 1.7') < 0.2, 600)).toBe(true);
+    f.goAround(6100);
     f.turn(20, 110); // climbing right turn, back to AKO
     const radial = f.sensors.nav1.indication!;
     f.send({

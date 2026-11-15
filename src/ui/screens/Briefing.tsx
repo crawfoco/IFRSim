@@ -1,4 +1,8 @@
-/** Briefing: pick a start condition and the weather/glideslope, read the brief, fly. */
+/**
+ * Briefing: pick a start condition and the glideslope status, read the brief, fly. The actual
+ * weather (whether the runway will be in sight at minimums) is chosen at random when the
+ * learner presses Fly, and stays hidden until the debrief.
+ */
 import { useMemo, useState } from 'react';
 import { NAVDATA } from '../../procedures';
 import type { Procedure } from '../../procedures/schema';
@@ -61,11 +65,11 @@ export function Briefing({
   const scenario = useMemo(() => buildScenario(procedure, NAVDATA, opts), [procedure, opts]);
   const set = (o: Partial<ScenarioOptions>) => setOpts((p) => ({ ...p, ...o }));
   const random = () =>
-    setOpts({
+    setOpts((p) => ({
+      ...p,
       startId: pick(procedure.starts).id,
-      ceiling: pick<Ceiling>(['above', 'below']),
       gsOutOfService: hasGs ? Math.random() < 0.3 : false,
-    });
+    }));
 
   return (
     <div className="briefing-screen">
@@ -95,21 +99,6 @@ export function Briefing({
             </label>
           ))}
         </fieldset>
-        <fieldset className="choice">
-          <legend>Weather</legend>
-          {(['above', 'below'] as const).map((c) => (
-            <label key={c}>
-              <input
-                type="radio"
-                name="ceiling"
-                checked={opts.ceiling === c}
-                onChange={() => set({ ceiling: c })}
-                data-testid={`ceiling-${c}`}
-              />
-              {c === 'above' ? 'At or above minimums' : 'Below minimums (missed approach)'}
-            </label>
-          ))}
-        </fieldset>
         {hasGs && (
           <fieldset className="choice">
             <legend>Glideslope</legend>
@@ -131,7 +120,14 @@ export function Briefing({
           <button
             type="button"
             className="primary"
-            onClick={() => onFly(scenario)}
+            onClick={() =>
+              onFly(
+                buildScenario(procedure, NAVDATA, {
+                  ...opts,
+                  ceiling: pick<Ceiling>(['above', 'below']),
+                }),
+              )
+            }
             data-testid="fly"
           >
             Fly

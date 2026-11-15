@@ -38,4 +38,10 @@ test('a short flight ends in a debrief with score, plan, profile, timeline and r
 
   await page.getByTestId('fly-again').click();
   await expect(page.getByTestId('hsi')).toBeVisible();
+
+  // Back from the debrief goes to the main menu (the approach list).
+  await page.getByTestId('end-flight').click();
+  await expect(page.getByTestId('debrief-back')).toHaveText('← Main menu');
+  await page.getByTestId('debrief-back').click();
+  await expect(page.getByTestId('pick-kcfo-ils26')).toBeVisible();
 });

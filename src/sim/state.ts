@@ -25,6 +25,8 @@ export interface SimState {
   };
   radios: { nav1: NavRadio; nav2: NavRadio; dmeSource: 1 | 2 };
   timer: { running: boolean; elapsedS: number };
+  /** Tick of the first GA (TOGA) press: the learner's go-around decision. */
+  goAroundTick: number | null;
 }
 
 export type RadioId = 1 | 2;

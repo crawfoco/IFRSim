@@ -34,20 +34,29 @@ describe('building a scenario', () => {
     expect(activeMinimums(p, true, 90)).toMatchObject({ kind: 'MDA', altFt: 5900, category: 'A' });
   });
 
-  it('weather is clearly above or below minimums', () => {
-    const above = buildScenario(p, nav, opts()).weather;
+  it('weather is clearly above or below minimums, with tops below the start altitude', () => {
+    const sAbove = buildScenario(p, nav, opts());
+    const above = sAbove.weather;
     const below = buildScenario(p, nav, opts({ ceiling: 'below' })).weather;
     const hat = 5689 - 5489; // DA − TDZE, ~200 ft
     expect(above.ceilingFtAgl).toBeGreaterThanOrEqual(hat + 200);
     expect(above.visibilitySm).toBeGreaterThanOrEqual(0.5);
     expect(below.ceilingFtAgl).toBeLessThan(hat);
     expect(below.visibilitySm).toBeLessThan(0.5);
+    expect(above.baseFtMsl).toBeCloseTo(sAbove.thresholdElevationFt + above.ceilingFtAgl, 6);
+    // Every flight starts in the clear above the overcast.
+    expect(above.topsFtMsl).toBeLessThanOrEqual(sAbove.start.altitudeFt - 500);
+    expect(above.topsFtMsl).toBeGreaterThan(above.baseFtMsl + 900);
+    // The report is the same either way, so the briefing does not give the outcome away.
+    expect(below.reported).toBe(above.reported);
   });
 
   it('briefing carries clearance, weather, GS status, minimums and missed', () => {
     const b = briefing(buildScenario(p, nav, opts({ gsOutOfService: true })));
     expect(b.clearance).toMatch(/heading 293/);
-    expect(b.weather).toMatch(/^Ceiling \d[\d,]* ft overcast, visibility/);
+    expect(b.weather).toMatch(
+      /^Overcast, ceiling variable \d+–\d+ ft, visibility .+ SM; tops 7,500 ft$/,
+    );
     expect(b.glideslope).toMatch(/OUT OF SERVICE/);
     expect(b.minimums).toMatch(/S-LOC 26, category B at 100 KIAS: MDA 5,900 ft/);
     expect(b.missedApproach).toMatch(/^Climb to 6100/);
@@ -82,58 +91,72 @@ function flyFinal(f: Flight) {
 }
 
 describe('scenario end conditions (KCFO)', () => {
-  it('ILS, ceiling above: runway in sight at DA ends the scenario', () => {
+  it('ILS, runway in sight at DA: continuing below it is a landing', () => {
     const f = new Flight(buildScenario(p, nav, opts()));
     flyFinal(f);
     expect(f.until(() => f.progress.phase === 'ended', 900)).toBe(true);
-    expect(f.progress.outcome).toBe('runwayInSight');
-    expect(f.r.state.aircraft.altitudeFt).toBeGreaterThan(5689 - 10);
-    expect(f.progress.callout).toMatch(/DA 5,689\): runway in sight/);
+    expect(f.progress.outcome).toBe('landed');
+    expect(f.r.state.aircraft.altitudeFt).toBeLessThan(5689 - 50);
+    expect(f.progress.callout).toMatch(/^Runway in sight: landing\. Descended below the DA 5,689/);
+    expect(f.progress.events.map((e) => e.kind)).toEqual(['runwayInSight', 'minimums', 'landed']);
   });
 
-  it('LOC only, ceiling above: runway in sight at the MDA', () => {
+  it('LOC only, runway in sight at the MDA: passing the MAP is a landing', () => {
     const f = new Flight(buildScenario(p, nav, opts({ gsOutOfService: true })));
     flyFinal(f);
     expect(f.until(() => f.progress.phase === 'ended', 900)).toBe(true);
-    expect(f.progress.callout).toMatch(/MDA 5,900\): runway in sight/);
+    expect(f.progress.outcome).toBe('landed');
+    expect(f.progress.callout).toMatch(
+      /Passed the missed approach point \(I-FTG 1\.7\) with the runway/,
+    );
   });
 
-  it('LOC only, ceiling below: level at the MDA, go missed at the MAP', () => {
+  it('LOC only, no runway: passing the MAP without GA fails and ends the flight', () => {
     const f = new Flight(buildScenario(p, nav, opts({ gsOutOfService: true, ceiling: 'below' })));
     flyFinal(f);
     expect(f.until(() => f.progress.events.some((e) => e.kind === 'minimums'), 900)).toBe(true);
-    expect(f.progress.phase).toBe('approach');
-    expect(f.progress.callout).toMatch(/Level off; the MAP is I-FTG 1\.7/);
-    expect(f.until(() => f.progress.phase === 'missed', 300)).toBe(true);
-    expect(f.progress.events.map((e) => e.kind)).toEqual(['minimums', 'mapPassed', 'goMissed']);
+    expect(f.progress.callout).toBe('Minimums.');
+    expect(f.until(() => f.progress.phase === 'ended', 300)).toBe(true);
+    expect(f.progress.outcome).toBe('belowMinimums');
+    expect(f.progress.callout).toMatch(
+      /^Passed the missed approach point .* without the runway in sight/,
+    );
     expect(f.distTo('I-FTG 1.7')).toBeLessThan(0.2);
   });
 
-  it('climbing away on final before DA starts the missed approach early', () => {
+  it('ILS, no runway: descending below DA without GA fails and ends the flight', () => {
+    const f = new Flight(buildScenario(p, nav, opts({ ceiling: 'below' })));
+    flyFinal(f);
+    expect(f.until(() => f.progress.phase === 'ended', 900)).toBe(true);
+    expect(f.progress.outcome).toBe('belowMinimums');
+    expect(f.r.state.aircraft.altitudeFt).toBeGreaterThan(5689 - 60);
+    expect(f.progress.callout).toMatch(/^Descended below the DA 5,689 without the runway in sight/);
+  });
+
+  it('GA before DA starts the missed approach: wings level, climbing', () => {
     const f = new Flight(buildScenario(p, nav, opts({ ceiling: 'below' })));
     flyFinal(f);
     expect(f.until(() => f.alt < 6000, 900)).toBe(true);
-    f.send({ type: 'button', button: 'VS' }, { type: 'altPreselect', ft: 7200 });
-    f.until(() => false, 0.1);
-    f.send({ type: 'vsTarget', fpm: 800 });
-    expect(f.until(() => f.progress.phase === 'missed', 120)).toBe(true);
-    expect(f.progress.callout).toMatch(/^Missed approach started/);
+    f.send({ type: 'altPreselect', ft: 7200 }, { type: 'button', button: 'GA' });
+    expect(f.until(() => f.progress.phase === 'missed', 1)).toBe(true);
+    expect(f.progress.callout).toMatch(/^Going missed\. Climb to 6100/);
+    expect(f.r.state.ap).toMatchObject({ engaged: true, lateral: 'ROL', vertical: 'GA' });
+    expect(f.until(() => f.r.state.aircraft.vsFpm > 700, 10)).toBe(true);
+    // ALT preselect still captures out of the GA climb.
+    expect(f.until(() => f.r.state.ap.vertical === 'ALT', 200)).toBe(true);
+    f.wait(30);
+    expect(Math.abs(f.alt - 7200)).toBeLessThan(20);
   });
 
-  it('ILS, ceiling below: missed at DA, then hold entry and one circuit ends it', () => {
+  it('ILS, no runway: GA at DA, then hold entry and one circuit ends it', () => {
     const f = new Flight(buildScenario(p, nav, opts({ ceiling: 'below' })));
     flyFinal(f);
-    expect(f.until(() => f.progress.phase === 'missed', 900)).toBe(true);
-    expect(f.progress.callout).toMatch(/no runway in sight\. Go missed/);
+    expect(f.until(() => f.progress.callout === 'Minimums.', 900)).toBe(true);
+    f.send({ type: 'altPreselect', ft: 7200 }, { type: 'button', button: 'GA' });
+    expect(f.until(() => f.progress.phase === 'missed', 1)).toBe(true);
+    f.send({ type: 'button', button: 'HDG' }, { type: 'headingBug', deg: 263 });
 
     // Climb to 6100, then a climbing left turn to heading 080, to 7200.
-    f.send({ type: 'button', button: 'VS' }, { type: 'altPreselect', ft: 7200 });
-    f.until(() => false, 0.1);
-    f.send(
-      { type: 'vsTarget', fpm: 800 },
-      { type: 'button', button: 'HDG' },
-      { type: 'headingBug', deg: 263 },
-    );
     expect(f.until(() => f.r.state.aircraft.altitudeFt >= 6100, 120)).toBe(true);
     // Join FQF R-045 outbound to SKIPI.
     f.send(

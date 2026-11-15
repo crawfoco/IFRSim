@@ -293,3 +293,30 @@
   align-items: center;
   gap: 10px;
 }
+
+.power-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ga-btn {
+  font:
+    800 14px system-ui,
+    sans-serif;
+  color: #1a0d00;
+  background: linear-gradient(#ffb347, #e8890c);
+  border: 1px solid #ffcf8a;
+  border-radius: 6px;
+  width: 46px;
+  height: 46px;
+  cursor: pointer;
+}
+.ga-btn:active,
+.ga-btn.on {
+  background: #b86a06;
+  color: #fff3e0;
+}
+.ga-btn:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 2px;
+}

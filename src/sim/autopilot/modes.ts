@@ -4,13 +4,21 @@
  * is due (CaptureSignals); this module decides *what* the modes become.
  *
  * Lateral: ROL (wings level), HDG, NAV (VOR or LOC), APR (LOC, with GS).
- * Vertical: PIT (holds the VS present when entered), VS (selected VS), ALT, GS.
+ * Vertical: PIT (holds the VS present when entered), VS (selected VS), ALT, GS, GA (go-around
+ * climb).
  * Armed: NAV/APR lateral, ALT preselect capture, GS.
+ *
+ * GA (TOGA) is the learner's positive go-around decision: it engages the autopilot if needed,
+ * levels the wings (ROL), drops NAV/APR/GS and climbs at GA_CLIMB_FPM. ALT preselect still
+ * captures. HDG/NAV then steer the missed approach.
  */
 
 export type LateralMode = 'ROL' | 'HDG' | 'NAV' | 'APR';
-export type VerticalMode = 'PIT' | 'VS' | 'ALT' | 'GS';
-export type ApButton = 'AP' | 'HDG' | 'NAV' | 'APR' | 'ALT' | 'VS';
+export type VerticalMode = 'PIT' | 'VS' | 'ALT' | 'GS' | 'GA';
+export type ApButton = 'AP' | 'HDG' | 'NAV' | 'APR' | 'ALT' | 'VS' | 'GA';
+
+/** Go-around climb rate. */
+export const GA_CLIMB_FPM = 800;
 
 export interface ApModes {
   engaged: boolean;
@@ -76,6 +84,14 @@ export function pressButton(m: ApModes, button: ApButton, ctx: ModeContext): ApM
       ? { ...AP_OFF, vsRefFpm: m.vsRefFpm, holdAltFt: m.holdAltFt }
       : { ...AP_OFF, engaged: true, vsRefFpm: syncVs(ctx), holdAltFt: m.holdAltFt };
   }
+  if (button === 'GA')
+    return {
+      ...AP_OFF,
+      engaged: true,
+      vertical: 'GA',
+      vsRefFpm: GA_CLIMB_FPM,
+      holdAltFt: m.holdAltFt,
+    };
   if (!m.engaged) return m;
 
   switch (button) {
@@ -113,7 +129,7 @@ export function pressButton(m: ApModes, button: ApButton, ctx: ModeContext): ApM
 
 /** Preselect is ahead of the aircraft in the direction it is climbing or descending. */
 function preselectAhead(m: ApModes, ctx: ModeContext): boolean {
-  if (m.vertical !== 'PIT' && m.vertical !== 'VS') return false;
+  if (m.vertical !== 'PIT' && m.vertical !== 'VS' && m.vertical !== 'GA') return false;
   const toGo = ctx.altPreselectFt - ctx.altitudeFt;
   return Math.abs(toGo) > 50 && m.vsRefFpm !== 0 && Math.sign(toGo) === Math.sign(m.vsRefFpm);
 }
@@ -147,7 +163,11 @@ export function updateModes(m: ApModes, sig: CaptureSignals, ctx: ModeContext): 
   }
 
   // ALT preselect.
-  if (n.altArmed && sig.altCapture && (n.vertical === 'PIT' || n.vertical === 'VS')) {
+  if (
+    n.altArmed &&
+    sig.altCapture &&
+    (n.vertical === 'PIT' || n.vertical === 'VS' || n.vertical === 'GA')
+  ) {
     return { ...n, vertical: 'ALT', holdAltFt: ctx.altPreselectFt, altArmed: false };
   }
   const altArmed = preselectAhead(n, ctx);

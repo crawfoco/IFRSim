@@ -17,8 +17,11 @@ function withRadio(s: SimState, id: RadioId, f: (r: NavRadio) => NavRadio): SimS
 
 export function applyCommand(s: SimState, c: Command, world: World): SimState {
   switch (c.type) {
-    case 'button':
-      return { ...s, ap: pressButton(s.ap, c.button, modeContext(s, sense(s, world))) };
+    case 'button': {
+      const ap = pressButton(s.ap, c.button, modeContext(s, sense(s, world)));
+      const goAroundTick = c.button === 'GA' ? (s.goAroundTick ?? s.tick) : s.goAroundTick;
+      return { ...s, ap, goAroundTick };
+    }
     case 'headingBug':
       return { ...s, panel: { ...s.panel, headingBugDeg: normalize360(Math.round(c.deg)) } };
     case 'altPreselect':

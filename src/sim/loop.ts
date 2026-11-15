@@ -51,6 +51,7 @@ export function initialState(start: StartCondition, world: World): SimState {
       dmeSource: 1,
     },
     timer: { running: false, elapsedS: 0 },
+    goAroundTick: null,
   };
 }
 

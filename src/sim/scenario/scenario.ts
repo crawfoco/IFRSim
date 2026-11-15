@@ -1,7 +1,11 @@
 /**
- * Scenario: a procedure, a start condition and the options chosen on the briefing screen
- * (weather relative to minimums, glideslope outage), turned into a world, an initial
- * sim state and briefing text.
+ * Scenario: a procedure, a start condition and the options (weather relative to minimums,
+ * glideslope outage), turned into a world, an initial sim state and briefing text.
+ *
+ * The weather is hidden from the learner: the briefing reports a ceiling range that
+ * straddles the minimums, and the app picks above or below at random. Every flight starts
+ * above the cloud tops and descends into the overcast; whether the runway comes into sight
+ * at DA/MDA is the learner's decision to make (see progress.ts and OutsideView).
  */
 import { courseTrueDeg, resolveFixDef, resolveFixes, runwayEndFor } from '../../procedures/resolve';
 import type { Leg, Minimums, Procedure, Start } from '../../procedures/schema';
@@ -15,14 +19,21 @@ export type Ceiling = 'above' | 'below';
 
 export interface ScenarioOptions {
   startId: string;
-  /** Weather relative to the minimums: above → runway in sight at DA/MDA. */
+  /** Actual weather relative to the minimums (hidden from the learner): above → the runway
+   *  comes into sight by DA/MDA; below → it does not. */
   ceiling: Ceiling;
   gsOutOfService: boolean;
 }
 
 export interface Weather {
+  /** Actual cloud base above the threshold, and visibility. */
   ceilingFtAgl: number;
   visibilitySm: number;
+  /** Cloud base and tops, MSL. */
+  baseFtMsl: number;
+  topsFtMsl: number;
+  /** What the briefing reports: a range that straddles the minimums either way. */
+  reported: string;
 }
 
 type FinalLeg = Extract<Leg, { type: 'final' }>;
@@ -41,6 +52,8 @@ export interface Scenario {
   thresholdElevationFt: number;
   /** True course of the final approach. */
   finalCourseTrueDeg: number;
+  /** Landing threshold (displaced if any) and runway true alignment, for the outside view. */
+  runway: { threshold: LatLon; trueAlignmentDeg: number };
   weather: Weather;
 }
 
@@ -77,22 +90,42 @@ export function activeMinimums(
 }
 
 const roundUp100 = (ft: number) => Math.ceil(ft / 100) * 100;
+const roundDown100 = (ft: number) => Math.floor(ft / 100) * 100;
+const fmtFt = (ft: number) => ft.toLocaleString('en-US');
+
+/** Ceiling and visibility either side of the minimums, so the outcome at DA/MDA is clear. */
+function layers(min: ActiveMinimums, thresholdElevFt: number) {
+  const hat = min.altFt - thresholdElevFt;
+  return {
+    above: { ceilingFtAgl: roundUp100(hat) + 300, visibilitySm: Math.max(3, min.visibilitySm * 2) },
+    below: {
+      ceilingFtAgl: Math.max(100, roundUp100(hat) - 300),
+      visibilitySm: Math.max(0.25, min.visibilitySm / 2),
+    },
+  };
+}
 
 /**
- * Weather consistent with the chosen option. Ceiling and visibility are both either
- * comfortably above minimums or below them, so the outcome at DA/MDA is unambiguous.
+ * The actual weather for the chosen option. The cloud tops are 500 ft below the start
+ * altitude (every flight starts in the clear above the overcast), and at least 1,000 ft
+ * above the base.
  */
 export function weatherFor(
   min: ActiveMinimums,
   thresholdElevFt: number,
   ceiling: Ceiling,
+  startAltFt: number,
 ): Weather {
-  const hat = min.altFt - thresholdElevFt;
-  if (ceiling === 'above')
-    return { ceilingFtAgl: roundUp100(hat) + 300, visibilitySm: Math.max(2, min.visibilitySm * 2) };
+  const l = layers(min, thresholdElevFt);
+  const actual = l[ceiling];
+  const baseFtMsl = thresholdElevFt + actual.ceilingFtAgl;
+  const highBase = thresholdElevFt + l.above.ceilingFtAgl;
+  const topsFtMsl = Math.max(roundDown100(startAltFt - 500), roundUp100(highBase + 1000));
   return {
-    ceilingFtAgl: Math.max(100, roundUp100(hat) - 300),
-    visibilitySm: Math.max(0.25, min.visibilitySm / 2),
+    ...actual,
+    baseFtMsl,
+    topsFtMsl,
+    reported: `Overcast, ceiling variable ${fmtFt(l.below.ceilingFtAgl)}–${fmtFt(l.above.ceilingFtAgl)} ft, visibility ${fmtVis(l.below.visibilitySm)}–${fmtVis(l.above.visibilitySm)} SM; tops ${fmtFt(topsFtMsl)} ft`,
   };
 }
 
@@ -145,8 +178,20 @@ export function buildScenario(
     missedHold,
     thresholdElevationFt,
     finalCourseTrueDeg: courseTrueDeg(final.course, navdata),
-    weather: weatherFor(min, thresholdElevationFt, options.ceiling),
+    runway: {
+      threshold: rwy.displacedThreshold?.position ?? rwy.threshold,
+      trueAlignmentDeg: rwy.trueAlignmentDeg,
+    },
+    weather: weatherFor(min, thresholdElevationFt, options.ceiling, start.altitudeFt),
   };
+}
+
+/** The same scenario with the hidden weather picked again (`rand` in [0, 1)). */
+export function rerollWeather(sc: Scenario, navdata: NavData, rand: number): Scenario {
+  return buildScenario(sc.procedure, navdata, {
+    ...sc.options,
+    ceiling: rand < 0.5 ? 'above' : 'below',
+  });
 }
 
 const fmtVis = (sm: number) => {
@@ -175,7 +220,7 @@ export function briefing(sc: Scenario): Briefing {
     title: `${p.airport} ${p.name}`,
     startName: sc.start.name,
     clearance: sc.start.clearance,
-    weather: `Ceiling ${sc.weather.ceilingFtAgl.toLocaleString('en-US')} ft overcast, visibility ${fmtVis(sc.weather.visibilitySm)} SM`,
+    weather: sc.weather.reported,
     glideslope: !hasGs
       ? 'Non-precision approach (no glideslope).'
       : sc.options.gsOutOfService

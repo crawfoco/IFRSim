@@ -1,6 +1,8 @@
 /**
  * Pick KCFO ILS 26, brief radar vectors, and fly the intercept with the real controls
- * (mouse and keyboard only) until the autopilot captures the localizer.
+ * (mouse and keyboard only), down the glideslope into the cloud to DA. The weather is random:
+ * with the runway in sight the flight continues to a landing; without it the pilot presses
+ * GA and the missed approach starts.
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -28,6 +30,8 @@ test('select → briefing → fly: arm APR on vectors and see the localizer capt
   await expect(page.getByTestId('brief-minimums')).toContainText('DA 5,689');
   await page.getByTestId('fly').click();
   await expect(page.getByTestId('hsi')).toBeVisible();
+  // Every flight starts in the clear above the overcast.
+  await expect(page.getByTestId('outside-view')).toHaveAttribute('data-layer', 'clear');
 
   // Tune NAV1 to I-FTG 109.30 (standby 116.30, MHz knob down 7), swap, identify.
   await turn(page, 'nav1-mhz', 'ArrowDown', 7);
@@ -57,9 +61,22 @@ test('select → briefing → fly: arm APR on vectors and see the localizer capt
   await expect(page.getByTestId('ann-lateral')).toHaveText('LOC', { timeout: 150_000 });
   await expect(page.getByTestId('ann-vertical-armed')).toContainText('GS');
 
-  // Coupled to the glideslope down to DA; ceiling above minimums ends the scenario.
+  // Coupled to the glideslope, into the cloud, down to DA.
   await expect(page.getByTestId('ann-vertical')).toHaveText('GS', { timeout: 150_000 });
-  await expect(page.getByTestId('outcome')).toHaveText(/Runway in sight/, { timeout: 200_000 });
-  await expect(page.getByTestId('callout')).toContainText('DA 5,689');
-  await expect(page.getByTestId('pause')).toBeDisabled();
+  await expect(page.getByTestId('outside-view')).toHaveAttribute('data-layer', 'cloud', {
+    timeout: 150_000,
+  });
+  await expect(page.getByTestId('callout')).toHaveText('Minimums.', { timeout: 200_000 });
+  await page.getByTestId('speed-1').click();
+  const view = page.getByTestId('outside-view');
+  if ((await view.getAttribute('data-runway')) === 'in-sight') {
+    await expect(page.getByTestId('outside-runway')).toBeVisible();
+    await expect(page.getByTestId('outcome')).toHaveText(/^Landed/, { timeout: 30_000 });
+    await expect(page.getByTestId('pause')).toBeDisabled();
+  } else {
+    await expect(view).toHaveAttribute('data-layer', 'cloud');
+    await page.getByTestId('btn-GA').click();
+    await expect(page.getByTestId('ann-vertical')).toHaveText('GA');
+    await expect(page.getByTestId('callout')).toContainText('Going missed');
+  }
 });

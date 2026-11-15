@@ -1,7 +1,7 @@
 /**
  * Altitude rules:
  * - segment minimums: not more than 100 ft below the current leg's minimum altitude;
- * - minimums: not below the DA/MDA (by more than 100 ft) without the runway in sight.
+ * - decision: at DA/MDA, land only with the runway in sight; otherwise go missed (GA).
  */
 import { activeMinimums } from '../../scenario/scenario';
 import type { SequencerState } from '../sequencer';
@@ -88,48 +88,44 @@ export const segmentMinimums: Rule<SegmentState> = {
   },
 };
 
-interface BelowMinState {
-  reached: boolean;
-  lowestFt: number;
-  lowestTick: number;
-  minFt: number;
-  kind: 'DA' | 'MDA';
-}
-
-/** Continued below DA/MDA without the runway in sight (ceiling below minimums). */
-export const belowMinimums: Rule<BelowMinState> = {
-  init: () => ({ reached: false, lowestFt: Infinity, lowestTick: 0, minFt: 0, kind: 'DA' }),
-  step(s, { seq, scenario, state }) {
-    if (scenario.options.ceiling !== 'below') return s;
-    const onFinal = seq.fafTick !== null;
-    const recentMissed = seq.missedTick !== null && state.tick - seq.missedTick < 20 * 60;
-    if (!onFinal || (seq.missedTick !== null && !recentMissed)) return s;
+/**
+ * The decision at minimums (SPEC: judgement). Going missed (GA) is always acceptable;
+ * continuing past the DA, below the MDA or past the MAP is fine only with the runway in
+ * sight. The scenario's progress records which happened.
+ */
+export const decision: Rule<null> = {
+  init: () => null,
+  step: (s) => s,
+  finish(_s, last): ScoreItem[] {
+    const { progress, scenario, state } = last;
     const m = activeMinimums(
       scenario.procedure,
       scenario.options.gsOutOfService,
       state.panel.iasCmdKt,
     );
-    const alt = state.aircraft.altitudeFt;
-    return {
-      reached: s.reached || alt <= m.altFt,
-      lowestFt: alt < s.lowestFt ? alt : s.lowestFt,
-      lowestTick: alt < s.lowestFt ? state.tick : s.lowestTick,
-      minFt: m.altFt,
-      kind: m.kind,
-    };
-  },
-  finish(s, last): ScoreItem[] {
-    if (last.scenario.options.ceiling !== 'below' || !s.reached) return [];
-    const below = s.minFt - s.lowestFt;
-    const fail = below > TOLERANCE_FT;
-    return [
-      {
-        id: 'below-minimums',
-        title: `No descent below ${s.kind} without the runway in sight`,
-        status: fail ? 'fail' : 'pass',
-        measured: `Lowest ${fmtFt(s.lowestFt)} (${s.kind} ${fmtFt(s.minFt)}${below > 0 ? `, ${Math.round(below)} ft below` : ''})`,
-        ...(fail ? { tick: s.lowestTick } : {}),
-      },
-    ];
+    const title = `Decision at the ${m.kind}: land only with the runway in sight, otherwise go missed`;
+    const end = progress.events.find((e) => e.kind === 'landed' || e.kind === 'belowMinimums');
+    const ga = progress.events.find((e) => e.kind === 'goMissed');
+    if (end)
+      return [
+        {
+          id: 'decision',
+          title,
+          status: end.kind === 'landed' ? 'pass' : 'fail',
+          measured: end.text,
+          tick: end.tick,
+        },
+      ];
+    if (ga)
+      return [
+        {
+          id: 'decision',
+          title,
+          status: 'pass',
+          measured: `${ga.text}${ga.text.includes('runway in sight') ? ' (landing was possible; going missed is always allowed)' : ''}`,
+          tick: ga.tick,
+        },
+      ];
+    return [];
   },
 };
