@@ -3,6 +3,7 @@
  * sampled, holds as racetracks, procedure turns as outbound leg + barb). Approximate on
  * purpose: it shows the shape the learner should have flown, not a TERPS template.
  */
+import { resolveFixDef } from '../../procedures/resolve';
 import type { CourseRef, Leg } from '../../procedures/schema';
 import { courseVariation } from '../../sim/scoring/geometry';
 import { magToTrue, normalize360 } from '../../sim/geo/angles';
@@ -14,6 +15,8 @@ export interface DrawnLeg {
   index: number;
   phase: RouteLeg['phase'];
   points: LatLon[];
+  /** The start's lead-in (start position to the start fix), not a procedure leg. */
+  leadIn?: boolean;
 }
 
 /** One minute at a typical 100-knot approach speed. */
@@ -48,6 +51,13 @@ export function drawRoute(route: RouteLeg[], sc: Scenario): DrawnLeg[] {
   const fix = (name: string) => sc.fixes[name]!;
   const out: DrawnLeg[] = [];
   let prev: LatLon = sc.initial.aircraft.position;
+  // A start with a lead-in begins short of its fix: the route itself starts at that fix (e.g.
+  // FQF, then the R-045 feeder), and the lead-in is drawn on its own.
+  if (sc.start.leadInNm) {
+    const startFix = resolveFixDef(sc.start.position, { navdata: nav, procedure: sc.procedure });
+    out.push({ index: -1, phase: 'transition', points: [prev, startFix], leadIn: true });
+    prev = startFix;
+  }
   for (const r of route) {
     const L: Leg = r.leg;
     let pts: LatLon[] = [];

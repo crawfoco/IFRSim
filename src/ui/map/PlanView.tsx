@@ -96,7 +96,7 @@ export function PlanView({
       {geo.legs.map((l) => (
         <polyline
           key={l.index}
-          className={`plan-leg${l.phase === 'missed' ? ' plan-missed' : ''}`}
+          className={`plan-leg${l.phase === 'missed' ? ' plan-missed' : ''}${l.leadIn ? ' plan-leadin' : ''}`}
           points={poly(l.pts)}
         />
       ))}
