@@ -10,4 +10,5 @@ data/raw/
 .claude/settings.local.json
 
 # Locally installed Claude skill packs (third-party; reinstall from skills-lock.json)
-.claude/skills/
+.claude/skills/*
+!.claude/skills/bug-triage/
