@@ -2,6 +2,7 @@
 import type { AircraftState } from './aircraft/model';
 import type { ApButton, ApModes } from './autopilot/modes';
 import type { NavReading } from './nav/radios';
+import type { BearingSource, CdiSource } from './nav/source';
 
 export interface NavRadio {
   activeMHz: number;
@@ -22,6 +23,11 @@ export interface SimState {
     iasCmdKt: number;
     /** Moving map shown (a training aid; its use is noted in the debrief). */
     mapOn: boolean;
+    /** HSI nav source, which the autopilot follows (glass panel; steam stays on NAV1). */
+    cdiSource: CdiSource;
+    /** Bearing pointer sources (glass panel); null = off. */
+    brg1: BearingSource;
+    brg2: BearingSource;
   };
   radios: { nav1: NavRadio; nav2: NavRadio; dmeSource: 1 | 2 };
   timer: { running: boolean; elapsedS: number };
@@ -35,6 +41,8 @@ export type RadioId = 1 | 2;
 export type Command =
   | { type: 'button'; button: ApButton }
   | { type: 'headingBug'; deg: number }
+  /** Push the HDG knob: heading bug to the current magnetic heading. */
+  | { type: 'syncHeadingBug' }
   | { type: 'altPreselect'; ft: number }
   | { type: 'vsTarget'; fpm: number }
   | { type: 'speed'; kt: number }
@@ -45,7 +53,11 @@ export type Command =
   | { type: 'timer'; action: 'startStop' | 'reset' }
   /** Learner listened to a radio's Morse ident. No state change; logged for scoring. */
   | { type: 'ident'; radio: RadioId }
-  | { type: 'map'; on: boolean };
+  | { type: 'map'; on: boolean }
+  /** Glass panel: the CDI button (next HSI nav source). */
+  | { type: 'cdi' }
+  /** Glass panel: a BRG button (next source for that bearing pointer). */
+  | { type: 'bearing'; pointer: 1 | 2 };
 
 /** What the instruments show this step, derived from state + world. */
 export interface Sensors {

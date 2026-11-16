@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BUILD_STAMP } from '../../app-info';
 import type { LoggedCommand } from '../../sim/recorder';
-import { activeMinimums, type Scenario } from '../../sim/scenario/scenario';
+import { activeMinimums, panelOf, type Scenario } from '../../sim/scenario/scenario';
 import { analyzeFlight } from '../../sim/scoring/analyze';
 import { clock } from '../../sim/scoring/rules/types';
 import { ChartViewer } from '../chart/ChartViewer';
@@ -199,6 +199,9 @@ export function Debrief({
             {scenario.options.ceiling === 'above'
               ? `the runway came into sight by the ${mins.kind}.`
               : `below minimums; the runway was not in sight at the ${mins.kind}.`}
+          </p>
+          <p className="debrief-weather" data-testid="debrief-panel">
+            Panel: {panelOf(scenario.options) === 'glass' ? 'Glass PFD' : 'Steam gauges'}
           </p>
           <table className="score-table" data-testid="score-table">
             <tbody>

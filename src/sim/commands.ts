@@ -1,7 +1,8 @@
 /** Apply one UI command to the sim state. Out-of-range values are wrapped or clamped. */
 import { modeContext } from './autopilot/autopilot';
-import { pressButton } from './autopilot/modes';
-import { clamp, normalize360 } from './geo/angles';
+import { cdiSourceChanged, pressButton } from './autopilot/modes';
+import { nextBearingSource, nextCdiSource } from './nav/source';
+import { clamp, normalize360, trueToMag } from './geo/angles';
 import { sense } from './sensors';
 import type { Command, NavRadio, RadioId, SimState } from './state';
 import type { World } from './world';
@@ -24,6 +25,10 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
     }
     case 'headingBug':
       return { ...s, panel: { ...s.panel, headingBugDeg: normalize360(Math.round(c.deg)) } };
+    case 'syncHeadingBug': {
+      const hdg = trueToMag(s.aircraft.headingTrueDeg, world.magVarEastDeg);
+      return { ...s, panel: { ...s.panel, headingBugDeg: normalize360(Math.round(hdg)) } };
+    }
     case 'altPreselect':
       return {
         ...s,
@@ -57,6 +62,15 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
       return s;
     case 'map':
       return { ...s, panel: { ...s.panel, mapOn: c.on } };
+    case 'cdi': {
+      // As on the real unit, a new nav source drops NAV/APR (active or armed) to ROL.
+      const ap = cdiSourceChanged(s.ap, modeContext(s, sense(s, world)));
+      return { ...s, ap, panel: { ...s.panel, cdiSource: nextCdiSource(s.panel.cdiSource) } };
+    }
+    case 'bearing': {
+      const key = c.pointer === 1 ? 'brg1' : 'brg2';
+      return { ...s, panel: { ...s.panel, [key]: nextBearingSource(s.panel[key]) } };
+    }
     case 'timer':
       return {
         ...s,

@@ -103,6 +103,13 @@ describe('panel rendering', () => {
     expect(html).toContain('7,000 FT');
   });
 
+  it('the HDG knob tells the learner a double-click syncs the bug', () => {
+    const html = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    expect(html).toMatch(
+      /title="Double-click \(or Enter\) to set the bug[^"]*"[^>]*data-testid="knob-hdg"/,
+    );
+  });
+
   it('shows active and standby frequencies', () => {
     const html = renderToStaticMarkup(
       <NavRadios state={s0} send={noop} idents={{ 1: 'FQF', 2: null }} />,

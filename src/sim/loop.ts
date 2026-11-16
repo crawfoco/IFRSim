@@ -44,6 +44,9 @@ export function initialState(start: StartCondition, world: World): SimState {
       altPreselectFt: start.altitudeFt,
       iasCmdKt: ias,
       mapOn: false,
+      cdiSource: 'NAV1',
+      brg1: null,
+      brg2: null,
     },
     radios: {
       nav1: { activeMHz: nav1, standbyMHz: nav1, obsDeg: start.obs1Deg ?? 0 },

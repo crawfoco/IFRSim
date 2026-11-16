@@ -5,7 +5,9 @@ import { TIME_SCALES, type LoggedCommand } from '../../sim/recorder';
 import { buildRoute } from '../../sim/scoring/sequencer';
 import { PlanView } from '../map/PlanView';
 import '../map/map.css';
-import type { Scenario } from '../../sim/scenario/scenario';
+import { activeMinimums, panelOf, type Scenario } from '../../sim/scenario/scenario';
+import { Pfd } from '../instruments/glass/Pfd';
+import { pfdData } from '../instruments/glass/pfd-data';
 import { ChartViewer } from '../chart/ChartViewer';
 import { Altimeter } from '../instruments/Altimeter';
 import { Asi } from '../instruments/Asi';
@@ -17,6 +19,7 @@ import { outsideView } from '../../sim/scenario/outside';
 import '../instruments/instruments.css';
 import { Vsi } from '../instruments/Vsi';
 import { ApPanel } from '../panel/ApPanel';
+import { GlassControls } from '../panel/GlassControls';
 import { CourseKnob, DmeUnit } from '../panel/NavControls';
 import { NavRadios } from '../panel/NavRadios';
 import '../panel/panel.css';
@@ -49,6 +52,12 @@ export function Flight({
   const gs1 = glideslopeDeviation(sensors.nav1);
   const cdi2 = courseDeviation(sensors.nav2);
   const route = useMemo(() => buildRoute(scenario), [scenario]);
+  const glass = panelOf(scenario.options) === 'glass';
+  const iasCmdKt = state.panel.iasCmdKt;
+  const minimums = useMemo(
+    () => activeMinimums(scenario.procedure, scenario.options.gsOutOfService, iasCmdKt),
+    [scenario, iasCmdKt],
+  );
 
   return (
     <div className="flight" data-tick={state.tick}>
@@ -176,29 +185,44 @@ export function Flight({
           send={send}
           idents={{ 1: sensors.nav1.ident, 2: sensors.nav2.ident }}
         />
-        <div className="inst-grid">
-          <Asi iasKt={state.aircraft.iasKt} />
-          <div className="inst-with-knob">
-            <Hsi
-              headingMagDeg={sensors.headingMagDeg}
-              headingBugDeg={state.panel.headingBugDeg}
-              courseDeg={state.radios.nav1.obsDeg}
-              deviation={cdi1}
-              glideslope={gs1}
-            />
-            <CourseKnob radio={1} state={state} send={send} />
+        {glass ? (
+          <div className="glass-row">
+            <Pfd data={pfdData(state, sensors, scenario.world, minimums)} />
+            <div className="glass-side">
+              <GlassControls state={state} send={send} />
+              <div className="glass-knobs">
+                <CourseKnob radio={1} state={state} send={send} label="CRS1" />
+                <CourseKnob radio={2} state={state} send={send} label="CRS2" />
+              </div>
+              <DmeUnit nm={sensors.dmeNm} state={state} send={send} />
+              <Timer state={state} send={send} />
+            </div>
           </div>
-          <Altimeter altitudeFt={state.aircraft.altitudeFt} />
-          <div className="dme-timer">
-            <DmeUnit nm={sensors.dmeNm} state={state} send={send} />
-            <Timer state={state} send={send} />
+        ) : (
+          <div className="inst-grid">
+            <Asi iasKt={state.aircraft.iasKt} />
+            <div className="inst-with-knob">
+              <Hsi
+                headingMagDeg={sensors.headingMagDeg}
+                headingBugDeg={state.panel.headingBugDeg}
+                courseDeg={state.radios.nav1.obsDeg}
+                deviation={cdi1}
+                glideslope={gs1}
+              />
+              <CourseKnob radio={1} state={state} send={send} />
+            </div>
+            <Altimeter altitudeFt={state.aircraft.altitudeFt} />
+            <div className="dme-timer">
+              <DmeUnit nm={sensors.dmeNm} state={state} send={send} />
+              <Timer state={state} send={send} />
+            </div>
+            <div className="inst-with-knob">
+              <Cdi obsDeg={state.radios.nav2.obsDeg} deviation={cdi2} />
+              <CourseKnob radio={2} state={state} send={send} />
+            </div>
+            <Vsi vsFpm={state.aircraft.vsFpm} />
           </div>
-          <div className="inst-with-knob">
-            <Cdi obsDeg={state.radios.nav2.obsDeg} deviation={cdi2} />
-            <CourseKnob radio={2} state={state} send={send} />
-          </div>
-          <Vsi vsFpm={state.aircraft.vsFpm} />
-        </div>
+        )}
         <div className="controls-row">
           <ApPanel state={state} send={send} />
           <PowerSelector state={state} send={send} />

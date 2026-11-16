@@ -1,0 +1,85 @@
+/* Glass PFD attitude, tapes and VSI. Uses the --g-* tokens from glass.css. */
+
+/* Attitude */
+.g-sky {
+  fill: var(--g-sky);
+}
+.g-ground {
+  fill: var(--g-ground);
+}
+.g-horizon {
+  stroke: var(--g-white);
+  stroke-width: 2;
+}
+.g-ladder {
+  stroke: var(--g-white);
+  stroke-width: 1.5;
+}
+.g-ladder-text {
+  fill: var(--g-white);
+  font-size: 10px;
+  font-weight: 600;
+}
+.g-bank-scale {
+  stroke: var(--g-white);
+  stroke-width: 1.5;
+  fill: none;
+}
+.g-bank-index {
+  fill: var(--g-white);
+}
+.g-bank-pointer {
+  fill: var(--g-symbol);
+  stroke: var(--g-black);
+  stroke-width: 1;
+}
+.g-symbol {
+  fill: var(--g-symbol);
+  stroke: var(--g-black);
+  stroke-width: 1.5;
+}
+
+/* Tapes */
+.g-tape-bg {
+  fill: var(--g-panel);
+}
+.g-tick {
+  stroke: var(--g-white);
+  stroke-width: 1.5;
+}
+.g-tape-label {
+  fill: var(--g-white);
+  font-size: 12px;
+  font-weight: 600;
+}
+.g-readout-text {
+  fill: var(--g-white);
+  font-size: 16px;
+  font-weight: 700;
+}
+.g-trend {
+  stroke: var(--g-trend);
+  stroke-width: 3;
+}
+.g-bug-shape {
+  fill: var(--g-bug);
+  stroke: var(--g-black);
+  stroke-width: 1;
+}
+.g-mins {
+  stroke: var(--g-warn);
+  stroke-width: 2;
+  fill: none;
+}
+.g-mins-text {
+  fill: var(--g-warn);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* VSI */
+.g-vsi-pointer {
+  fill: var(--g-white);
+  stroke: var(--g-black);
+  stroke-width: 1;
+}

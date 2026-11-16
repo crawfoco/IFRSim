@@ -10,10 +10,19 @@ import {
   briefing,
   buildScenario,
   type Ceiling,
+  type PanelKind,
+  panelOf,
   type Scenario,
   type ScenarioOptions,
 } from '../../sim/scenario/scenario';
 import { ChartViewer } from '../chart/ChartViewer';
+
+const PANELS: { id: PanelKind; name: string }[] = [
+  { id: 'steam', name: 'Steam gauges' },
+  { id: 'glass', name: 'Glass PFD' },
+];
+/** The panel last chosen in this visit (not stored), so going back to the briefing keeps it. */
+let lastPanel: PanelKind = 'steam';
 
 const pick = <T,>(xs: readonly T[]): T => xs[Math.floor(Math.random() * xs.length)]!;
 
@@ -44,11 +53,14 @@ export function BriefingCard({ scenario, compact }: { scenario: Scenario; compac
         </ul>
       )}
       {!compact && b.notes.length > 0 && (
-        <ul className="brief-notes">
-          {b.notes.map((n) => (
-            <li key={n}>{n}</li>
-          ))}
-        </ul>
+        <details className="brief-details" data-testid="brief-details">
+          <summary>Details about this approach chart</summary>
+          <ul className="brief-notes">
+            {b.notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+        </details>
       )}
     </section>
   );
@@ -68,6 +80,7 @@ export function Briefing({
     startId: procedure.starts[0]!.id,
     ceiling: 'above',
     gsOutOfService: false,
+    panel: lastPanel,
   });
   const scenario = useMemo(() => buildScenario(procedure, NAVDATA, opts), [procedure, opts]);
   const set = (o: Partial<ScenarioOptions>) => setOpts((p) => ({ ...p, ...o }));
@@ -103,6 +116,25 @@ export function Briefing({
                 data-testid={`start-${s.id}`}
               />
               {s.name}
+            </label>
+          ))}
+        </fieldset>
+        <fieldset className="choice choice-inline">
+          <legend>Panel</legend>
+          {PANELS.map((p) => (
+            <label key={p.id}>
+              <input
+                type="radio"
+                name="panel"
+                value={p.id}
+                checked={panelOf(opts) === p.id}
+                onChange={() => {
+                  lastPanel = p.id;
+                  set({ panel: p.id });
+                }}
+                data-testid={`panel-${p.id}`}
+              />
+              {p.name}
             </label>
           ))}
         </fieldset>

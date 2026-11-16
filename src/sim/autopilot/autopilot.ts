@@ -15,9 +15,31 @@ import {
 } from './laws';
 import { updateModes, type ApModes, type ModeContext } from './modes';
 
-/** Mode-logic view of the current situation. NAV1 is the autopilot's nav source. */
+/**
+ * The autopilot's nav source: the radio the CDI selects, and that radio's CRS. The steam panel
+ * never changes the CDI, so there it is always NAV1.
+ */
+export function apNavSource(
+  state: SimState,
+  sensors: Sensors,
+): { reading: NavReading; obsDeg: number } {
+  const src = state.panel.cdiSource;
+  switch (src) {
+    case 'NAV1':
+      return { reading: sensors.nav1, obsDeg: state.radios.nav1.obsDeg };
+    case 'NAV2':
+      return { reading: sensors.nav2, obsDeg: state.radios.nav2.obsDeg };
+    default: {
+      // A new source (e.g. GPS) must be handled here: this fails to compile until it is.
+      const unhandled: never = src;
+      throw new Error(`unhandled CDI source ${String(unhandled)}`);
+    }
+  }
+}
+
+/** Mode-logic view of the current situation, on the CDI's nav source. */
 export function modeContext(state: SimState, sensors: Sensors): ModeContext {
-  const st = sensors.nav1.station;
+  const st = apNavSource(state, sensors).reading.station;
   return {
     navKind: st?.kind ?? null,
     hasGs: st?.kind === 'LOC' && st.glidePath !== null,
@@ -54,10 +76,11 @@ export function runAutopilot(
     return { ap: state.ap, controls: { bankCmdDeg: 0, vsCmdFpm: ac.vsFpm, iasCmdKt } };
   }
 
-  const nav = sensors.nav1.indication;
-  const course = navCourseTrue(sensors.nav1, state.radios.nav1.obsDeg);
-  const gs = sensors.nav1.gs;
-  const gp = sensors.nav1.station?.kind === 'LOC' ? sensors.nav1.station.glidePath : null;
+  const src = apNavSource(state, sensors);
+  const nav = src.reading.indication;
+  const course = navCourseTrue(src.reading, src.obsDeg);
+  const gs = src.reading.gs;
+  const gp = src.reading.station?.kind === 'LOC' ? src.reading.station.glidePath : null;
   const gsAngle = gp?.angleDeg ?? 3;
 
   const ap = updateModes(

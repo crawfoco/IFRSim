@@ -24,7 +24,15 @@ export interface ScenarioOptions {
    *  comes into sight by DA/MDA; below → it does not. */
   ceiling: Ceiling;
   gsOutOfService: boolean;
+  /** Instrument panel flown (default steam). The sim does not depend on it; the debrief shows it. */
+  panel?: PanelKind;
 }
+
+/** Steam gauges (V1) or the Glass PFD (V2). */
+export type PanelKind = 'steam' | 'glass';
+
+/** The panel a scenario is flown on. */
+export const panelOf = (o: ScenarioOptions): PanelKind => o.panel ?? 'steam';
 
 export interface Weather {
   /** Actual cloud base above the threshold, and visibility. */

@@ -20,28 +20,50 @@ export function Select({
           itself, the procedure is up to you.
         </p>
       </header>
-      <ul className="select-list">
-        {procedures.map((p) => (
-          <li key={p.id}>
-            <button
-              type="button"
-              className="select-card"
-              data-testid={`pick-${p.id}`}
-              onClick={() => onPick(p)}
-            >
-              <span className="select-airport">{p.airport}</span>
-              <span className="select-name">{p.name}</span>
-              <span className="select-cycle">{chartCycleText(p)}</span>
-              <span className="select-starts">
-                {p.starts.length} start condition{p.starts.length === 1 ? '' : 's'}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div className="select-body">
+        <HowToFly />
+        <ul className="select-list">
+          {procedures.map((p) => (
+            <li key={p.id}>
+              <button
+                type="button"
+                className="select-card"
+                data-testid={`pick-${p.id}`}
+                onClick={() => onPick(p)}
+              >
+                <span className="select-airport">{p.airport}</span>
+                <span className="select-name">{p.name}</span>
+                <span className="select-cycle">{chartCycleText(p)}</span>
+                <span className="select-starts">
+                  {p.starts.length} start condition{p.starts.length === 1 ? '' : 's'}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
       <footer className="build-stamp" data-testid="build-stamp">
         {APP_NAME} {BUILD_STAMP}
       </footer>
     </main>
+  );
+}
+
+/** Always-visible quick steps beside the approach list. */
+export function HowToFly() {
+  return (
+    <aside className="how-to-fly" data-testid="how-to-fly" aria-labelledby="how-to-fly-title">
+      <h2 id="how-to-fly-title">How to fly</h2>
+      <ol>
+        <li>Pick an approach and start.</li>
+        <li>Read the briefing and the plate.</li>
+        <li>Tune and identify the navaids, then fly with the autopilot.</li>
+        <li>
+          At DA/MDA, land if the runway is in sight; otherwise press GA and fly the missed approach.
+        </li>
+        <li>Review the debrief.</li>
+      </ol>
+      <p>On the briefing, choose the Steam gauges or the Glass PFD.</p>
+    </aside>
   );
 }

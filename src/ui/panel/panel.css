@@ -70,6 +70,31 @@
   padding: 8px 0;
   cursor: pointer;
 }
+.glass-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.glass-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font:
+    700 12px system-ui,
+    sans-serif;
+  color: #e9ecef;
+  background: linear-gradient(#3a4049, #2b3037);
+  border: 1px solid #4a515b;
+  border-radius: 5px;
+  padding: 5px 0;
+  cursor: pointer;
+}
+.glass-btn-value {
+  font-size: 11px;
+  color: #3fd0e8;
+}
+.glass-btn:active,
 .ap-btn:active,
 .radio-swap:active {
   background: #22262c;

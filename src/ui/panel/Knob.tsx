@@ -1,7 +1,8 @@
 /**
  * Rotary knob. Turn it by dragging up/down, with the mouse wheel, or with the keyboard
  * (arrows = 1 step, Page Up/Down or Shift+arrow = big step). It reports step counts;
- * the parent turns those into sim commands.
+ * the parent turns those into sim commands. A knob with `onPush` is also pushed by a
+ * double-click or Enter (e.g. the HDG knob syncs the bug to the current heading).
  */
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 
@@ -17,6 +18,10 @@ export interface KnobProps {
   /** Smaller knob, e.g. the inner kHz knob. */
   small?: boolean;
   disabled?: boolean;
+  /** Push the knob (double-click or Enter). */
+  onPush?: () => void;
+  /** What a push does, shown as a tooltip and read by screen readers. */
+  pushHint?: string;
 }
 
 export function keyToSteps(e: { key: string; shiftKey: boolean }): [number, boolean] | null {
@@ -36,7 +41,16 @@ export function keyToSteps(e: { key: string; shiftKey: boolean }): [number, bool
   }
 }
 
-export function Knob({ label, valueText, onTurn, testId, small, disabled }: KnobProps) {
+export function Knob({
+  label,
+  valueText,
+  onTurn,
+  testId,
+  small,
+  disabled,
+  onPush,
+  pushHint,
+}: KnobProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [angle, setAngle] = useState(0);
   const drag = useRef<{ y: number; acc: number } | null>(null);
@@ -63,7 +77,15 @@ export function Knob({ label, valueText, onTurn, testId, small, disabled }: Knob
     return () => el.removeEventListener('wheel', onWheel);
   }, []);
 
+  const push = () => {
+    if (!disabled) onPush?.();
+  };
   const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter' && onPush) {
+      e.preventDefault();
+      push();
+      return;
+    }
     const s = keyToSteps(e);
     if (!s) return;
     e.preventDefault();
@@ -99,7 +121,10 @@ export function Knob({ label, valueText, onTurn, testId, small, disabled }: Knob
         aria-label={label}
         aria-valuetext={valueText}
         aria-disabled={disabled || undefined}
+        aria-description={pushHint}
+        title={pushHint}
         data-testid={testId}
+        onDoubleClick={onPush ? push : undefined}
         onKeyDown={onKeyDown}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}

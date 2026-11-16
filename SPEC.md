@@ -354,3 +354,188 @@ export function vorIndication(
    progresses; no remote for now.
 
 All open questions are resolved.
+
+---
+
+# V2: Glass PFD, "How to fly" and briefing tidy-up
+
+Status: approved (V2), 2026-11-15
+
+## V2 objective
+
+Let the learner fly any approach on a **Glass PFD** (a glass primary flight display in the
+style of modern integrated avionics, with original artwork) instead of the V1 steam gauges,
+chosen per flight on the briefing. Both panels run the same sim, scoring and debrief. V2 also
+adds a short "How to fly" guide to the home screen and tidies the briefing screen.
+
+## V2 user stories and acceptance criteria
+
+7. **Choose the panel.**
+   *As a learner, I want to choose steam gauges or a glass PFD so that I practise on the panel I
+   fly.*
+   - The briefing has a **Panel: Steam / Glass** choice (radio buttons, default Steam). It applies
+     to that flight; Restart and Fly again keep it.
+   - The steam panel is unchanged: same instruments, same behaviour (the autopilot always flies
+     NAV1), same test ids.
+   - The debrief shows which panel was flown. Scoring is the same for both.
+
+8. **Fly on the Glass PFD.**
+   *As a learner, I want a glass PFD with the information a real one shows so that the scan
+   transfers to the aircraft.*
+   - The PFD takes the steam instruments' area (ASI, HSI, altimeter, VSI and the NAV2 CDI). It
+     shows:
+     - **attitude**: sky/ground, pitch ladder (every 2.5°, labelled every 10°), bank scale
+       (10/20/30/45/60°) with pointer, fixed aircraft symbol. Pitch is a display pitch (see
+       "Display pitch" below);
+     - **airspeed tape**: sized for the 80–110 KIAS range (the tape spans about 60–130 kt),
+       rolling digit box, and a **trend vector** showing the speed expected in 6 s;
+     - **altitude tape**: rolling digit box, the **selected-altitude bug** and readout above the
+       tape, and the **minimums bug** (DA or MDA for the scenario and category);
+     - **VSI**: vertical-speed scale (±2000 fpm) beside the altitude tape with a pointer and
+       digits, and the selected-VS bug when VS mode is active;
+     - **HSI**: rotating compass rose with heading readout and heading bug, course pointer and CDI
+       with a two-dot deviation scale, TO/FROM, the CDI source label (**VLOC1 / VLOC2**), a NAV
+       flag when invalid, and a **glideslope indicator** when the CDI source is an ILS with a
+       valid glideslope (GS flag when tuned but invalid);
+     - **bearing pointers** BRG1 (single line) and BRG2 (double line), drawn on the HSI with the
+       CDI;
+     - **AP mode annunciator bar** across the top: AP status, lateral active (green) and armed
+       (white), vertical active (green, with the VS target) and armed (white); **GA** shown in a
+       go-around; a mode that changes **flashes for about 3 s** (a steady highlight when the user
+       prefers reduced motion);
+     - **selected-value boxes**: HDG (bug), CRS (for the current CDI source), selected ALT and
+       BARO;
+     - **minimums alert**: "MINIMUMS" shown on the PFD, and an aural alert, when the existing
+       "Minimums." callout fires (from `progress.ts`, not duplicated).
+   - It fits the same desktop (1366×860) and tablet-landscape (1024×768) viewports as V1 with no
+     page scroll or panel overflow, and keeps 60 fps (Chromium and Firefox perf tests).
+   - Its name in the UI, code and docs is **Glass PFD**. No manufacturer names, logos or
+     trademarked styling.
+
+9. **CDI and bearing sources (glass panel).**
+   *As a learner, I want to select the HSI's nav source and the bearing pointers so that I can fly
+   approaches that use two radios.*
+   - A **CDI** button toggles the HSI's nav source between VLOC1 (NAV1) and VLOC2 (NAV2).
+   - **BRG1** and **BRG2** buttons each cycle OFF → NAV1 → NAV2 → OFF.
+   - Each pointer that is on has an **info box**: the source (NAV1/NAV2), the ident when received
+     (the frequency otherwise), and DME for that radio's station when available. For a localizer,
+     or no usable station, the pointer is hidden and the box reads **NO BRG**.
+   - The pointer shows the magnetic bearing to the station (using the VOR's station declination),
+     within ±1° of the golden geometry.
+   - **The autopilot follows the CDI source.** NAV/APR track the selected radio using that radio's
+     CRS. Switching the CDI while NAV or APR is **active** drops the lateral mode to **ROL**; while
+     NAV or APR is only **armed**, the armed mode is cancelled and the active mode (e.g. HDG on a
+     vector) is kept (decided 2026-11-15). GS, active or armed, drops with APR (falling back to
+     PIT). The annunciator shows the change. The steam panel never changes the CDI source, so it keeps flying NAV1.
+   - The CDI and BRG selections are recorded in the debrief timeline.
+   - The existing **CRS1 / CRS2** knobs, the **DME** unit (with its NAV1/NAV2 source, still used
+     by the wrong-DME-source rule) and the **timer** stay as HTML controls beside the PFD. No
+     bezel, no softkeys.
+   - **Heading sync (both panels, added 2026-11-15):** double-clicking the HDG knob (or Enter
+     when it has focus) sets the heading bug to the current heading. The HDG mode button is
+     unchanged. It is a sim command (`syncHeadingBug`), so it is logged and replays exactly.
+
+10. **Know what to do (home screen).**
+    *As a first-time student, I want a short guide on the home screen so that I know what I am
+    about to do.*
+    - A **How to fly** panel on the approach select screen with five numbered steps in plain
+      words, and one line about choosing Steam or Glass:
+      1. Pick an approach and start.
+      2. Read the briefing and the plate.
+      3. Tune and identify the navaids, then fly with the autopilot.
+      4. At DA/MDA, land if the runway is in sight; otherwise press GA and fly the missed
+         approach.
+      5. Review the debrief.
+
+      "On the briefing, choose the Steam gauges or the Glass PFD."
+    - *Decided:* a compact side panel (about 260 px) to the right of the approach list, not a
+      collapsible box. It is always visible and needs no remembered state, and at 1024×768 the six
+      approach cards still fit (two columns, three rows) with no page scroll. Below 900 px wide it
+      stacks above the list.
+    - The README's "How to fly" matches it, including the panel choice.
+
+11. **Briefing tidy-up.**
+    - The briefing column is about 10% wider: desktop `minmax(420px, 620px)` (was 560 px max),
+      tablet `minmax(380px, 505px)` (was 460 px max). The plate keeps the rest and Fit still
+      works.
+    - The technical chart notes (`b.notes`) go inside a `<details>` element labelled **"Details
+      about this approach chart"**, closed by default and not remembered. The hints (`b.hints`)
+      stay visible.
+
+## V2 design notes
+
+- **Nav sources (GPS-ready).** `src/sim/nav/source.ts` defines `NavSourceId = 'NAV1' | 'NAV2'`,
+  `CdiSource = NavSourceId` and `BearingSource = NavSourceId | null` (null = OFF). Cycling is done
+  by helpers over an ordered list, so adding `'GPS'` later means adding it to the union and the
+  list, plus a reading for it, with no command or UI rework.
+- **State and commands.** `SimState.panel` gains `cdiSource` (initially `'NAV1'`), `brg1` and
+  `brg2` (initially OFF). New commands: `{ type: 'cdi' }` (next CDI source) and
+  `{ type: 'bearing'; pointer: 1 | 2 }` (next bearing source). Old command logs replay exactly.
+- **Autopilot.** A helper `apNavSource(state, sensors)` returns the reading and CRS of the CDI
+  source. `modeContext`, `runAutopilot` and the `navCourseTrue` call use it instead of the
+  hard-coded `nav1`. A pure `cdiSourceChanged(modes, ctx)` in `modes.ts` does the drop to ROL.
+- **Scoring.** The tuning, stay-tuned and DME-source rules already look at both radios and the
+  DME source, not at the CDI. A new integration test flies an ILS with the localizer on NAV2 and
+  the CDI on VLOC2, and it must score 100%. Existing tests must pass unchanged.
+- **Panel choice.** `ScenarioOptions.panel: 'steam' | 'glass'` (default steam) travels with the
+  scenario and is shown in the debrief. The sim does not branch on it.
+- **Display pitch.** The sim models bank but not pitch. A pure function in
+  `src/sim/aircraft/attitude.ts` gives a display pitch: the flight-path angle (from VS and TAS)
+  plus a nominal angle of attack that falls from about 4° at 80 kt to 2° at 110 kt, clamped to
+  ±20°. The flight model does not change. Tested.
+- **Speed trend.** Also pure: the speed in 6 s, from the model's 2 kt/s acceleration toward the
+  power-selector target (`clamp(cmd − ias, ±12 kt)`); hidden below 1 kt.
+- **Bearing to station.** A pure receiver function returns the magnetic bearing to a tuned VOR
+  (station declination), and null for a localizer or out of range. Golden tests at known
+  positions.
+- **Minimums.** The bug value comes from `activeMinimums` (already exported). The PFD alert shows
+  while the latest `minimums` event is less than 5 s old (sim time) and the flight has not gone
+  missed or ended; the aural alert plays once per event. Both read `progress.events`, so nothing
+  in `progress.ts` is duplicated.
+- **Aural alert.** `src/ui/audio/alert.ts`: a short two-tone chime made with Web Audio, sharing the
+  ident's `AudioContext`. No audio files and no speech synthesis (browser voices may use the
+  network). Silent where audio is unavailable.
+- **BARO.** There is no altimeter-setting model. *Decided:* the BARO box shows a fixed
+  **29.92 IN** and the altitude tape shows the sim's altitude, as now. Alternatives: (b) the
+  briefing weather reports a random altimeter setting and the BARO box shows it already set
+  (display only, no altitude error); (c) a BARO knob the learner must set, with an altitude error
+  when it is wrong (changes the sim and needs new scoring; not recommended for V2).
+- **Rendering.** SVG components under `src/ui/instruments/glass/`, driven by props like the V1
+  instruments. Tapes and the rose move by `transform` only, and static parts are memoised, to keep
+  60 fps.
+- **Annunciator on the glass panel.** The PFD bar shows the modes, so the AP panel's own
+  annunciator row is hidden on the glass panel. It stays on steam.
+
+## V2 testing
+
+- Unit (test-first): nav-source cycling, the CDI and BRG commands, the AP following the CDI
+  source, the CDI switch (NAV/APR active → ROL, armed → cancelled with HDG kept, GS dropped), bearing to station, display pitch,
+  speed trend, the scenario panel option.
+- Integration: the NAV2-coupled ILS run scores 100%; every V1 test still passes.
+- UI (Vitest): glass components render the right values (tapes, bugs, boxes, NO BRG, flash class);
+  the How to fly section renders; the briefing notes are in a closed `<details>`.
+- E2E: fly KCFO ILS 26 on the glass panel to minimums (alert shown); a CDI switch drops NAV to
+  ROL; a BRG pointer points at the station; the glass flight screen, the home screen and the
+  briefing screen fit desktop and tablet; 60 fps with the glass panel (Chromium and Firefox).
+- Dev gallery: glass PFD states (level cruise, ILS established, LOC only with MDA, VOR FROM with
+  BRG pointers, NO BRG, minimums alert, GA, flags).
+
+## V2 success criteria
+
+1. A learner can fly every start condition of all six procedures on the glass panel, as on steam.
+2. The steam panel behaves exactly as in V1 (all V1 tests pass unchanged).
+3. AP coupling to the CDI source and the drop to ROL are covered by unit and e2e tests.
+4. BRG pointers agree with the golden bearing within ±1°.
+5. The layout and performance criteria (no overflow, 60 fps, the sim keeps up at 4×) hold on the
+   glass panel.
+6. `prettier`, `tsc`, `eslint`, unit and e2e tests all pass.
+
+## V2 out of scope
+
+MFD, engine strip, GPS/RNAV (the types are ready for it), bezel and softkeys, an altimeter-setting
+model, wind, synthetic vision, flight director.
+
+## V2 open questions
+
+1. ~~**BARO.**~~ *Resolved:* a fixed 29.92 IN display; no altimeter-setting model.
+2. ~~**How to fly placement.**~~ *Resolved:* a compact side panel beside the approach list.

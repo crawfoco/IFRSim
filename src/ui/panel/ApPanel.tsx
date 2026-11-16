@@ -66,6 +66,8 @@ export function ApPanel({ state, send }: { state: SimState; send: Send }) {
             valueText={`heading bug ${formatCourse(state.panel.headingBugDeg)}`}
             testId="knob-hdg"
             onTurn={(n, big) => send((s) => headingKnob(s, n, big))}
+            onPush={() => send({ type: 'syncHeadingBug' })}
+            pushHint="Double-click (or Enter) to set the bug to the current heading"
           />
           <Knob
             label="ALT"

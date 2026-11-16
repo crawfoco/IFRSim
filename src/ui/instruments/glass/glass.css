@@ -1,0 +1,86 @@
+/*
+ * Glass PFD colours. Dark display in both themes, like a real screen. Original palette.
+ * Components use only these classes (prefix g-); add new ones here, grouped by component.
+ */
+.glass-pfd {
+  --g-sky: #2f6fb8;
+  --g-ground: #6b4a2b;
+  --g-white: #f2f4f7;
+  --g-black: #05070a;
+  --g-panel: rgba(8, 12, 18, 0.72);
+  --g-line: #9aa4b2;
+  --g-symbol: #ffcc33; /* own-aircraft symbol, bank pointer */
+  --g-bug: #3fd0e8; /* heading/altitude/VS bugs and selected values */
+  --g-vloc: #3ee07a; /* CDI and course pointer from a VLOC source */
+  --g-brg: #9cc2ff; /* bearing pointers and their boxes */
+  --g-active: #3ee07a; /* active AP modes */
+  --g-armed: #f2f4f7; /* armed AP modes */
+  --g-warn: #ffcc33; /* MINIMUMS */
+  --g-flag: #ff4d4d;
+  --g-trend: #d070ff; /* speed trend vector */
+  margin: 0;
+  width: 100%;
+}
+.glass-pfd svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--g-black);
+  border-radius: 6px;
+  font-family: system-ui, sans-serif;
+}
+
+/* Shared */
+.g-text {
+  fill: var(--g-white);
+  font-size: 13px;
+  font-weight: 600;
+}
+.g-text-sm {
+  fill: var(--g-white);
+  font-size: 10px;
+  font-weight: 600;
+}
+.g-line {
+  stroke: var(--g-white);
+  stroke-width: 1.5;
+  fill: none;
+}
+.g-box {
+  fill: var(--g-panel);
+  stroke: var(--g-line);
+  stroke-width: 1;
+}
+.g-readout {
+  fill: var(--g-black);
+  stroke: var(--g-white);
+  stroke-width: 1.5;
+}
+.g-bug {
+  fill: var(--g-bug);
+}
+.g-bug-text {
+  fill: var(--g-bug);
+  font-size: 12px;
+  font-weight: 700;
+}
+.g-flag {
+  fill: var(--g-flag);
+}
+.g-flag-text {
+  fill: var(--g-flag);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Bearing info boxes */
+.g-brg-text {
+  fill: var(--g-brg);
+  font-size: 12px;
+  font-weight: 700;
+}
+.g-brg-nobrg {
+  fill: var(--g-white);
+  font-size: 12px;
+  font-weight: 700;
+}

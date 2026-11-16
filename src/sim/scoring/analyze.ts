@@ -70,8 +70,19 @@ function modeText(s: SimState): string {
   return `AP ${a.lateral} / ${a.vertical}${armed ? ` (armed ${armed})` : ''}`;
 }
 
-function commandText(c: Command): string | null {
+const VLOC = { NAV1: 'VLOC1', NAV2: 'VLOC2' } as const;
+
+/** Timeline text for a command, given the state after it was applied. */
+function commandText(c: Command, after: SimState): string | null {
   switch (c.type) {
+    case 'syncHeadingBug':
+      return `HDG bug synced to ${String(after.panel.headingBugDeg || 360).padStart(3, '0')}`;
+    case 'cdi':
+      return `CDI ${VLOC[after.panel.cdiSource]}`;
+    case 'bearing': {
+      const src = c.pointer === 1 ? after.panel.brg1 : after.panel.brg2;
+      return `BRG${c.pointer} ${src ?? 'off'}`;
+    }
     case 'swap':
       return `NAV${c.radio} swap`;
     case 'ident':
@@ -142,7 +153,7 @@ export function analyzeFlight(
     if (mode !== lastMode) timeline.push({ tick: state.tick, kind: 'mode', text: mode });
     lastMode = mode;
     for (const c of commands) {
-      const t = commandText(c);
+      const t = commandText(c, state);
       if (t) timeline.push({ tick: state.tick, kind: 'radio', text: t });
     }
     for (const e of progress.events.slice(progressEvents))
