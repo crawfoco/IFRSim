@@ -30,8 +30,8 @@ export function Select({
         <h1>{APP_NAME}</h1>
         <p className="disclaimer">{TRAINING_DISCLAIMER}</p>
         <p className="select-intro">
-          Choose an approach. You fly it by driving the autopilot and nav radios; the aircraft flies
-          itself, the procedure is up to you.
+          Choose an approach. You fly it by driving the autopilot, nav radios and GPS; the aircraft
+          flies itself, the procedure is up to you.
         </p>
       </header>
       <div className="select-body">
@@ -98,13 +98,20 @@ export function HowToFly() {
       <ol>
         <li>Pick an approach and start.</li>
         <li>Read the briefing and the plate.</li>
-        <li>Tune and identify the navaids, then fly with the autopilot.</li>
+        <li>
+          Tune and identify the navaids, or load the approach in the GPS, then fly with the
+          autopilot.
+        </li>
         <li>
           At DA/MDA, if the runway is in sight, continue and the sim lands automatically; if not,
           press GA and fly the missed approach.
         </li>
         <li>Review the debrief.</li>
       </ol>
+      <p>
+        RNAV (GPS): PROC, pick the transition (and whether to hold at the IAF), LOAD + ACTIVATE; CDI
+        on GPS, then NAV and APR. SUSP (steam) or GA (glass) starts the missed approach.
+      </p>
       <p>On the briefing, choose the Steam gauges or the Glass PFD.</p>
     </aside>
   );

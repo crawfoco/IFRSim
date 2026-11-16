@@ -889,13 +889,16 @@ scope".
 
 ## V3 success criteria
 
-1. A learner can fly every start condition of the seven RNAV plates on both panels, to DA/MDA or
-   through the missed approach into the hold.
+1. A learner can fly every start condition of the nine RNAV plates and the three radio plates
+   added in V3 (decision 14) on both panels, to DA/MDA or through the missed approach into the
+   hold.
 2. Golden tests at every fix agree within ±0.01 NM for GPS cross-track and ±0.1° for desired
    track. GP deviation agrees within ±0.02°.
 3. Perfect runs score 100%. Each bad run fails exactly the expected rule.
 4. Determinism, layout, 60 fps and the "sim keeps up at 4×" criteria hold with the GPS.
-5. Every V1/V2 test passes unchanged. `prettier`, `tsc`, `eslint`, unit and e2e tests pass.
+5. Every V1/V2 test passes, changed only where a V3 decision changed the behaviour it checks
+   (offset and higher starts, `assigned-altitude`, reversal sequencing, start and procedure
+   counts). `prettier`, `tsc`, `eslint`, unit and e2e tests pass.
 
 ## V3 out of scope
 
