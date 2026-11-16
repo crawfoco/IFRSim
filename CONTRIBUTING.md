@@ -9,8 +9,9 @@ has to be *right*: a wrong frequency or altitude teaches a wrong habit.
 - **Small fixes** (typos, obvious bugs): open a pull request directly.
 - **Anything bigger** (new feature, new approach, behaviour change): open an
   issue first so we can agree on the approach before you spend time on it.
-- The product scope lives in [SPEC.md](SPEC.md) and the roadmap in
-  [tasks/todo.md](tasks/todo.md). Features outside the spec need discussion first.
+- The product scope lives in [SPEC.md](SPEC.md), and planned work is tracked
+  in [GitHub Issues](https://github.com/crawfoco/IFRSim/issues). Features
+  outside the spec need discussion first.
 
 ## Setup
 
