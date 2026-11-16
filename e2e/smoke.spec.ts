@@ -10,5 +10,7 @@ test('home page renders offline with the training disclaimer', async ({ page }) 
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'IFRSim' })).toBeVisible();
   await expect(page.getByText(/not for navigation/i)).toBeVisible();
+  // Build stamp: "IFRSim v1.2.3 · <commit or dev>[ · date]".
+  await expect(page.getByTestId('build-stamp')).toHaveText(/^IFRSim v\d+\.\d+\.\d+ · \S+/);
   expect(externalRequests).toEqual([]);
 });

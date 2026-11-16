@@ -4,6 +4,7 @@
  * profile against distance to the threshold, event timeline, and a replay at 1×, 4× or 16×.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { BUILD_STAMP } from '../../app-info';
 import type { LoggedCommand } from '../../sim/recorder';
 import { activeMinimums, type Scenario } from '../../sim/scenario/scenario';
 import { analyzeFlight } from '../../sim/scoring/analyze';
@@ -229,6 +230,9 @@ export function Debrief({
               </li>
             ))}
           </ol>
+          <footer className="build-stamp" data-testid="debrief-build-stamp">
+            {BUILD_STAMP}
+          </footer>
         </section>
       </main>
     </div>
