@@ -246,6 +246,12 @@ body {
   color: var(--muted);
 }
 
+.build-stamp {
+  margin-top: 16px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
 /* Briefing */
 .briefing-screen {
   display: grid;

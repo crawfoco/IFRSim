@@ -25,6 +25,11 @@ body:
     validations:
       required: true
   - type: input
+    id: version
+    attributes:
+      label: IFRSim version
+      description: Shown in small text at the bottom of the approach list.
+  - type: input
     id: browser
     attributes:
       label: Browser and device

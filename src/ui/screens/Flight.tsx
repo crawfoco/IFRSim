@@ -1,5 +1,5 @@
 /** Flight screen: briefing and plate on the left, instrument panel and autopilot on the right. */
-import { TRAINING_DISCLAIMER } from '../../app-info';
+import { BUILD_STAMP, TRAINING_DISCLAIMER } from '../../app-info';
 import { useMemo } from 'react';
 import { TIME_SCALES, type LoggedCommand } from '../../sim/recorder';
 import { buildRoute } from '../../sim/scoring/sequencer';
@@ -59,7 +59,9 @@ export function Flight({
         <h1>
           {scenario.procedure.airport} {scenario.procedure.name}
         </h1>
-        <p className="disclaimer">{TRAINING_DISCLAIMER}</p>
+        <p className="disclaimer" title={BUILD_STAMP}>
+          {TRAINING_DISCLAIMER}
+        </p>
         <div className="sim-controls" role="group" aria-label="Simulation">
           <button
             type="button"

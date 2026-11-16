@@ -27,6 +27,12 @@ body:
         1. Select ...
         2. Arm APR ...
   - type: input
+    id: version
+    attributes:
+      label: IFRSim version
+      description: Shown in small text at the bottom of the approach list.
+      placeholder: e.g. v1.0.0 · a740789 · 2026-11-16
+  - type: input
     id: browser
     attributes:
       label: Browser and device

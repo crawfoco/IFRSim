@@ -25,9 +25,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Record build date
+        run: echo "VITE_BUILD_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
       - run: npm run build
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
+          # Shown in the app as the build stamp, e.g. "v1.0.0 · a740789 · 2026-11-16".
+          VITE_BUILD_SHA: ${{ github.sha }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
