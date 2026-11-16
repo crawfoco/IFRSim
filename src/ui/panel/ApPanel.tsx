@@ -15,36 +15,62 @@ const BUTTONS: { id: ApButton; name: string }[] = [
 
 const fmtVs = (fpm: number) => (fpm > 0 ? `+${fpm}` : String(fpm));
 
-export function ApPanel({ state, send }: { state: SimState; send: Send }) {
+export function ApPanel({
+  state,
+  send,
+  annunciator = true,
+}: {
+  state: SimState;
+  send: Send;
+  /** Show the panel's mode annunciator; off on the glass panel, where the PFD shows the modes. */
+  annunciator?: boolean;
+}) {
   const a = annunciation(state.ap, state.ap.navKind);
   const vsMode = state.ap.vertical === 'VS' && state.ap.engaged;
   return (
     <section className="ap" aria-label="Autopilot">
-      <div
-        className="ap-annunciator"
-        role="status"
-        aria-label="Autopilot modes"
-        data-testid="annunciator"
-      >
-        <span className={`ann ann-ap${a.ap ? ' on' : ''}`} data-testid="ann-ap">
-          AP
-        </span>
-        <span className="ann ann-active" data-testid="ann-lateral">
-          {a.lateral ?? ''}
-        </span>
-        <span className="ann ann-armed" data-testid="ann-lateral-armed">
-          {a.lateralArmed ?? ''}
-        </span>
-        <span className="ann ann-active" data-testid="ann-vertical">
-          {a.vertical === 'VS' ? `VS ${fmtVs(state.ap.vsRefFpm)}` : (a.vertical ?? '')}
-        </span>
-        <span className="ann ann-armed" data-testid="ann-vertical-armed">
-          {a.verticalArmed.join(' ')}
-        </span>
-        <span className="ann ann-sel" data-testid="ann-alt-sel">
-          {state.panel.altPreselectFt.toLocaleString('en-US')} FT
-        </span>
-      </div>
+      {annunciator && (
+        <div
+          className="ap-annunciator"
+          role="status"
+          aria-label="Autopilot modes"
+          data-testid="annunciator"
+        >
+          {/* Modes on the left; one selected-value window above each knob on the right. */}
+          <div className="ap-modes">
+            <span className={`ann ann-ap${a.ap ? ' on' : ''}`} data-testid="ann-ap">
+              AP
+            </span>
+            <span className="ann ann-active" data-testid="ann-lateral">
+              {a.lateral ?? ''}
+            </span>
+            <span className="ann ann-armed" data-testid="ann-lateral-armed">
+              {a.lateralArmed ?? ''}
+            </span>
+            <span className="ann ann-active" data-testid="ann-vertical">
+              {a.vertical ?? ''}
+            </span>
+            <span className="ann ann-armed" data-testid="ann-vertical-armed">
+              {a.verticalArmed.join(' ')}
+            </span>
+          </div>
+          <div className="ap-sel">
+            <span className="ann ann-sel" title="Selected heading" data-testid="ann-hdg-sel">
+              {formatCourse(state.panel.headingBugDeg)}°
+            </span>
+            <span className="ann ann-sel" title="Selected altitude, feet" data-testid="ann-alt-sel">
+              {state.panel.altPreselectFt.toLocaleString('en-US')}
+            </span>
+            <span
+              className="ann ann-sel"
+              title="Selected vertical speed, feet per minute (VS mode)"
+              data-testid="ann-vs-sel"
+            >
+              {vsMode ? fmtVs(state.ap.vsRefFpm) : ''}
+            </span>
+          </div>
+        </div>
+      )}
       <div className="ap-row">
         <div className="ap-buttons">
           {BUTTONS.map((b) => (
@@ -66,6 +92,8 @@ export function ApPanel({ state, send }: { state: SimState; send: Send }) {
             valueText={`heading bug ${formatCourse(state.panel.headingBugDeg)}`}
             testId="knob-hdg"
             onTurn={(n, big) => send((s) => headingKnob(s, n, big))}
+            onPush={() => send({ type: 'syncHeadingBug' })}
+            pushHint="Double-click (or Enter) to set the bug to the current heading"
           />
           <Knob
             label="ALT"

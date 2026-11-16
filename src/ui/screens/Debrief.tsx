@@ -6,10 +6,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BUILD_STAMP } from '../../app-info';
 import type { LoggedCommand } from '../../sim/recorder';
-import { activeMinimums, type Scenario } from '../../sim/scenario/scenario';
+import { activeMinimums, panelOf, type Scenario } from '../../sim/scenario/scenario';
 import { analyzeFlight } from '../../sim/scoring/analyze';
 import { clock } from '../../sim/scoring/rules/types';
 import { ChartViewer } from '../chart/ChartViewer';
+import { fitPlate, PLATE_CALIBRATION } from '../chart/overlay';
+import { PlateTrack } from '../chart/PlateTrack';
 import { finalProfile } from '../map/finalProfile';
 import { FinalProfileView } from '../map/FinalProfileView';
 import { PlanView } from '../map/PlanView';
@@ -84,6 +86,20 @@ export function Debrief({
     () => activeMinimums(scenario.procedure, scenario.options.gsOutOfService, scenario.start.iasKt),
     [scenario],
   );
+  const plateOverlay = useMemo(() => {
+    const cal = PLATE_CALIBRATION[scenario.procedure.id];
+    if (!cal) return null;
+    const fit = fitPlate(cal, scenario);
+    const track = a.samples.map((x) => ({ latDeg: x.latDeg, lonDeg: x.lonDeg }));
+    return {
+      errorNm: Math.max(...fit.residuals.map((r) => r.px)) / fit.scalePxPerNm,
+      overlay: {
+        width: cal.imageW,
+        height: cal.imageH,
+        content: <PlateTrack cal={cal} fit={fit} track={track} />,
+      },
+    };
+  }, [scenario, a.samples]);
   const fp = useMemo(
     () => finalProfile(scenario, mins, a.sequencer.route, a.samples),
     [scenario, mins, a],
@@ -125,59 +141,69 @@ export function Debrief({
               </button>
             ))}
           </div>
+          {/* Plan: the track, replay and profiles. Plate: the plate alone, using the whole column. */}
           {leftTab === 'plan' ? (
-            <PlanView
-              scenario={scenario}
-              route={a.sequencer.route}
-              track={a.samples}
-              cursor={replay.index}
-            />
+            <>
+              <PlanView
+                scenario={scenario}
+                route={a.sequencer.route}
+                track={a.samples}
+                cursor={replay.index}
+              />
+              <div className="replay" role="group" aria-label="Replay">
+                <button type="button" onClick={replay.toggle} data-testid="replay-play">
+                  {replay.playing ? 'Pause' : 'Replay'}
+                </button>
+                <div className="seg" role="radiogroup" aria-label="Replay speed">
+                  {REPLAY_SPEEDS.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      role="radio"
+                      aria-checked={replay.speed === s}
+                      className={`seg-btn${replay.speed === s ? ' on' : ''}`}
+                      onClick={() => replay.setSpeed(s)}
+                      data-testid={`replay-${s}`}
+                    >
+                      {s}×
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={Math.max(0, a.samples.length - 1)}
+                  value={replay.index}
+                  onChange={(e) => replay.seek(Number(e.target.value))}
+                  aria-label="Replay position"
+                  data-testid="replay-scrub"
+                />
+                <span className="replay-time" data-testid="replay-time">
+                  {cur
+                    ? `${clock(cur.tick)} · ${Math.round(cur.altitudeFt).toLocaleString('en-US')} ft`
+                    : ''}
+                </span>
+              </div>
+              <ProfileView
+                samples={a.samples}
+                minimums={{ label: `${mins.kind} ${mins.altFt}`, altFt: mins.altFt }}
+                cursor={replay.index}
+              />
+              {a.samples.length >= 2 && (
+                <FinalProfileView data={fp} minimums={mins} cursor={replay.index} />
+              )}
+            </>
           ) : (
             <div className="debrief-plate">
-              <ChartViewer procedure={scenario.procedure} />
+              {plateOverlay && (
+                <p className="debrief-overlay-note" data-testid="plate-track-note">
+                  Your track on the plan view (fitted to the plate within about{' '}
+                  {plateOverlay.errorNm.toFixed(1)} NM). Plates draw holds and procedure turns
+                  schematically.
+                </p>
+              )}
+              <ChartViewer procedure={scenario.procedure} overlay={plateOverlay?.overlay} />
             </div>
-          )}
-          <div className="replay" role="group" aria-label="Replay">
-            <button type="button" onClick={replay.toggle} data-testid="replay-play">
-              {replay.playing ? 'Pause' : 'Replay'}
-            </button>
-            <div className="seg" role="radiogroup" aria-label="Replay speed">
-              {REPLAY_SPEEDS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  role="radio"
-                  aria-checked={replay.speed === s}
-                  className={`seg-btn${replay.speed === s ? ' on' : ''}`}
-                  onClick={() => replay.setSpeed(s)}
-                  data-testid={`replay-${s}`}
-                >
-                  {s}×
-                </button>
-              ))}
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={Math.max(0, a.samples.length - 1)}
-              value={replay.index}
-              onChange={(e) => replay.seek(Number(e.target.value))}
-              aria-label="Replay position"
-              data-testid="replay-scrub"
-            />
-            <span className="replay-time" data-testid="replay-time">
-              {cur
-                ? `${clock(cur.tick)} · ${Math.round(cur.altitudeFt).toLocaleString('en-US')} ft`
-                : ''}
-            </span>
-          </div>
-          <ProfileView
-            samples={a.samples}
-            minimums={{ label: `${mins.kind} ${mins.altFt}`, altFt: mins.altFt }}
-            cursor={replay.index}
-          />
-          {a.samples.length >= 2 && (
-            <FinalProfileView data={fp} minimums={mins} cursor={replay.index} />
           )}
         </section>
 
@@ -199,6 +225,9 @@ export function Debrief({
             {scenario.options.ceiling === 'above'
               ? `the runway came into sight by the ${mins.kind}.`
               : `below minimums; the runway was not in sight at the ${mins.kind}.`}
+          </p>
+          <p className="debrief-weather" data-testid="debrief-panel">
+            Panel: {panelOf(scenario.options) === 'glass' ? 'Glass PFD' : 'Steam gauges'}
           </p>
           <table className="score-table" data-testid="score-table">
             <tbody>

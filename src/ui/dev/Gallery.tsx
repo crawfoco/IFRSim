@@ -7,6 +7,8 @@ import { Hsi, type HsiProps } from '../instruments/Hsi';
 import { OutsideView } from '../instruments/OutsideView';
 import { Vsi } from '../instruments/Vsi';
 import '../instruments/instruments.css';
+import { Pfd } from '../instruments/glass/Pfd';
+import { GLASS_CASES } from './glass-cases';
 
 const HSI_CASES: { title: string; props: HsiProps }[] = [
   {
@@ -74,6 +76,16 @@ export function Gallery() {
   return (
     <main className="gallery">
       <h1>Instrument gallery</h1>
+      <h2>Glass PFD</h2>
+      <section className="gallery-grid gallery-glass">
+        {GLASS_CASES.map((c) => (
+          <div key={c.title} className="gallery-cell">
+            <Pfd data={c.data} modes={c.modes ?? null} minimumsAlert={c.minimumsAlert ?? false} />
+            <p>{c.title}</p>
+          </div>
+        ))}
+      </section>
+      <h2>Steam gauges</h2>
       <section className="gallery-grid">
         {HSI_CASES.map((c) => (
           <div key={c.title} className="gallery-cell">

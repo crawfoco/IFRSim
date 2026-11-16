@@ -98,9 +98,47 @@ describe('panel rendering', () => {
     expect(html).toMatch(/data-testid="ann-ap"[^>]*>AP</);
     expect(html).toMatch(/data-testid="ann-lateral"[^>]*>HDG</);
     expect(html).toMatch(/data-testid="ann-lateral-armed"[^>]*>VOR</);
-    expect(html).toMatch(/data-testid="ann-vertical"[^>]*>VS -500</);
+    // The vertical mode reads just VS; its target is in the VS window above the VS knob.
+    expect(html).toMatch(/data-testid="ann-vertical"[^>]*>VS</);
+    expect(html).toMatch(/data-testid="ann-vs-sel"[^>]*>-500</);
     expect(html).toMatch(/data-testid="ann-vertical-armed"[^>]*>ALT</);
-    expect(html).toContain('7,000 FT');
+    expect(html).toMatch(/data-testid="ann-alt-sel"[^>]*>7,000</);
+  });
+
+  it('shows the selected heading (bug) as a number, AP on or off', () => {
+    const off = renderToStaticMarkup(
+      <ApPanel state={run(s0, { type: 'headingBug', deg: 293 })} send={noop} />,
+    );
+    expect(off).toMatch(/data-testid="ann-hdg-sel"[^>]*>293°</);
+    const on = renderToStaticMarkup(
+      <ApPanel
+        state={run(s0, { type: 'button', button: 'AP' }, { type: 'headingBug', deg: 5 })}
+        send={noop}
+      />,
+    );
+    expect(on).toMatch(/data-testid="ann-hdg-sel"[^>]*>005°</);
+    expect(
+      renderToStaticMarkup(
+        <ApPanel state={run(s0, { type: 'headingBug', deg: 360 })} send={noop} />,
+      ),
+    ).toMatch(/data-testid="ann-hdg-sel"[^>]*>360°</);
+  });
+
+  it('the selected-value windows sit in knob order (HDG, ALT, VS); VS is blank outside VS mode', () => {
+    const html = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    const order = ['ann-hdg-sel', 'ann-alt-sel', 'ann-vs-sel'].map((id) => html.indexOf(id));
+    expect(order.every((i) => i > 0)).toBe(true);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    expect(html).toMatch(/data-testid="ann-vs-sel"[^>]*><\/span>/);
+    const knobs = ['knob-hdg', 'knob-alt', 'knob-vs'].map((id) => html.indexOf(id));
+    expect([...knobs].sort((a, b) => a - b)).toEqual(knobs);
+  });
+
+  it('the HDG knob tells the learner a double-click syncs the bug', () => {
+    const html = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    expect(html).toMatch(
+      /title="Double-click \(or Enter\) to set the bug[^"]*"[^>]*data-testid="knob-hdg"/,
+    );
   });
 
   it('shows active and standby frequencies', () => {

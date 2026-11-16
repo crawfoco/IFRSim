@@ -5,6 +5,8 @@ import {
   activeMinimums,
   briefing,
   buildScenario,
+  pickCeiling,
+  rerollWeather,
   type ScenarioOptions,
 } from '../../../src/sim/scenario/scenario';
 import { nav } from '../helpers';
@@ -61,9 +63,8 @@ describe('building a scenario', () => {
     expect(b.minimums).toMatch(/S-LOC 26, category B at 100 KIAS: MDA 5,900 ft/);
     expect(b.missedApproach).toMatch(/^Climb to 6100/);
     expect(b.notes).toContain('DME required.');
-    expect(b.hints).toEqual([
-      expect.stringMatching(/^Set the HSI course \(CRS\) to the localizer course, 263°/),
-    ]);
+    // The CRS hint moved to the debrief (an informational item when CRS was set off the LOC).
+    expect(b.hints).toEqual([]);
   });
 });
 
@@ -142,7 +143,7 @@ describe('scenario end conditions (KCFO)', () => {
     expect(f.until(() => f.alt < 6000, 900)).toBe(true);
     f.send({ type: 'altPreselect', ft: 7200 }, { type: 'button', button: 'GA' });
     expect(f.until(() => f.progress.phase === 'missed', 1)).toBe(true);
-    expect(f.progress.callout).toMatch(/^Going missed\. Climb to 6100/);
+    expect(f.progress.callout).toBe('Going missed.'); // the missed approach is read from the plate
     expect(f.r.state.ap).toMatchObject({ engaged: true, lateral: 'ROL', vertical: 'GA' });
     expect(f.until(() => f.r.state.aircraft.vsFpm > 700, 10)).toBe(true);
     // ALT preselect still captures out of the GA climb.
@@ -199,6 +200,28 @@ describe('scenario end conditions (KCFO)', () => {
     expect(f.progress.phase).toBe('missed');
     lap([173, 83]); // left turn outbound from the fix
     expect(f.progress).toMatchObject({ phase: 'ended', outcome: 'missedComplete' });
+  });
+});
+
+describe('weather at minimums: random or chosen on the briefing', () => {
+  it('Restart keeps a chosen outcome and re-rolls a random one', async () => {
+    const { procedureById, NAVDATA } = await import('../../../src/procedures');
+    const p = procedureById('kcfo-ils26')!;
+    const base = { startId: 'vectors-final', gsOutOfService: false } as const;
+    const chosen = buildScenario(p, NAVDATA, { ...base, ceiling: 'below', weatherPick: 'below' });
+    for (const r of [0, 0.3, 0.7, 0.99])
+      expect(rerollWeather(chosen, NAVDATA, r).options.ceiling).toBe('below');
+    const random = buildScenario(p, NAVDATA, { ...base, ceiling: 'below' });
+    expect(rerollWeather(random, NAVDATA, 0.1).options.ceiling).toBe('above');
+    expect(rerollWeather(random, NAVDATA, 0.9).options.ceiling).toBe('below');
+  });
+
+  it('pickCeiling: a chosen outcome wins; random uses the roll', () => {
+    expect(pickCeiling('above', 0.9)).toBe('above');
+    expect(pickCeiling('below', 0.1)).toBe('below');
+    expect(pickCeiling('random', 0.1)).toBe('above');
+    expect(pickCeiling('random', 0.9)).toBe('below');
+    expect(pickCeiling(undefined, 0.9)).toBe('below');
   });
 });
 

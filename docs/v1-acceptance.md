@@ -14,7 +14,7 @@ acceptance").
 
 | # | Criterion | Result | Evidence |
 |---|---|---|---|
-| 1 | Every start condition of all six procedures can be flown to DA/MDA, or through the missed approach to the holding fix, with only the panel, radios and instruments | **Met** | Repo tests fly all 21 starts end to end, several through the missed approach and one hold circuit (see below) |
+| 1 | Every start condition of all six procedures can be flown to DA/MDA, or through the missed approach to the holding fix, with only the panel, radios and instruments | **Met** | Repo tests fly all 20 starts end to end, several through the missed approach and one hold circuit (see below) |
 | 2 | Needles, flags and DME agree with golden geometry to ±0.1° (VOR/LOC), ±0.02° (GS) and ±0.05 NM (DME) | **Met** | `tests/sim/nav/{vor,loc,gs,dme}.test.ts` use 0.1° / 0.02° / 0.002 NM. Chart-fix golden tests (`tests/procedures/*`) allow up to 0.5° and 0.1 NM where the chart rounds radials and DME |
 | 3 | Scripted perfect runs score 100%; each wrong run loses points on exactly the expected rule | **Met** | Perfect runs for all six procedures. Bad runs cover these rules: ident, DME source, fix order (two kinds), segment minimum (feeder, arc, step-down), hold entry, procedure-turn side, LOC and GS deviation, below DA, missed-approach turn, and a late climb past the MAP |
 | 4 | Deterministic: same scenario and inputs, same track within 1e-9 | **Met** | `tests/sim/loop.test.ts` (replay) |
@@ -24,7 +24,9 @@ acceptance").
 
 ### Starts flown by repo tests
 
-All 21 start conditions, including the new KCFO `direct-skipi`, are flown by repo tests.
+All 20 start conditions, including the new KCFO `direct-skipi`, are flown by repo tests. (This
+document first said 21; the procedures have had 20 starts since `direct-skipi` was added. Corrected
+during the V2 acceptance.)
 Most score 100%; the rest are deliberate bad runs. The tests are in `tests/integration/`
 (including `starts-*.test.ts`) and `tests/sim/scenario/starts.test.ts`.
 

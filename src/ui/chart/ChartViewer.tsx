@@ -3,7 +3,14 @@
  * reset. Keyboard: arrows pan, +/− zoom, 0 fits. Always carries the training banner and
  * the chart's cycle dates.
  */
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type KeyboardEvent,
+  type PointerEvent,
+} from 'react';
 import { TRAINING_DISCLAIMER } from '../../app-info';
 import type { Procedure } from '../../procedures/schema';
 import './chart.css';
@@ -42,7 +49,21 @@ export function chartCycleText(p: Procedure): string {
   return `${p.chart.number} ${p.chart.amendment} · valid ${fmtDate(p.chart.validFrom)} to ${fmtDate(p.chart.validTo)}`;
 }
 
-export function ChartViewer({ procedure }: { procedure: Procedure }) {
+export interface ChartOverlay {
+  /** The plate image's size in pixels: the overlay's coordinate system. */
+  width: number;
+  height: number;
+  /** SVG content in image pixels (drawn over the plate, panned and zoomed with it). */
+  content: ReactNode;
+}
+
+export function ChartViewer({
+  procedure,
+  overlay,
+}: {
+  procedure: Procedure;
+  overlay?: ChartOverlay | undefined;
+}) {
   const boxRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<View>({ x: 0, y: 0, zoom: 1 });
   const drag = useRef<{ x: number; y: number } | null>(null);
@@ -115,12 +136,27 @@ export function ChartViewer({ procedure }: { procedure: Procedure }) {
         onPointerCancel={() => (drag.current = null)}
         onKeyDown={onKeyDown}
       >
-        <img
-          src={`${import.meta.env.BASE_URL}${procedure.chart.image}`}
-          alt=""
-          draggable={false}
+        <div
+          className="chart-layer"
           style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})` }}
-        />
+        >
+          <img
+            src={`${import.meta.env.BASE_URL}${procedure.chart.image}`}
+            alt=""
+            draggable={false}
+          />
+          {overlay && (
+            <svg
+              className="chart-overlay"
+              viewBox={`0 0 ${overlay.width} ${overlay.height}`}
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              data-testid="chart-overlay"
+            >
+              {overlay.content}
+            </svg>
+          )}
+        </div>
       </div>
       <div className="chart-tools">
         <button type="button" onClick={() => zoomCentre(ZOOM_STEP)} aria-label="Zoom in">

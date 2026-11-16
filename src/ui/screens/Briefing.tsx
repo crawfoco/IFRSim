@@ -9,11 +9,27 @@ import type { Procedure } from '../../procedures/schema';
 import {
   briefing,
   buildScenario,
-  type Ceiling,
+  type PanelKind,
+  type WeatherPick,
+  panelOf,
+  pickCeiling,
   type Scenario,
   type ScenarioOptions,
 } from '../../sim/scenario/scenario';
 import { ChartViewer } from '../chart/ChartViewer';
+
+const WEATHER_PICKS: { id: WeatherPick; name: string }[] = [
+  { id: 'random', name: 'Surprise me' },
+  { id: 'above', name: 'In sight' },
+  { id: 'below', name: 'Not in sight' },
+];
+
+const PANELS: { id: PanelKind; name: string }[] = [
+  { id: 'steam', name: 'Steam gauges' },
+  { id: 'glass', name: 'Glass PFD' },
+];
+/** The panel last chosen in this visit (not stored), so going back to the briefing keeps it. */
+let lastPanel: PanelKind = 'steam';
 
 const pick = <T,>(xs: readonly T[]): T => xs[Math.floor(Math.random() * xs.length)]!;
 
@@ -31,10 +47,15 @@ export function BriefingCard({ scenario, compact }: { scenario: Scenario; compac
         <dd data-testid="brief-weather">{b.weather}</dd>
         <dt>Glideslope</dt>
         <dd data-testid="brief-gs">{b.glideslope}</dd>
-        <dt>Minimums</dt>
-        <dd data-testid="brief-minimums">{b.minimums}</dd>
-        <dt>Missed approach</dt>
-        <dd>{b.missedApproach}</dd>
+        {/* On the flight screen these come from the plate. */}
+        {!compact && (
+          <>
+            <dt>Minimums</dt>
+            <dd data-testid="brief-minimums">{b.minimums}</dd>
+            <dt>Missed approach</dt>
+            <dd>{b.missedApproach}</dd>
+          </>
+        )}
       </dl>
       {b.hints.length > 0 && (
         <ul className="brief-hints" data-testid="brief-hints">
@@ -44,11 +65,14 @@ export function BriefingCard({ scenario, compact }: { scenario: Scenario; compac
         </ul>
       )}
       {!compact && b.notes.length > 0 && (
-        <ul className="brief-notes">
-          {b.notes.map((n) => (
-            <li key={n}>{n}</li>
-          ))}
-        </ul>
+        <details className="brief-details" data-testid="brief-details">
+          <summary>Details about this approach chart</summary>
+          <ul className="brief-notes">
+            {b.notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+        </details>
       )}
     </section>
   );
@@ -68,6 +92,7 @@ export function Briefing({
     startId: procedure.starts[0]!.id,
     ceiling: 'above',
     gsOutOfService: false,
+    panel: lastPanel,
   });
   const scenario = useMemo(() => buildScenario(procedure, NAVDATA, opts), [procedure, opts]);
   const set = (o: Partial<ScenarioOptions>) => setOpts((p) => ({ ...p, ...o }));
@@ -106,6 +131,41 @@ export function Briefing({
             </label>
           ))}
         </fieldset>
+        <fieldset className="choice choice-inline">
+          <legend>Panel</legend>
+          {PANELS.map((p) => (
+            <label key={p.id}>
+              <input
+                type="radio"
+                name="panel"
+                value={p.id}
+                checked={panelOf(opts) === p.id}
+                onChange={() => {
+                  lastPanel = p.id;
+                  set({ panel: p.id });
+                }}
+                data-testid={`panel-${p.id}`}
+              />
+              {p.name}
+            </label>
+          ))}
+        </fieldset>
+        <fieldset className="choice choice-inline">
+          <legend>Runway at minimums</legend>
+          {WEATHER_PICKS.map((w) => (
+            <label key={w.id}>
+              <input
+                type="radio"
+                name="weather"
+                value={w.id}
+                checked={(opts.weatherPick ?? 'random') === w.id}
+                onChange={() => set({ weatherPick: w.id })}
+                data-testid={`weather-${w.id}`}
+              />
+              {w.name}
+            </label>
+          ))}
+        </fieldset>
         {hasGs && (
           <fieldset className="choice">
             <legend>Glideslope</legend>
@@ -131,7 +191,7 @@ export function Briefing({
               onFly(
                 buildScenario(procedure, NAVDATA, {
                   ...opts,
-                  ceiling: pick<Ceiling>(['above', 'below']),
+                  ceiling: pickCeiling(opts.weatherPick, Math.random()),
                 }),
               )
             }

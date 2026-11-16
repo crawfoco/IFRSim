@@ -68,6 +68,19 @@ body {
   gap: 10px;
   align-items: center;
 }
+.flight-clock {
+  font:
+    600 15px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  background: #000;
+  color: #f4f5f6;
+  border-radius: 4px;
+  padding: 3px 8px;
+  min-width: 6ch;
+  text-align: center;
+}
 .sim-controls > button,
 .da-banner button {
   font:
@@ -132,6 +145,27 @@ body {
   align-items: center;
   justify-items: center;
 }
+/* Glass panel: the PFD takes the steam instruments' area; knobs, DME and timer beside it. */
+.glass-row {
+  display: grid;
+  grid-template-columns: minmax(0, 557px) minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+}
+.glass-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+.glass-side .timer {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.glass-knobs {
+  display: flex;
+  justify-content: space-around;
+}
 .inst-grid > .inst,
 .inst-with-knob {
   width: 100%;
@@ -172,6 +206,9 @@ body {
   gap: 16px;
   margin-bottom: 24px;
 }
+.gallery-glass {
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+}
 .gallery-cell p {
   text-align: center;
   font-size: 13px;
@@ -198,9 +235,49 @@ body {
 
 /* Approach select */
 .select {
-  max-width: 880px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 24px 16px;
+}
+.select-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 16px;
+  align-items: start;
+}
+.how-to-fly {
+  grid-column: 2;
+  grid-row: 1;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--fg);
+  font-size: 13px;
+}
+.how-to-fly h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+.how-to-fly ol {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 4px;
+}
+.how-to-fly p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+@media (max-width: 899px) {
+  .select-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .how-to-fly {
+    grid-column: 1;
+    grid-row: auto;
+  }
 }
 .select-head h1 {
   margin: 0 0 4px;
@@ -255,7 +332,8 @@ body {
 /* Briefing */
 .briefing-screen {
   display: grid;
-  grid-template-columns: minmax(380px, 1fr) minmax(420px, 560px);
+  /* Plate and briefing share the width equally (desktop and tablet). */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   height: 100vh;
 }
@@ -282,6 +360,11 @@ body {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+.choice-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
 }
 .briefing-actions {
   display: flex;
@@ -327,6 +410,14 @@ body {
 }
 .brief dd {
   margin: 0;
+}
+.brief-details {
+  margin-top: 8px;
+}
+.brief-details > summary {
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
 }
 .brief-notes {
   font-size: 13px;
@@ -384,13 +475,26 @@ body {
   margin: 8px 12px;
   font-size: 13px;
 }
+/* Flight: the moving map replaces the plate while it is on, using all of its room. */
 .moving-map {
   padding: 6px 12px;
-  border-bottom: 1px solid var(--line);
-  flex: 0 0 auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
 }
 .moving-map .plan {
-  max-height: 38vh;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+.plate-slot {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.plate-slot[hidden] {
+  display: none;
 }
 .sim-controls > button.on {
   background: #2ec4f0;
@@ -404,12 +508,13 @@ body {
     grid-template-columns: minmax(280px, 1fr) 700px;
     min-width: 1000px;
   }
-  .briefing-screen {
-    grid-template-columns: minmax(320px, 1fr) minmax(380px, 460px);
-  }
   .inst-grid {
     grid-template-columns: 150px 226px 150px;
     gap: 4px 8px;
+  }
+  .glass-row {
+    grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+    gap: 8px;
   }
   .panel-pane {
     padding: 8px 10px;
@@ -420,6 +525,16 @@ body {
   }
   .topbar .disclaimer {
     font-size: 12px;
+  }
+  .sim-controls {
+    gap: 6px;
+  }
+  .sim-controls > button {
+    padding: 5px 9px;
+  }
+  .flight-clock {
+    font-size: 13px;
+    padding: 3px 6px;
   }
   .debrief-main {
     grid-template-columns: minmax(460px, 1.2fr) minmax(320px, 1fr);

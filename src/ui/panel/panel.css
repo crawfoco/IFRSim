@@ -12,6 +12,9 @@
 .ap {
   display: grid;
   gap: 8px;
+  /* One column per AP knob; the strip's selected-value windows use the same columns. */
+  --ap-knob-col: 60px;
+  --ap-knob-gap: 12px;
 }
 .ap-row {
   display: flex;
@@ -19,19 +22,32 @@
   align-items: center;
 }
 .ap-annunciator {
-  display: grid;
-  grid-template-columns: 34px 52px 52px 96px 64px 1fr;
-  gap: 6px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  gap: 6px;
   background: #000;
   border-radius: 4px;
-  padding: 6px 8px;
+  /* No right padding: the value windows line up with the knob columns below. */
+  padding: 6px 0 6px 8px;
   min-height: 22px;
   font:
     700 14px ui-monospace,
     'Cascadia Mono',
     Consolas,
     monospace;
+}
+.ap-modes {
+  display: grid;
+  /* AP, lateral, armed, vertical, armed */
+  grid-template-columns: 34px 52px 52px 52px 76px;
+  gap: 6px;
+  align-items: center;
+}
+.ap-sel {
+  display: grid;
+  grid-template-columns: repeat(3, var(--ap-knob-col));
+  gap: var(--ap-knob-gap);
 }
 .ann {
   white-space: nowrap;
@@ -50,7 +66,7 @@
 }
 .ann-sel {
   color: #2ec4f0;
-  text-align: right;
+  text-align: center;
 }
 .ap-buttons {
   flex: 1;
@@ -70,13 +86,48 @@
   padding: 8px 0;
   cursor: pointer;
 }
+.dme-src-label {
+  font:
+    700 11px system-ui,
+    sans-serif;
+  letter-spacing: 0.04em;
+  color: #aeb4bc;
+  text-align: center;
+}
+.glass-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.glass-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font:
+    700 12px system-ui,
+    sans-serif;
+  color: #e9ecef;
+  background: linear-gradient(#3a4049, #2b3037);
+  border: 1px solid #4a515b;
+  border-radius: 5px;
+  padding: 5px 0;
+  cursor: pointer;
+}
+.glass-btn-value {
+  font-size: 11px;
+  color: #3fd0e8;
+}
+.glass-btn:active,
 .ap-btn:active,
 .radio-swap:active {
   background: #22262c;
 }
 .ap-knobs {
-  display: flex;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, var(--ap-knob-col));
+  gap: var(--ap-knob-gap);
+  justify-items: center;
 }
 
 .knob {
@@ -257,6 +308,19 @@
   border: 1px solid #4a515b;
   border-radius: 4px;
   padding: 2px 8px;
+}
+.radio-autoid {
+  font:
+    700 14px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  color: #3ee07a;
+  background: #000;
+  border-radius: 3px;
+  padding: 1px 6px;
+  min-width: 4.5ch;
+  text-align: center;
 }
 .radio-morse {
   font:

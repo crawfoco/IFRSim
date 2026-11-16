@@ -8,28 +8,49 @@ export function CourseKnob({
   radio,
   state,
   send,
+  label,
+  testId,
 }: {
   radio: RadioId;
   state: SimState;
   send: Send;
+  /** Knob label; default CRS (NAV1, the HSI) / OBS (NAV2, the CDI). */
+  label?: string;
+  /** Test id; default knob-crs1 / knob-crs2. */
+  testId?: string;
 }) {
   const deg = state.radios[radio === 1 ? 'nav1' : 'nav2'].obsDeg;
-  const name = radio === 1 ? 'CRS' : 'OBS';
+  const name = label ?? (radio === 1 ? 'CRS' : 'OBS');
   return (
     <Knob
       label={name}
       valueText={`NAV${radio} ${name.toLowerCase()} ${formatCourse(deg)}`}
-      testId={`knob-crs${radio}`}
+      testId={testId ?? `knob-crs${radio}`}
       onTurn={(n, big) => send((s) => courseKnob(s, radio, n, big))}
     />
   );
 }
 
-export function DmeUnit({ nm, state, send }: { nm: number | null; state: SimState; send: Send }) {
+export function DmeUnit({
+  nm,
+  state,
+  send,
+  readout = true,
+}: {
+  nm: number | null;
+  state: SimState;
+  send: Send;
+  /** Show the DME readout; off on the glass panel, where the PFD's DME window shows it. */
+  readout?: boolean;
+}) {
   const src = state.radios.dmeSource;
   return (
     <div className="dme-unit-box">
-      <DmeReadout nm={nm} source={src} />
+      {readout ? (
+        <DmeReadout nm={nm} source={src} />
+      ) : (
+        <span className="dme-src-label">DME SRC</span>
+      )}
       <div className="seg" role="radiogroup" aria-label="DME source">
         {([1, 2] as const).map((r) => (
           <button

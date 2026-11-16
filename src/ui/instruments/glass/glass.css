@@ -1,0 +1,177 @@
+/*
+ * Glass PFD colours. Dark display in both themes, like a real screen. Original palette.
+ * Components use only these classes (prefix g-); add new ones here, grouped by component.
+ */
+.glass-pfd {
+  position: relative;
+  --g-sky: #2f6fb8;
+  --g-ground: #6b4a2b;
+  --g-white: #f2f4f7;
+  --g-black: #05070a;
+  --g-panel: rgba(8, 12, 18, 0.72);
+  --g-line: #9aa4b2;
+  --g-symbol: #ffcc33; /* own-aircraft symbol, bank pointer */
+  --g-bug: #3fd0e8; /* heading/altitude/VS bugs and selected values */
+  --g-vloc: #3ee07a; /* CDI and course pointer from a VLOC source */
+  --g-brg: #9cc2ff; /* bearing pointers and their boxes */
+  --g-active: #3ee07a; /* active AP modes */
+  --g-armed: #f2f4f7; /* armed AP modes */
+  --g-warn: #ffcc33; /* MINIMUMS */
+  --g-flag: #ff4d4d;
+  --g-trend: #d070ff; /* speed trend vector */
+  margin: 0;
+  width: 100%;
+}
+.glass-pfd svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--g-black);
+  border-radius: 6px;
+  font-family: system-ui, sans-serif;
+}
+
+/* Shared */
+.g-text {
+  fill: var(--g-white);
+  font-size: 13px;
+  font-weight: 600;
+}
+.g-text-sm {
+  fill: var(--g-white);
+  font-size: 10px;
+  font-weight: 600;
+}
+.g-line {
+  stroke: var(--g-white);
+  stroke-width: 1.5;
+  fill: none;
+}
+.g-box {
+  fill: var(--g-panel);
+  stroke: var(--g-line);
+  stroke-width: 1;
+}
+.g-readout {
+  fill: var(--g-black);
+  stroke: var(--g-white);
+  stroke-width: 1.5;
+}
+.g-bug {
+  fill: var(--g-bug);
+}
+.g-bug-text {
+  fill: var(--g-bug);
+  font-size: 12px;
+  font-weight: 700;
+}
+.g-flag {
+  fill: var(--g-flag);
+}
+.g-flag-text {
+  fill: var(--g-flag);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Bearing info boxes */
+.g-brg-text {
+  fill: var(--g-brg);
+  font-size: 12px;
+  font-weight: 700;
+}
+.g-brg-nobrg {
+  fill: var(--g-white);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* DME window */
+.g-dme-text {
+  fill: var(--g-white);
+  font-size: 12px;
+  font-weight: 700;
+}
+.g-dme-nm {
+  fill: var(--g-white);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Mode annunciator bar */
+.g-modebar {
+  fill: var(--g-black);
+  stroke: var(--g-line);
+  stroke-width: 1;
+}
+.g-modebar-sep {
+  stroke: var(--g-line);
+  stroke-width: 1;
+}
+.g-ann-active {
+  fill: var(--g-active);
+  font-size: 14px;
+  font-weight: 700;
+}
+.g-ann-armed {
+  fill: var(--g-armed);
+  font-size: 14px;
+  font-weight: 700;
+}
+/* A mode that changes flashes for about 3 s (each field remounts when its text changes). */
+.g-flash {
+  animation: g-flash 0.5s steps(1, end) 6;
+}
+@keyframes g-flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* No blinking: a steady highlight for the same 3 s. */
+  .g-flash {
+    animation: g-flash-steady 3s steps(1, end) 1;
+  }
+}
+@keyframes g-flash-steady {
+  0% {
+    fill: var(--g-warn);
+  }
+  100% {
+    fill: inherit;
+  }
+}
+
+/* Minimums */
+.g-mins-text {
+  fill: var(--g-warn);
+  font-size: 12px;
+  font-weight: 700;
+}
+.g-mins-alert {
+  fill: var(--g-black);
+  stroke: var(--g-warn);
+  stroke-width: 1.5;
+}
+.g-mins-alert-text {
+  fill: var(--g-warn);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+/* Screen-reader-only text (the PFD's live status lines). */
+.g-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

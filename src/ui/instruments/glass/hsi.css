@@ -1,0 +1,65 @@
+/* Glass HSI. Uses the --g-* tokens from glass.css. */
+.g-hsi-disc {
+  fill: var(--g-panel);
+  stroke: var(--g-line);
+  stroke-width: 1;
+}
+.g-hsi-tick {
+  stroke: var(--g-white);
+  stroke-width: 1;
+}
+.g-hsi-tick-major {
+  stroke: var(--g-white);
+  stroke-width: 1.8;
+}
+.g-hsi-label {
+  fill: var(--g-white);
+  font-size: 11px;
+  font-weight: 700;
+}
+.g-hsi-lubber {
+  fill: var(--g-white);
+}
+.g-hsi-aircraft {
+  stroke: var(--g-white);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  fill: none;
+}
+.g-hsi-course {
+  fill: var(--g-vloc);
+  stroke: var(--g-black);
+  stroke-width: 0.6;
+}
+.g-hsi-dot {
+  fill: none;
+  stroke: var(--g-white);
+  stroke-width: 1.4;
+}
+.g-hsi-mark {
+  stroke: var(--g-white);
+  stroke-width: 2;
+}
+.g-hsi-source {
+  fill: var(--g-vloc);
+  font-size: 12px;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: var(--g-black);
+  stroke-width: 3px;
+}
+.g-hsi-brg {
+  stroke: var(--g-brg);
+  stroke-width: 2.2;
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+/* Dark outline so the pointers stand out over the card's numbers. */
+.g-hsi-brg-halo {
+  stroke: var(--g-black);
+  stroke-width: 5;
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}

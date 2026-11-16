@@ -38,7 +38,7 @@ export interface ApModes {
 
 /** What the mode logic needs to know about the aircraft and radios. */
 export interface ModeContext {
-  /** Kind of station tuned on the autopilot's nav source (NAV1), or null. */
+  /** Kind of station tuned on the autopilot's nav source (the CDI's radio), or null. */
   navKind: 'VOR' | 'LOC' | null;
   /** The tuned localizer has a usable glideslope. */
   hasGs: boolean;
@@ -125,6 +125,19 @@ export function pressButton(m: ApModes, button: ApButton, ctx: ModeContext): ApM
       if (m.vertical === 'VS') return { ...m, vertical: 'PIT', vsRefFpm: syncVs(ctx) };
       return { ...m, vertical: 'VS', vsRefFpm: syncVs(ctx) };
   }
+}
+
+/**
+ * The CDI (nav source) changed. NAV or APR active drops to ROL; NAV or APR armed is cancelled
+ * and the active lateral mode (e.g. HDG on a vector) is kept. GS (active or armed) drops with
+ * APR. Vertical modes other than GS are kept.
+ */
+export function cdiSourceChanged(m: ApModes, ctx: ModeContext): ApModes {
+  if (!m.engaged) return m;
+  const navActive = m.lateral === 'NAV' || m.lateral === 'APR';
+  if (!navActive && !m.lateralArmed) return m;
+  const n = m.lateral === 'APR' || m.lateralArmed === 'APR' ? dropGs(m, ctx) : m;
+  return { ...n, lateral: navActive ? 'ROL' : n.lateral, lateralArmed: null, navKind: null };
 }
 
 /** Preselect is ahead of the aircraft in the direction it is climbing or descending. */

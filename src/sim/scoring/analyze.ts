@@ -3,6 +3,7 @@
  * scoring rules, and produce the score table, a timeline and the data for the debrief.
  */
 import { annunciation } from '../autopilot/modes';
+import { applyCommand } from '../commands';
 import { DT, step } from '../loop';
 import type { LoggedCommand, TrackSample } from '../recorder';
 import { initialProgress, updateProgress, type Outcome } from '../scenario/progress';
@@ -11,6 +12,7 @@ import { sense } from '../sensors';
 import type { Command, SimState } from '../state';
 import { decision, segmentMinimum, segmentMinimums } from './rules/altitude';
 import { finalCourse, glideslope } from './rules/course';
+import { locCourseSetting } from './rules/loc-crs';
 import { movingMap } from './rules/map';
 import { dmeSource, tuneAndIdentify } from './rules/radios';
 import { climbInHold, holdMaxAltitude, holdTiming } from './rules/hold';
@@ -36,6 +38,7 @@ const RULES: Rule<unknown>[] = [
   decision,
   missedApproach,
   noPtReversal,
+  locCourseSetting,
   movingMap,
 ] as Rule<unknown>[];
 
@@ -70,8 +73,19 @@ function modeText(s: SimState): string {
   return `AP ${a.lateral} / ${a.vertical}${armed ? ` (armed ${armed})` : ''}`;
 }
 
-function commandText(c: Command): string | null {
+const VLOC = { NAV1: 'VLOC1', NAV2: 'VLOC2' } as const;
+
+/** Timeline text for a command, given the state after it was applied. */
+function commandText(c: Command, after: SimState): string | null {
   switch (c.type) {
+    case 'syncHeadingBug':
+      return `HDG bug synced to ${String(after.panel.headingBugDeg || 360).padStart(3, '0')}`;
+    case 'cdi':
+      return `CDI ${VLOC[after.panel.cdiSource]}`;
+    case 'bearing': {
+      const src = c.pointer === 1 ? after.panel.brg1 : after.panel.brg2;
+      return `BRG${c.pointer} ${src ?? 'off'}`;
+    }
     case 'swap':
       return `NAV${c.radio} swap`;
     case 'ident':
@@ -141,8 +155,12 @@ export function analyzeFlight(
     const mode = modeText(state);
     if (mode !== lastMode) timeline.push({ tick: state.tick, kind: 'mode', text: mode });
     lastMode = mode;
+    // Each command's text comes from the state just after that command (two presses in one
+    // step log both values, not the last one twice).
+    let after = prev;
     for (const c of commands) {
-      const t = commandText(c);
+      after = applyCommand(after, c, sc.world);
+      const t = commandText(c, after);
       if (t) timeline.push({ tick: state.tick, kind: 'radio', text: t });
     }
     for (const e of progress.events.slice(progressEvents))

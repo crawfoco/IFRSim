@@ -135,7 +135,8 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
 
     // The learner's go-around decision.
     if (s.goAroundTick !== null) {
-      const text = `Going missed. ${sc.procedure.missedText}`;
+      // The missed-approach instructions are read from the plate, not given here.
+      const text = 'Going missed.';
       return {
         ...next,
         phase: 'missed',

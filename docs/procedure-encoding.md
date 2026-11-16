@@ -123,3 +123,35 @@ options chosen on the briefing screen, not part of the start condition.
 6. Register the file in `src/procedures/index.ts`.
 7. `npm test`: the schema and the navdata cross-check must pass, then add golden
    receiver tests at every fix (`tests/procedures/<id>.test.ts`).
+8. Calibrate the plate for the debrief's track overlay (next section).
+
+## Plate overlay calibration
+
+The debrief's **Plate** tab draws the flown track on the plate's plan view. The plan view of an
+FAA plate is drawn to scale and north-up (about 19.4 px per NM on our 715×1100 images), except
+for insets and anything beyond a break symbol. Each plate gets a calibration in
+`src/ui/chart/overlay.ts` (`PLATE_CALIBRATION`): anchor points measured on the image, fitted to
+the sim's geography (scale, rotation, offset) at runtime.
+
+1. `npm run plate -- candidates <id>` lists every anchor you can use (`{ "fix": … }`,
+   `{ "navaid": … }`, `{ "loc": … }`) with its position, and the image size.
+2. Read the whole plate. Find the plan view (between the frequency boxes and the profile) and
+   what is **not to scale** inside it: the MSA circle, the airport sketch, and any leg or IAF
+   beyond a zigzag break symbol. The plate's profile box is never to scale.
+3. Pick at least four crisp anchors spread across the to-scale area, not all on one line:
+   navaid symbol centres, fix triangles or ticks where they sit on the course, arc IAFs where the
+   arc meets its radial, the runway threshold and the localizer antenna (if the runway is drawn
+   in the plan view). Watch for: an arc's tangent point is not the fix (KLAR ECECU is the tick
+   further along the course); arrow-line ends are not ticks (KSNY CHAKO).
+4. Measure each to about a pixel with zoomed crops:
+   `npm run plate -- crop <id> 6 name:x,y,w,h ...` writes `test-results/plates/<id>/name.png`;
+   image pixel = crop origin + crop pixel ÷ scale.
+5. Write the anchors to a JSON file and check them with
+   `npm run plate -- fit <id> anchors.json`: expect 15–25 px/NM, |rotation| < 1°, every
+   residual under 5 px. A large "left out" value marks a mis-measured anchor (unless the other
+   anchors are nearly in a line).
+6. Add the calibration with the plan view's rectangle (`planArea`) and the not-to-scale
+   `insets` to mask (they must lie inside `planArea`). `tests/ui/plate-overlay.test.ts` checks
+   every calibration against the same limits.
+
+A plate with no calibration simply shows no track on the Plate tab.
