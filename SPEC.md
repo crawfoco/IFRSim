@@ -428,9 +428,13 @@ adds a short "How to fly" guide to the home screen and tidies the briefing scree
      vector) is kept (decided 2026-11-15). GS, active or armed, drops with APR (falling back to
      PIT). The annunciator shows the change. The steam panel never changes the CDI source, so it keeps flying NAV1.
    - The CDI and BRG selections are recorded in the debrief timeline.
-   - The existing **CRS1 / CRS2** knobs, the **DME** unit (with its NAV1/NAV2 source, still used
-     by the wrong-DME-source rule) and the **timer** stay as HTML controls beside the PFD. No
-     bezel, no softkeys.
+   - **DME window** (added 2026-11-15): always shown on the PFD left of the HSI, above the BRG1
+     box: "DME", the source radio (NAV1/NAV2), the paired station (ident when received, else the
+     frequency) and the distance, or dashes with no DME. Its source is the existing DME source
+     selector (still used by the wrong-DME-source rule); there is no DME HOLD.
+   - The existing **CRS1 / CRS2** knobs, the **DME source** buttons (labelled DME SRC; the
+     separate DME readout is not shown on the glass panel) and the **timer** stay as HTML
+     controls beside the PFD. No bezel, no softkeys.
    - **Heading sync (both panels, added 2026-11-15):** double-clicking the HDG knob (or Enter
      when it has focus) sets the heading bug to the current heading. The HDG mode button is
      unchanged. It is a sim command (`syncHeadingBug`), so it is logged and replays exactly.

@@ -135,3 +135,20 @@ test('double-clicking the HDG knob syncs the bug to the current heading', async 
   await page.getByTestId('knob-hdg').press('Enter');
   await expect(page.getByTestId('pfd-hdg-box-value')).toHaveText('330°');
 });
+
+test('the DME window shows the DME source radio and its distance', async ({ page }) => {
+  await startGlass(page);
+  await page.getByTestId('pause').click();
+  // Glass: no separate DME readout, just the source buttons; the PFD shows the distance.
+  await expect(page.getByTestId('dme')).toHaveCount(0);
+  await expect(page.getByTestId('pfd-dme-source')).toHaveText('NAV1');
+  await expect(page.getByTestId('pfd-dme-station')).toHaveText('FQF');
+  await expect(page.getByTestId('pfd-dme-nm')).toHaveText(/^\d+\.\d NM$/);
+  // NAV2 → I-FTG (LOC/DME) and DME source NAV2.
+  await turn(page, 'nav2-mhz', 'ArrowDown', 7);
+  await page.getByTestId('nav2-swap').click();
+  await page.getByTestId('dme-src-2').click();
+  await expect(page.getByTestId('pfd-dme-source')).toHaveText('NAV2');
+  await expect(page.getByTestId('pfd-dme-station')).toHaveText('I-FTG');
+  await expect(page.getByTestId('pfd-dme-nm')).toHaveText(/^1\d\.\d NM$/);
+});

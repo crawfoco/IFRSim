@@ -45,6 +45,25 @@ describe('pfdData', () => {
     expect(d.hsi.bearing2Deg).toBeNull();
   });
 
+  it('DME window follows the DME source selector, not the CDI', () => {
+    // START: NAV1 FQF (VOR/DME), NAV2 I-FTG (LOC/DME).
+    const d1 = data(fresh());
+    expect(d1.dme).toMatchObject({ source: 'NAV1', ident: 'FQF', freqMHz: 116.3 });
+    expect(d1.dme.dmeNm).toBe(sense(fresh(), W).dmeNm);
+    const s = run(fresh(), { type: 'dmeSource', radio: 2 }, { type: 'cdi' });
+    const d2 = data(s);
+    expect(d2.dme).toMatchObject({ source: 'NAV2', ident: 'I-FTG' });
+    expect(d2.dme.dmeNm).toBeGreaterThan(9);
+    expect(d2.dme.dmeNm).toBe(sense(s, W).dmeNm);
+    // CDI back to NAV1 does not move the DME source.
+    expect(data(run(s, { type: 'cdi' })).dme.source).toBe('NAV2');
+  });
+
+  it('DME window with nothing tuned: frequency and no distance', () => {
+    const s = initialState({ ...START, nav1MHz: 108.0 }, W);
+    expect(data(s).dme).toMatchObject({ source: 'NAV1', freqMHz: 108, ident: null, dmeNm: null });
+  });
+
   it('tapes, VSI, boxes and minimums', () => {
     let s = run(
       fresh(),

@@ -84,3 +84,15 @@
   font-size: 12px;
   font-weight: 700;
 }
+
+/* DME window */
+.g-dme-text {
+  fill: var(--g-white);
+  font-size: 12px;
+  font-weight: 700;
+}
+.g-dme-nm {
+  fill: var(--g-white);
+  font-size: 14px;
+  font-weight: 700;
+}

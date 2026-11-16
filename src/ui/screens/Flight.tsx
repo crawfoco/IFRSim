@@ -194,7 +194,7 @@ export function Flight({
                 <CourseKnob radio={1} state={state} send={send} label="CRS1" />
                 <CourseKnob radio={2} state={state} send={send} label="CRS2" />
               </div>
-              <DmeUnit nm={sensors.dmeNm} state={state} send={send} />
+              <DmeUnit nm={sensors.dmeNm} state={state} send={send} readout={false} />
               <Timer state={state} send={send} />
             </div>
           </div>
@@ -213,7 +213,7 @@ export function Flight({
             </div>
             <Altimeter altitudeFt={state.aircraft.altitudeFt} />
             <div className="dme-timer">
-              <DmeUnit nm={sensors.dmeNm} state={state} send={send} />
+              <DmeUnit nm={sensors.dmeNm} state={state} send={send} readout={false} />
               <Timer state={state} send={send} />
             </div>
             <div className="inst-with-knob">

@@ -35,6 +35,8 @@ export const HSI = { cx: 280, cy: 346, r: 68 } as const;
 /** HDG and CRS selected-value boxes either side of the heading readout. */
 export const HDG_BOX = { x: 150, y: 268, w: 64, h: 16 } as const;
 export const CRS_BOX = { x: 346, y: 268, w: 64, h: 16 } as const;
+/** DME info window, left of the HSI above the BRG1 box. */
+export const DME_BOX = { x: 8, y: 292, w: 128, h: 54 } as const;
 /** Bearing info boxes, bottom left (BRG1) and bottom right (BRG2). */
 export const BRG1_BOX = { x: 8, y: 352, w: 128, h: 60 } as const;
 export const BRG2_BOX = { x: 424, y: 352, w: 128, h: 60 } as const;

@@ -6,6 +6,7 @@ import { initialState, step } from '../../src/sim/loop';
 import type { Command, SimState } from '../../src/sim/state';
 import { buildWorld } from '../../src/sim/world';
 import { BearingBoxes, bearingLines } from '../../src/ui/instruments/glass/BearingBoxes';
+import { DmeWindow, dmeLines } from '../../src/ui/instruments/glass/DmeWindow';
 import { GlassControls } from '../../src/ui/panel/GlassControls';
 import { nav, onRadial } from '../sim/helpers';
 
@@ -52,6 +53,32 @@ describe('bearing info boxes', () => {
     expect(html).toContain('pfd-brg1-box');
     expect(html).not.toContain('pfd-brg2-box');
     expect(html).toMatch(/data-testid="pfd-brg1-station"[^>]*>FQF</);
+  });
+});
+
+describe('DME window', () => {
+  it('source, station and distance', () => {
+    const d = { source: 'NAV2' as const, freqMHz: 113.8, ident: 'MTJ', dmeNm: 14.83 };
+    expect(dmeLines(d)).toEqual({ station: 'MTJ', distance: '14.8 NM' });
+    const html = renderToStaticMarkup(
+      <svg>
+        <DmeWindow dme={d} />
+      </svg>,
+    );
+    expect(html).toMatch(/data-testid="pfd-dme-source"[^>]*>NAV2</);
+    expect(html).toMatch(/data-testid="pfd-dme-nm"[^>]*>14.8 NM</);
+    expect(html).not.toContain('data-no-dme');
+  });
+
+  it('no DME: frequency and dashes', () => {
+    const d = { source: 'NAV1' as const, freqMHz: 108, ident: null, dmeNm: null };
+    expect(dmeLines(d)).toEqual({ station: '108.00', distance: '---.- NM' });
+    const html = renderToStaticMarkup(
+      <svg>
+        <DmeWindow dme={d} />
+      </svg>,
+    );
+    expect(html).toContain('data-no-dme="true"');
   });
 });
 

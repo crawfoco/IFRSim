@@ -1,9 +1,10 @@
 /**
  * Glass PFD: attitude, airspeed and altitude tapes, VSI, HSI with bearing pointers, and the
- * selected-value boxes, in one SVG (layout.ts). Props are derived by pfdData().
+ * selected-value boxes, DME window and bearing boxes, in one SVG (layout.ts). Props are derived by pfdData().
  */
 import { AltTape } from './AltTape';
 import { BearingBoxes } from './BearingBoxes';
+import { DmeWindow } from './DmeWindow';
 import './hsi.css';
 import { Attitude } from './Attitude';
 import { GlassHsi } from './GlassHsi';
@@ -15,7 +16,7 @@ import { VsiScale } from './VsiScale';
 import './glass.css';
 
 export function Pfd({ data }: { data: PfdData }) {
-  const { attitude, speed, alt, vsi, hsi, boxes, brg1, brg2 } = data;
+  const { attitude, speed, alt, vsi, hsi, boxes, dme, brg1, brg2 } = data;
   return (
     <figure className="glass-pfd" data-testid="pfd">
       <svg
@@ -29,6 +30,7 @@ export function Pfd({ data }: { data: PfdData }) {
         <VsiScale {...vsi} />
         <GlassHsi {...hsi} />
         <SelectedBoxes {...boxes} />
+        <DmeWindow dme={dme} />
         <BearingBoxes brg1={brg1} brg2={brg2} />
       </svg>
     </figure>

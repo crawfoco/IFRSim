@@ -70,6 +70,14 @@
   padding: 8px 0;
   cursor: pointer;
 }
+.dme-src-label {
+  font:
+    700 11px system-ui,
+    sans-serif;
+  letter-spacing: 0.04em;
+  color: #aeb4bc;
+  text-align: center;
+}
 .glass-controls {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

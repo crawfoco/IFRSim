@@ -7,6 +7,7 @@ type Overrides = {
   alt?: Partial<PfdData['alt']>;
   vsi?: Partial<PfdData['vsi']>;
   hsi?: Partial<PfdData['hsi']>;
+  dme?: Partial<PfdData['dme']>;
   brg1?: PfdData['brg1'];
   brg2?: PfdData['brg2'];
 };
@@ -30,6 +31,7 @@ function pfd(o: Overrides): PfdData {
     vsi: { vsFpm: 0, selectedVsFpm: null, ...o.vsi },
     hsi,
     boxes: { headingBugDeg: hsi.headingBugDeg, courseDeg: hsi.courseDeg, baroInHg: BARO_IN_HG },
+    dme: { source: 'NAV1', freqMHz: 109.3, ident: 'I-FTG', dmeNm: 7.4, ...o.dme },
     brg1: o.brg1 ?? null,
     brg2: o.brg2 ?? null,
   };
@@ -87,6 +89,7 @@ export const GLASS_CASES: { title: string; data: PfdData }[] = [
       },
       brg1: { source: 'NAV1', freqMHz: 116.3, ident: 'FQF', bearingMagDeg: 225, dmeNm: 11.2 },
       brg2: { source: 'NAV2', freqMHz: 113.8, ident: null, bearingMagDeg: 300, dmeNm: null },
+      dme: { source: 'NAV2', freqMHz: 113.8, ident: null, dmeNm: null },
     }),
   },
   {
