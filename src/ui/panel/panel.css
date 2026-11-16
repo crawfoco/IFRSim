@@ -292,6 +292,19 @@
   border-radius: 4px;
   padding: 2px 8px;
 }
+.radio-autoid {
+  font:
+    700 14px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  color: #3ee07a;
+  background: #000;
+  border-radius: 3px;
+  padding: 1px 6px;
+  min-width: 4.5ch;
+  text-align: center;
+}
 .radio-morse {
   font:
     700 15px ui-monospace,

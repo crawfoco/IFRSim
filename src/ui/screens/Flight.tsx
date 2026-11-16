@@ -6,6 +6,7 @@ import { buildRoute } from '../../sim/scoring/sequencer';
 import { PlanView } from '../map/PlanView';
 import '../map/map.css';
 import { activeMinimums, panelOf, type Scenario } from '../../sim/scenario/scenario';
+import { radioOf } from '../../sim/nav/source';
 import { Pfd } from '../instruments/glass/Pfd';
 import { pfdData } from '../instruments/glass/pfd-data';
 import { minimumsAlertOn, minimumsEventTick, modeBarFields } from '../instruments/glass/modes';
@@ -195,6 +196,7 @@ export function Flight({
           state={state}
           send={send}
           idents={{ 1: sensors.nav1.ident, 2: sensors.nav2.ident }}
+          autoId={glass}
         />
         {glass ? (
           <div className="glass-row">
@@ -205,9 +207,15 @@ export function Flight({
             />
             <div className="glass-side">
               <GlassControls state={state} send={send} />
+              {/* One CRS knob, for the CDI's source (VLOC1 or VLOC2), as on a glass panel. */}
               <div className="glass-knobs">
-                <CourseKnob radio={1} state={state} send={send} label="CRS1" />
-                <CourseKnob radio={2} state={state} send={send} label="CRS2" />
+                <CourseKnob
+                  radio={radioOf(state.panel.cdiSource)}
+                  state={state}
+                  send={send}
+                  label="CRS"
+                  testId="knob-crs"
+                />
               </div>
               <DmeUnit nm={sensors.dmeNm} state={state} send={send} readout={false} />
               <Timer state={state} send={send} />

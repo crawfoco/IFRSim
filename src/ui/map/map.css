@@ -245,10 +245,14 @@
 .debrief-left > * {
   flex: none;
 }
-.debrief-left > .plan,
-.debrief-left > .debrief-plate {
+.debrief-left > .plan {
   flex: 0 1 auto;
   min-height: 300px;
+}
+/* The Plate tab shows the plate alone, filling the column. */
+.debrief-left > .debrief-plate {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .debrief-left > .profile {
   max-height: 180px;
@@ -256,7 +260,6 @@
 .debrief-plate {
   display: flex;
   flex-direction: column;
-  aspect-ratio: 640 / 520;
   width: 100%;
   border-radius: 6px;
   overflow: hidden;

@@ -434,12 +434,17 @@ adds a short "How to fly" guide to the home screen and tidies the briefing scree
      box: "DME", the source radio (NAV1/NAV2), the paired station (ident when received, else the
      frequency) and the distance, or dashes with no DME. Its source is the existing DME source
      selector (still used by the wrong-DME-source rule); there is no DME HOLD.
-   - The existing **CRS1 / CRS2** knobs, the **DME source** buttons (labelled DME SRC; the
+   - One **CRS** knob (it sets the course of the CDI's source, VLOC1 or VLOC2; changed
+     2026-11-15 from separate CRS1 / CRS2 knobs), the **DME source** buttons (labelled DME SRC; the
      separate DME readout is not shown on the glass panel) and the **timer** stay as HTML
      controls beside the PFD. No bezel, no softkeys.
    - **Heading sync (both panels, added 2026-11-15):** double-clicking the HDG knob (or Enter
      when it has focus) sets the heading bug to the current heading. The HDG mode button is
      unchanged. It is a sim command (`syncHeadingBug`), so it is logged and replays exactly.
+   - **Auto-ID (glass, added 2026-11-15):** the decoded station ident shows next to each NAV
+     radio while the station is received, and on the glass panel that counts as identifying the
+     navaid for scoring (the learner checks it against the plate). The ID button still plays the
+     Morse. On the steam panel the learner must still press ID.
 
 10. **Know what to do (home screen).**
     *As a first-time student, I want a short guide on the home screen so that I know what I am
@@ -449,8 +454,8 @@ adds a short "How to fly" guide to the home screen and tidies the briefing scree
       1. Pick an approach and start.
       2. Read the briefing and the plate.
       3. Tune and identify the navaids, then fly with the autopilot.
-      4. At DA/MDA, land if the runway is in sight; otherwise press GA and fly the missed
-         approach.
+      4. At DA/MDA, if the runway is in sight, continue and the sim lands automatically; if
+         not, press GA and fly the missed approach.
       5. Review the debrief.
 
       "On the briefing, choose the Steam gauges or the Glass PFD."
@@ -461,12 +466,30 @@ adds a short "How to fly" guide to the home screen and tidies the briefing scree
     - The README's "How to fly" matches it, including the panel choice.
 
 11. **Briefing tidy-up.**
-    - The briefing column is about 10% wider: desktop `minmax(420px, 620px)` (was 560 px max),
-      tablet `minmax(380px, 505px)` (was 460 px max). The plate keeps the rest and Fit still
-      works.
+    - Plate and briefing split the width **50/50** on desktop and tablet (changed 2026-11-15 from
+      a 10% wider briefing column). Fit still works.
     - The technical chart notes (`b.notes`) go inside a `<details>` element labelled **"Details
       about this approach chart"**, closed by default and not remembered. The hints (`b.hints`)
       stay visible.
+    - **Runway at minimums** (added 2026-11-15): Random (hidden, the default and the V1
+      behaviour), In sight, or Not in sight. Restart and Fly again keep a chosen outcome and pick
+      a random one again.
+    - The **HSI course hint** ("set CRS to the localizer course") is no longer on the briefing.
+      The debrief notes it instead when it matters (story 12).
+
+12. **Changes after the first test flight (2026-11-15).**
+    - Version **2.0.0-beta.1**.
+    - Flight screen: the briefing card there no longer shows the minimums or the missed
+      approach; the student reads them from the plate. The go-around callout says only "Going
+      missed.".
+    - The moving map takes the plate's place while it is on (issue #7). The steam AP mode row
+      shows the selected heading, e.g. "HDG 293°" (issue #8).
+    - Debrief: the Plan / Plate toggle switches the whole left column: Plan shows the track,
+      replay and profiles; Plate shows the plate alone.
+    - Debrief note (informational, no points), `loc-crs`: the autopilot was armed or coupled on
+      a localizer while its CRS was more than 10° off the localizer course, for 5 s or more in
+      total. It gives the setting, the localizer course and the effect (reverse sensing on the
+      reciprocal).
 
 ## V2 design notes
 
@@ -484,7 +507,8 @@ adds a short "How to fly" guide to the home screen and tidies the briefing scree
   DME source, not at the CDI. A new integration test flies an ILS with the localizer on NAV2 and
   the CDI on VLOC2, and it must score 100%. Existing tests must pass unchanged.
 - **Panel choice.** `ScenarioOptions.panel: 'steam' | 'glass'` (default steam) travels with the
-  scenario and is shown in the debrief. The sim does not branch on it.
+  scenario and is shown in the debrief. The flight sim does not branch on it; only the
+  identification rule does (auto-ID on glass).
 - **Display pitch.** The sim models bank but not pitch. A pure function in
   `src/sim/aircraft/attitude.ts` gives a display pitch: the flight-path angle (from VS and TAS)
   plus a nominal angle of attack that falls from about 4° at 80 kt to 2° at 110 kt, clamped to

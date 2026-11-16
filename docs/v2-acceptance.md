@@ -28,9 +28,9 @@ high-severity defects; its findings and what was done are below.
 |---|---|---|
 | 7. Choose the panel | Met | Steam / Glass on the briefing (default Steam, kept while you go back and forth in one visit). Restart and Fly again keep it. The debrief shows "Panel: Steam gauges" or "Panel: Glass PFD". Scoring is the same |
 | 8. Fly on the Glass PFD | Met | Attitude (display pitch from VS and TAS plus a nominal angle of attack; the flight model is unchanged), airspeed tape with 6 s trend, altitude tape with selected-altitude and minimums bugs, VSI with the VS bug, HSI with CDI, TO/FROM, VLOC label, flags and glideslope, HDG/CRS/BARO boxes, DME window, minimums box, mode bar (green/white, ~3 s flash, steady highlight with reduced motion), MINIMUMS alert for 5 s of sim time and a chime once per event. No manufacturer names (checked with `git grep`) |
-| 9. CDI and bearing sources | Met | CDI toggles VLOC1/VLOC2; BRG1 (single line) and BRG2 (double line) cycle OFF → NAV1 → NAV2 with info boxes (NO BRG on a localizer). The autopilot follows the CDI source; the steam panel never changes it. CDI and BRG changes are in the debrief timeline. CRS1/CRS2, DME SRC and the timer stay beside the PFD |
+| 9. CDI and bearing sources | Met | CDI toggles VLOC1/VLOC2; BRG1 (single line) and BRG2 (double line) cycle OFF → NAV1 → NAV2 with info boxes (NO BRG on a localizer). The autopilot follows the CDI source; the steam panel never changes it. CDI and BRG changes are in the debrief timeline. CRS1/CRS2, DME SRC and the timer stayed beside the PFD (after the first test flight: one CRS knob for the CDI source, see below) |
 | 10. How to fly | Met | Side panel on the home screen with the five steps and the panel line; README matches. Layout e2e: all cards and the panel in view at both sizes |
-| 11. Briefing tidy-up | Met | Wider briefing column (620 px desktop, 505 px tablet), Fit still works (e2e); chart notes in a closed "Details about this approach chart" disclosure; hints visible |
+| 11. Briefing tidy-up | Met | Wider briefing column (620 px desktop, 505 px tablet; after the first test flight: a 50/50 split), Fit still works (e2e); chart notes in a closed "Details about this approach chart" disclosure; hints visible |
 
 ## Added during V2 (user requests)
 
@@ -77,3 +77,19 @@ another run was using the same folder (not assertion failures); with one run at 
 - The minimums chime has not been listened to (headless browsers have no audio).
 - Performance on a real 60 Hz display by eye (as in V1, Firefox is measured headless at 60 Hz).
 - A full flight of each approach on the glass panel by a person (the user's checkpoint flights).
+
+## After the first test flight (2026-11-15)
+
+The user flew V2 and asked for these changes (SPEC story 12 and the notes on stories 9–11).
+All are covered by tests:
+
+| Change | Tests |
+|---|---|
+| Version 2.0.0-beta.1 | `tests/app-info.test.ts` (version from package.json) |
+| How to fly step 4: "continue and the sim lands automatically" (home screen and README) | `tests/ui/home-briefing.test.tsx` |
+| Briefing: 50/50 split; Runway at minimums: Random / In sight / Not in sight (Restart keeps a chosen outcome) | `tests/sim/scenario/scenario.test.ts`, `tests/ui/home-briefing.test.tsx`, layout e2e |
+| CRS hint off the briefing; `loc-crs` debrief note when CRS was more than 10° off the localizer | `tests/sim/scoring/loc-crs.test.ts` |
+| Flight card without minimums and missed approach; GA callout "Going missed." | `tests/ui/home-briefing.test.tsx`, `tests/sim/scenario/scenario.test.ts` |
+| Glass: one CRS knob for the CDI source | `e2e/glass-sources.spec.ts`, `e2e/fly-glass.spec.ts` |
+| Glass: auto-ID shown next to the radios, and it counts as identification | `tests/sim/scoring/auto-id.test.ts` (glass passes, steam still needs ID), e2e |
+| Debrief: Plan / Plate switches the whole column | `e2e/debrief.spec.ts` |

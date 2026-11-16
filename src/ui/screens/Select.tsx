@@ -59,7 +59,8 @@ export function HowToFly() {
         <li>Read the briefing and the plate.</li>
         <li>Tune and identify the navaids, then fly with the autopilot.</li>
         <li>
-          At DA/MDA, land if the runway is in sight; otherwise press GA and fly the missed approach.
+          At DA/MDA, if the runway is in sight, continue and the sim lands automatically; if not,
+          press GA and fly the missed approach.
         </li>
         <li>Review the debrief.</li>
       </ol>

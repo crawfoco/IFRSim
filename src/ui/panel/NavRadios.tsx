@@ -12,7 +12,18 @@ import { Knob } from './Knob';
 
 export type Idents = Record<RadioId, string | null>;
 
-function IdentRow({ id, ident, send }: { id: RadioId; ident: string | null; send: Send }) {
+function IdentRow({
+  id,
+  ident,
+  send,
+  autoId,
+}: {
+  id: RadioId;
+  ident: string | null;
+  send: Send;
+  /** Glass panel: show the decoded ident while the station is received. */
+  autoId: boolean;
+}) {
   // The text belongs to the station it was heard from; retuning clears it.
   const [heard, setHeard] = useState<{ ident: string | null; text: string } | null>(null);
   const shown = heard && heard.ident === ident ? heard.text : null;
@@ -41,6 +52,15 @@ function IdentRow({ id, ident, send }: { id: RadioId; ident: string | null; send
       >
         ID
       </button>
+      {autoId && (
+        <span
+          className="radio-autoid"
+          data-testid={`nav${id}-autoid`}
+          title="Station ident decoded automatically"
+        >
+          {ident ?? '----'}
+        </span>
+      )}
       <span className="radio-morse" data-testid={`nav${id}-morse`} aria-live="polite">
         {shown ?? ''}
       </span>
@@ -53,11 +73,13 @@ function NavRadio({
   state,
   send,
   ident,
+  autoId,
 }: {
   id: RadioId;
   state: SimState;
   send: Send;
   ident: string | null;
+  autoId: boolean;
 }) {
   const r = state.radios[id === 1 ? 'nav1' : 'nav2'];
   return (
@@ -100,7 +122,7 @@ function NavRadio({
           onTurn={(n) => send((s) => frequencyKnob(s, id, 'khz', n))}
         />
       </div>
-      <IdentRow id={id} ident={ident} send={send} />
+      <IdentRow id={id} ident={ident} send={send} autoId={autoId} />
     </div>
   );
 }
@@ -109,15 +131,18 @@ export function NavRadios({
   state,
   send,
   idents,
+  autoId = false,
 }: {
   state: SimState;
   send: Send;
   idents: Idents;
+  /** Glass panel: decoded idents shown next to the radios (auto-ID). */
+  autoId?: boolean;
 }) {
   return (
     <section className="radios" aria-label="Nav radios">
-      <NavRadio id={1} state={state} send={send} ident={idents[1]} />
-      <NavRadio id={2} state={state} send={send} ident={idents[2]} />
+      <NavRadio id={1} state={state} send={send} ident={idents[1]} autoId={autoId} />
+      <NavRadio id={2} state={state} send={send} ident={idents[2]} autoId={autoId} />
     </section>
   );
 }

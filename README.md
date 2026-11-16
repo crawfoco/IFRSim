@@ -35,8 +35,8 @@ the weather at minimums is hidden until the debrief.
 1. Pick an approach and start.
 2. Read the briefing and the plate.
 3. Tune and identify the navaids, then fly with the autopilot.
-4. At DA/MDA, land if the runway is in sight; otherwise press GA and fly the
-   missed approach.
+4. At DA/MDA, if the runway is in sight, continue and the sim lands
+   automatically; if not, press GA and fly the missed approach.
 5. Review the debrief.
 
 On the briefing, choose the Steam gauges or the Glass PFD.

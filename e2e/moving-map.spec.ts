@@ -17,6 +17,8 @@ for (const vp of [
     const chart = page.getByTestId('chart');
     const map = page.getByTestId('moving-map');
     await expect(chart).toBeVisible();
+    // Steam: no auto-ID next to the radios (the learner presses ID).
+    await expect(page.getByTestId('nav1-autoid')).toHaveCount(0);
     const plateH = (await chart.boundingBox())!.height;
 
     await page.getByTestId('map-toggle').click();

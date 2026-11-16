@@ -319,7 +319,8 @@ body {
 /* Briefing */
 .briefing-screen {
   display: grid;
-  grid-template-columns: minmax(380px, 1fr) minmax(420px, 620px);
+  /* Plate and briefing share the width equally (desktop and tablet). */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   height: 100vh;
 }
@@ -493,9 +494,6 @@ body {
   .flight {
     grid-template-columns: minmax(280px, 1fr) 700px;
     min-width: 1000px;
-  }
-  .briefing-screen {
-    grid-template-columns: minmax(320px, 1fr) minmax(380px, 505px);
   }
   .inst-grid {
     grid-template-columns: 150px 226px 150px;

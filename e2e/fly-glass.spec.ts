@@ -28,12 +28,13 @@ test('glass: vectors to the KCFO ILS 26, coupled down to DA, MINIMUMS alert', as
   await expect(page.getByTestId('pfd-ann-ap')).toHaveCount(0);
   await expect(page.getByTestId('pfd-mins-box-value')).toHaveText('5,689');
 
-  // NAV1 → I-FTG 109.30, identify, CRS1 263, DME on NAV1.
+  // NAV1 → I-FTG 109.30: auto-ID shows it (no ID press needed on glass). CRS 263, DME on NAV1.
+  await expect(page.getByTestId('nav1-autoid')).toHaveText('FQF');
   await turn(page, 'nav1-mhz', 'ArrowDown', 7);
   await page.getByTestId('nav1-swap').click();
-  await page.getByTestId('nav1-ident').click();
-  await turn(page, 'knob-crs1', 'PageDown', 10);
-  await turn(page, 'knob-crs1', 'ArrowUp', 3);
+  await expect(page.getByTestId('nav1-autoid')).toHaveText('I-FTG');
+  await turn(page, 'knob-crs', 'PageDown', 10);
+  await turn(page, 'knob-crs', 'ArrowUp', 3);
   await expect(page.getByTestId('pfd-crs-box-value')).toHaveText('263°');
   await expect(page.getByTestId('pfd-dme-station')).toHaveText('I-FTG');
 

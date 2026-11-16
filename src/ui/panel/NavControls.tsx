@@ -9,12 +9,15 @@ export function CourseKnob({
   state,
   send,
   label,
+  testId,
 }: {
   radio: RadioId;
   state: SimState;
   send: Send;
   /** Knob label; default CRS (NAV1, the HSI) / OBS (NAV2, the CDI). */
   label?: string;
+  /** Test id; default knob-crs1 / knob-crs2. */
+  testId?: string;
 }) {
   const deg = state.radios[radio === 1 ? 'nav1' : 'nav2'].obsDeg;
   const name = label ?? (radio === 1 ? 'CRS' : 'OBS');
@@ -22,7 +25,7 @@ export function CourseKnob({
     <Knob
       label={name}
       valueText={`NAV${radio} ${name.toLowerCase()} ${formatCourse(deg)}`}
-      testId={`knob-crs${radio}`}
+      testId={testId ?? `knob-crs${radio}`}
       onTurn={(n, big) => send((s) => courseKnob(s, radio, n, big))}
     />
   );

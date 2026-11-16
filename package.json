@@ -1,6 +1,6 @@
 {
   "name": "ifrsim",
-  "version": "1.0.0-beta.1",
+  "version": "2.0.0-beta.1",
   "private": true,
   "license": "MIT",
   "description": "IFR approach trainer: fly approach plates with a generic GA autopilot. Training use only, not for navigation.",

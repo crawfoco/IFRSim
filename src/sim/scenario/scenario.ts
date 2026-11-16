@@ -24,8 +24,22 @@ export interface ScenarioOptions {
    *  comes into sight by DA/MDA; below → it does not. */
   ceiling: Ceiling;
   gsOutOfService: boolean;
+  /**
+   * What the learner chose on the briefing for the runway at minimums: random (default, the
+   * outcome is hidden) or a fixed outcome. Restart keeps a fixed choice and re-rolls a random one.
+   */
+  weatherPick?: WeatherPick;
   /** Instrument panel flown (default steam). The sim does not depend on it; the debrief shows it. */
   panel?: PanelKind;
+}
+
+/** Briefing choice for the runway at minimums. */
+export type WeatherPick = 'random' | Ceiling;
+
+/** The actual ceiling for a flight: a chosen outcome, or random from `rand` in [0, 1). */
+export function pickCeiling(pick: WeatherPick | undefined, rand: number): Ceiling {
+  if (pick === 'above' || pick === 'below') return pick;
+  return rand < 0.5 ? 'above' : 'below';
 }
 
 /** Steam gauges (V1) or the Glass PFD (V2). */
@@ -204,11 +218,14 @@ export function buildScenario(
   };
 }
 
-/** The same scenario with the hidden weather picked again (`rand` in [0, 1)). */
+/**
+ * The same scenario for Restart / Fly again: a random weather choice is picked again (`rand` in
+ * [0, 1)); an outcome chosen on the briefing is kept.
+ */
 export function rerollWeather(sc: Scenario, navdata: NavData, rand: number): Scenario {
   return buildScenario(sc.procedure, navdata, {
     ...sc.options,
-    ceiling: rand < 0.5 ? 'above' : 'below',
+    ceiling: pickCeiling(sc.options.weatherPick, rand),
   });
 }
 
@@ -254,15 +271,8 @@ export function briefing(sc: Scenario): Briefing {
 }
 
 function briefingHints(sc: Scenario): string[] {
+  // The CRS-on-the-localizer advice is given in the debrief when it matters (rules/course-setting).
   const hints: string[] = [];
-  const course = sc.final.course;
-  if ('loc' in course) {
-    const loc = sc.world.navdata.localizers[course.loc];
-    if (loc)
-      hints.push(
-        `Set the HSI course (CRS) to the localizer course, ${String(Math.round(loc.courseMagDeg)).padStart(3, '0')}°. The autopilot holds the course you set, and the HSI shows reverse sensing if it is set to the reciprocal.`,
-      );
-  }
   if (sc.final.map.timing)
     hints.push(
       `This trainer identifies the MAP by DME (${sc.final.map.fix}). The chart's timing table is a backup.`,

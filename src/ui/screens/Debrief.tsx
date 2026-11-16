@@ -125,59 +125,62 @@ export function Debrief({
               </button>
             ))}
           </div>
+          {/* Plan: the track, replay and profiles. Plate: the plate alone, using the whole column. */}
           {leftTab === 'plan' ? (
-            <PlanView
-              scenario={scenario}
-              route={a.sequencer.route}
-              track={a.samples}
-              cursor={replay.index}
-            />
+            <>
+              <PlanView
+                scenario={scenario}
+                route={a.sequencer.route}
+                track={a.samples}
+                cursor={replay.index}
+              />
+              <div className="replay" role="group" aria-label="Replay">
+                <button type="button" onClick={replay.toggle} data-testid="replay-play">
+                  {replay.playing ? 'Pause' : 'Replay'}
+                </button>
+                <div className="seg" role="radiogroup" aria-label="Replay speed">
+                  {REPLAY_SPEEDS.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      role="radio"
+                      aria-checked={replay.speed === s}
+                      className={`seg-btn${replay.speed === s ? ' on' : ''}`}
+                      onClick={() => replay.setSpeed(s)}
+                      data-testid={`replay-${s}`}
+                    >
+                      {s}×
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={Math.max(0, a.samples.length - 1)}
+                  value={replay.index}
+                  onChange={(e) => replay.seek(Number(e.target.value))}
+                  aria-label="Replay position"
+                  data-testid="replay-scrub"
+                />
+                <span className="replay-time" data-testid="replay-time">
+                  {cur
+                    ? `${clock(cur.tick)} · ${Math.round(cur.altitudeFt).toLocaleString('en-US')} ft`
+                    : ''}
+                </span>
+              </div>
+              <ProfileView
+                samples={a.samples}
+                minimums={{ label: `${mins.kind} ${mins.altFt}`, altFt: mins.altFt }}
+                cursor={replay.index}
+              />
+              {a.samples.length >= 2 && (
+                <FinalProfileView data={fp} minimums={mins} cursor={replay.index} />
+              )}
+            </>
           ) : (
             <div className="debrief-plate">
               <ChartViewer procedure={scenario.procedure} />
             </div>
-          )}
-          <div className="replay" role="group" aria-label="Replay">
-            <button type="button" onClick={replay.toggle} data-testid="replay-play">
-              {replay.playing ? 'Pause' : 'Replay'}
-            </button>
-            <div className="seg" role="radiogroup" aria-label="Replay speed">
-              {REPLAY_SPEEDS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  role="radio"
-                  aria-checked={replay.speed === s}
-                  className={`seg-btn${replay.speed === s ? ' on' : ''}`}
-                  onClick={() => replay.setSpeed(s)}
-                  data-testid={`replay-${s}`}
-                >
-                  {s}×
-                </button>
-              ))}
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={Math.max(0, a.samples.length - 1)}
-              value={replay.index}
-              onChange={(e) => replay.seek(Number(e.target.value))}
-              aria-label="Replay position"
-              data-testid="replay-scrub"
-            />
-            <span className="replay-time" data-testid="replay-time">
-              {cur
-                ? `${clock(cur.tick)} · ${Math.round(cur.altitudeFt).toLocaleString('en-US')} ft`
-                : ''}
-            </span>
-          </div>
-          <ProfileView
-            samples={a.samples}
-            minimums={{ label: `${mins.kind} ${mins.altFt}`, altFt: mins.altFt }}
-            cursor={replay.index}
-          />
-          {a.samples.length >= 2 && (
-            <FinalProfileView data={fp} minimums={mins} cursor={replay.index} />
           )}
         </section>
 

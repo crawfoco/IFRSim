@@ -5,7 +5,7 @@
  * - where the chart names the DME source (KMTJ: MTJ), the DME is read from it.
  */
 import type { Leg } from '../../../procedures/schema';
-import type { Scenario } from '../../scenario/scenario';
+import { panelOf, type Scenario } from '../../scenario/scenario';
 import { clock, type Rule, type ScoreItem } from './types';
 
 /** Time allowed after a leg starts to tune and identify its navaid. */
@@ -101,11 +101,18 @@ export const tuneAndIdentify: Rule<IdentState> = {
         if (!(id in next.firstUse))
           next = { ...next, firstUse: { ...next.firstUse, [id]: state.tick } };
     }
-    for (const c of commands) {
-      if (c.type !== 'ident') continue;
-      const ident = (c.radio === 1 ? sensors.nav1 : sensors.nav2).ident;
+    const identify = (ident: string | null) => {
       if (ident && !(ident in next.identified))
         next = { ...next, identified: { ...next.identified, [ident]: state.tick } };
+    };
+    for (const c of commands) {
+      if (c.type === 'ident') identify((c.radio === 1 ? sensors.nav1 : sensors.nav2).ident);
+    }
+    // Glass panel: the decoded ident shown next to the frequency (auto-ID) identifies the
+    // station as soon as it is received. Steam: only the ID button does.
+    if (panelOf(scenario.options) === 'glass') {
+      identify(sensors.nav1.ident);
+      identify(sensors.nav2.ident);
     }
 
     // Tune watch for the navaids the current leg needs.

@@ -12,6 +12,7 @@ import { sense } from '../sensors';
 import type { Command, SimState } from '../state';
 import { decision, segmentMinimum, segmentMinimums } from './rules/altitude';
 import { finalCourse, glideslope } from './rules/course';
+import { locCourseSetting } from './rules/loc-crs';
 import { movingMap } from './rules/map';
 import { dmeSource, tuneAndIdentify } from './rules/radios';
 import { climbInHold, holdMaxAltitude, holdTiming } from './rules/hold';
@@ -37,6 +38,7 @@ const RULES: Rule<unknown>[] = [
   decision,
   missedApproach,
   noPtReversal,
+  locCourseSetting,
   movingMap,
 ] as Rule<unknown>[];
 

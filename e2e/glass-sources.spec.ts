@@ -46,15 +46,19 @@ test('CDI switch: active NAV drops to ROL; armed NAV is cancelled and HDG kept',
 }) => {
   test.setTimeout(300_000);
   await startGlass(page);
-  // NAV2 → I-FTG 109.30 with CRS2 263; the aircraft starts south of the localizer.
+  // NAV2 → I-FTG 109.30; the aircraft starts south of the localizer. Auto-ID shows the ident.
   await turn(page, 'nav2-mhz', 'ArrowDown', 7);
   await page.getByTestId('nav2-swap').click();
   await expect(page.getByTestId('nav2-active')).toHaveText('109.30');
-  await turn(page, 'knob-crs2', 'PageDown', 10);
-  await turn(page, 'knob-crs2', 'ArrowUp', 3);
+  await expect(page.getByTestId('nav2-autoid')).toHaveText('I-FTG');
+  // One CRS knob sets the course of the CDI's source: switch the CDI to VLOC2, then set 263.
   await page.getByTestId('btn-cdi').click();
   await expect(page.getByTestId('btn-cdi')).toContainText('VLOC2');
+  await turn(page, 'knob-crs', 'PageDown', 10);
+  await turn(page, 'knob-crs', 'ArrowUp', 3);
   await expect(page.getByTestId('pfd-crs-box-value')).toHaveText('263°');
+  await expect(page.getByTestId('knob-crs1')).toHaveCount(0);
+  await expect(page.getByTestId('knob-crs2')).toHaveCount(0);
   await expect(page.getByTestId('pfd-hsi-source')).toHaveText('VLOC2');
 
   // AP on, HDG 293 (the ATC vector), NAV: captures the localizer on NAV2.
