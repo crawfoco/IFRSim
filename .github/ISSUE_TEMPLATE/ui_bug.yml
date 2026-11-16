@@ -1,0 +1,80 @@
+name: UI problem
+description: A button or control doesn't work, or something isn't displayed correctly.
+labels: [bug, ui]
+body:
+  - type: dropdown
+    id: screen
+    attributes:
+      label: Where in the app?
+      options:
+        - Approach selection
+        - Briefing
+        - Flight - instruments (ASI, altimeter, VSI, HSI/CDI, DME)
+        - Flight - autopilot panel
+        - Flight - nav radios / controls / power / timer
+        - Flight - approach chart or moving map
+        - Flight - outside view
+        - Debrief
+        - Other / not sure
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem?
+      options:
+        - Control doesn't respond (click, tap, drag, keyboard)
+        - Control does the wrong thing
+        - Displayed wrong (overlapping, cut off, misaligned, wrong value)
+        - Hard to read (contrast, size, colours)
+        - Missing or blank
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      placeholder: e.g. Tapping the HDG knob on iPad does nothing; the bug stays at 360.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Select ...
+        2. Click ...
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: e.g. Chrome 131 on Windows, Safari on iPad
+    validations:
+      required: true
+  - type: input
+    id: screen-size
+    attributes:
+      label: Screen size and orientation
+      placeholder: e.g. 1920x1080 laptop, iPad portrait, phone landscape
+  - type: dropdown
+    id: input
+    attributes:
+      label: Input method
+      options:
+        - Mouse
+        - Touch
+        - Keyboard
+        - Pen / stylus
+        - Screen reader or other assistive tech
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag images here. For display problems a screenshot is the most useful thing you can send.
