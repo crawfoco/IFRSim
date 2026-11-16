@@ -2,6 +2,7 @@
 import { modeContext } from './autopilot/autopilot';
 import { cdiSourceChanged, pressButton } from './autopilot/modes';
 import { nextBearingSource, nextCdiSource } from './nav/source';
+import { applyGpsCommand, gpsGoAround } from './gps/receiver';
 import { clamp, normalize360, trueToMag } from './geo/angles';
 import { sense } from './sensors';
 import type { Command, NavRadio, RadioId, SimState } from './state';
@@ -20,8 +21,14 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
   switch (c.type) {
     case 'button': {
       const ap = pressButton(s.ap, c.button, modeContext(s, sense(s, world)));
-      const goAroundTick = c.button === 'GA' ? (s.goAroundTick ?? s.tick) : s.goAroundTick;
-      return { ...s, ap, goAroundTick };
+      if (c.button !== 'GA') return { ...s, ap };
+      const ac = { position: s.aircraft.position, altitudeFt: s.aircraft.altitudeFt };
+      return {
+        ...s,
+        ap,
+        goAroundTick: s.goAroundTick ?? s.tick,
+        gps: gpsGoAround(s.gps, world.gps, ac),
+      };
     }
     case 'headingBug':
       return { ...s, panel: { ...s.panel, headingBugDeg: normalize360(Math.round(c.deg)) } };
@@ -65,11 +72,26 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
     case 'cdi': {
       // A new nav source: active NAV/APR drops to ROL; armed NAV/APR is cancelled (HDG kept).
       const ap = cdiSourceChanged(s.ap, modeContext(s, sense(s, world)));
-      return { ...s, ap, panel: { ...s.panel, cdiSource: nextCdiSource(s.panel.cdiSource) } };
+      const cdiSource = nextCdiSource(s.panel.cdiSource, world.gps !== null);
+      return { ...s, ap, panel: { ...s.panel, cdiSource } };
+    }
+    case 'cdiSet': {
+      if (c.source === s.panel.cdiSource) return s;
+      if (c.source === 'GPS' && !world.gps) return s;
+      const ap = cdiSourceChanged(s.ap, modeContext(s, sense(s, world)));
+      return { ...s, ap, panel: { ...s.panel, cdiSource: c.source } };
     }
     case 'bearing': {
       const key = c.pointer === 1 ? 'brg1' : 'brg2';
-      return { ...s, panel: { ...s.panel, [key]: nextBearingSource(s.panel[key]) } };
+      const src = nextBearingSource(s.panel[key], world.gps !== null);
+      return { ...s, panel: { ...s.panel, [key]: src } };
+    }
+    case 'gpsLoad':
+    case 'gpsActivate':
+    case 'gpsDirect':
+    case 'gpsSusp': {
+      const ac = { position: s.aircraft.position, altitudeFt: s.aircraft.altitudeFt };
+      return { ...s, gps: applyGpsCommand(s.gps, c, world.gps, ac) };
     }
     case 'timer':
       return {

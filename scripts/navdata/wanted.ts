@@ -3,7 +3,26 @@
  * Adding an approach means adding its items here and re-running `npm run navdata`.
  */
 export const WANTED = {
-  airports: ['CFO', 'GXY', 'MTJ', 'AKO', 'LAR', 'SNY'],
+  airports: [
+    'CFO',
+    'GXY',
+    'MTJ',
+    'AKO',
+    'LAR',
+    'SNY',
+    'LAA',
+    'PUB',
+    'BFF',
+    'CPR',
+    'APA',
+    'COS',
+    'OGA',
+    'CEZ',
+    'CYS',
+    'ALS',
+    'CNY',
+    'SKX',
+  ],
   runwayEnds: [
     ['CFO', '26'],
     ['GXY', '35'],
@@ -11,13 +30,42 @@ export const WANTED = {
     ['AKO', '29'],
     ['LAR', '30'],
     ['SNY', '13'],
+    ['LAA', '18'],
+    ['PUB', '26L'],
+    ['BFF', '12'],
+    ['CPR', '03'],
+    ['APA', '28'],
+    ['COS', '31'],
+    ['OGA', '08'],
+    ['CEZ', '21'],
+    ['CYS', '27'],
+    ['ALS', '02'],
+    ['CNY', '03'],
+    // KSKX VOR/DME-B is circling-only: the sim lands on runway 13 (closest to the 116° final).
+    ['SKX', '13'],
   ] as const,
-  navaids: ['FQF', 'GLL', 'AKO', 'LAR', 'SNY', 'MTJ', 'JNC', 'CYS', 'DVV'],
+  navaids: [
+    'FQF',
+    'GLL',
+    'AKO',
+    'LAR',
+    'SNY',
+    'MTJ',
+    'JNC',
+    'CYS',
+    'DVV',
+    'PUB',
+    'DDY',
+    'CEZ',
+    'ALS',
+    'TAS',
+  ],
   /** Localizer idents without the I- prefix, with airport to disambiguate. */
   localizers: [
     ['FTG', 'CFO'],
     ['DCI', 'GXY'],
     ['MTJ', 'MTJ'],
+    ['CYS', 'CYS'],
   ] as const,
   /** Fix idents are not unique nationally: key on ident + state. */
   fixes: [
@@ -57,7 +105,104 @@ export const WANTED = {
     ['JIKUT', 'NE'],
     ['RIYOP', 'NE'],
     ['OGJUN', 'CO'],
+    // KLAA RNAV 18 (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['OBOZU', 'CO'],
+    ['WEYYI', 'CO'],
+    ['WIZGE', 'CO'],
+    ['LOLME', 'CO'],
+    ['IHIYO', 'CO'],
+    // KPUB RNAV 26L (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['DRAKE', 'CO'],
+    ['BONUH', 'CO'],
+    ['HELER', 'CO'],
+    ['ORWAY', 'CO'],
+    ['STAXX', 'CO'],
+    ['REDHI', 'CO'],
+    ['VIGIL', 'CO'],
+    ['JIKTA', 'CO'],
+    ['MERTZ', 'CO'],
+    // KBFF RNAV 12 (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['ALBIN', 'WY'],
+    ['SACOP', 'NE'],
+    ['LEDSE', 'NE'],
+    ['SPONS', 'NE'],
+    ['AYAYI', 'NE'],
+    ['CAPGA', 'NE'],
+    ['HAKAB', 'NE'],
+    // KCPR RNAV 3 (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['CHOMP', 'WY'],
+    ['IPEYE', 'WY'],
+    ['HEITY', 'WY'],
+    ['AXIBY', 'WY'],
+    ['HIKOX', 'WY'],
+    ['CEYFI', 'WY'],
+    ['YIWZE', 'WY'],
+    ['NOPTE', 'WY'],
+    ['KIVSE', 'WY'],
+    // KAPA RNAV 28 (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['DILVE', 'CO'],
+    ['DOCKY', 'CO'],
+    ['EZBEL', 'CO'],
+    ['MESME', 'CO'],
+    ['NIDLY', 'CO'],
+    ['FEGIB', 'CO'],
+    // KCOS RNAV 31 (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['ADANE', 'CO'],
+    ['ZENER', 'CO'],
+    ['NUTVE', 'CO'],
+    ['ONKIE', 'CO'],
+    ['JATOL', 'CO'],
+    // KOGA RNAV 8 (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['AHUFU', 'NE'],
+    ['EZIFU', 'NE'],
+    ['YEYUC', 'NE'],
+    ['TUKWY', 'NE'],
+    // KCYS ILS 27
+    ['MARKL', 'WY'],
+    ['HORSE', 'WY'],
+    ['COLLA', 'WY'],
+    ['EGBER', 'WY'],
+    ['HAMER', 'WY'],
+    // KALS RNAV 2 (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['GEMKY', 'CO'],
+    ['WAPRE', 'CO'],
+    ['VEPUY', 'CO'],
+    ['ZOTOS', 'NM'],
+    ['RODDS', 'CO'],
+    ['KROWZ', 'CO'],
+    ['BREZE', 'CO'],
+    ['XOGSY', 'CO'],
+    ['APKOW', 'CO'],
+    ['ICORY', 'CO'],
+    // KCNY RNAV 3 (RNAV waypoints: cross-check for the CIFP coordinates)
+    ['KIDNE', 'UT'],
+    ['PIGSE', 'UT'],
+    ['ARCHH', 'UT'],
+    ['HANOG', 'UT'],
+    ['NERRI', 'UT'],
+    ['FELTA', 'UT'],
+    ['FATPU', 'UT'],
+    ['FOGUG', 'UT'],
+    // KSKX VOR/DME-B
+    ['RESOY', 'NM'],
+    ['ZUTRI', 'NM'],
   ] as const,
 };
+
+/**
+ * RNAV (GPS) approaches taken from the FAA CIFP (V3, SPEC.md → V3 content): ICAO airport and
+ * CIFP procedure ident. Their waypoints, legs and FAS data go into navdata.json → cifp.
+ */
+export const WANTED_RNAV = [
+  { airport: 'KLAA', ident: 'R18' },
+  { airport: 'KPUB', ident: 'R26L' },
+  { airport: 'KBFF', ident: 'R12' },
+  { airport: 'KCPR', ident: 'R03' },
+  { airport: 'KAPA', ident: 'R28' },
+  { airport: 'KCOS', ident: 'R31' },
+  { airport: 'KOGA', ident: 'R08' },
+  { airport: 'KALS', ident: 'R02' },
+  { airport: 'KCNY', ident: 'R03' },
+] as const;
 
 export type Wanted = typeof WANTED;

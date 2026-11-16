@@ -43,6 +43,197 @@ export interface PlateCalibration {
  * drawn runway) and the I-FTG antenna (west end of the course line).
  */
 export const PLATE_CALIBRATION: Record<string, PlateCalibration> = {
+  // KLAA RNAV (GPS) RWY 18 (AL-5290 Amdt 1E), native 655×1010: WEYYI and WIZGE triangles, OBOZU and
+  // LOLME fly-by stars, the RW18 runway waypoint. 17.8 px/NM, every anchor within 1.3 px. Masked:
+  // MSA circle, airport sketch, and the "MISSED APCH FIX" inset (IHIYO).
+  'klaa-rnav18': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 31, y: 232, w: 597, h: 452 },
+    insets: [
+      { x: 495, y: 235, w: 132, h: 125 }, // MSA circle
+      { x: 31, y: 607, w: 191, h: 77 }, // airport sketch
+      { x: 520, y: 585, w: 108, h: 99 }, // missed approach fix inset
+    ],
+    anchors: [
+      { name: 'WEYYI', ref: { fix: 'WEYYI' }, x: 197.8, y: 338 },
+      { name: 'WIZGE', ref: { fix: 'WIZGE' }, x: 487.8, y: 387.2 },
+      { name: 'OBOZU', ref: { fix: 'OBOZU' }, x: 342, y: 360.7 },
+      { name: 'LOLME', ref: { fix: 'LOLME' }, x: 322.7, y: 467.7 },
+      { name: 'RW18', ref: { fix: 'RW18' }, x: 307.7, y: 564.3 },
+    ],
+  },
+  // KOGA RNAV (GPS) RWY 8 (AL-6070 Amdt 2F), native 655×1010: AHUFU, EZIFU and YEYUC stars and
+  // the RW08 runway waypoint, all on the final course (a similarity fit needs no more). 17.8 px/NM,
+  // every anchor within 0.5 px. Masked: the TAA icons (not to scale), the "MISSED APCH FIX" inset
+  // (TUKWY) and the top of the airport sketch.
+  'koga-rnav8': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 31, y: 226, w: 597, h: 424 },
+    insets: [
+      { x: 95, y: 465, w: 250, h: 160 }, // TAA areas
+      { x: 518, y: 497, w: 110, h: 110 }, // missed approach fix inset
+      { x: 432, y: 608, w: 196, h: 42 }, // airport sketch
+    ],
+    anchors: [
+      { name: 'AHUFU', ref: { fix: 'AHUFU' }, x: 186.7, y: 423.5 },
+      { name: 'EZIFU', ref: { fix: 'EZIFU' }, x: 318.8, y: 422.7 },
+      { name: 'YEYUC', ref: { fix: 'YEYUC' }, x: 372.5, y: 422.7 },
+      { name: 'RW08', ref: { fix: 'RW08' }, x: 424.3, y: 422.7 },
+    ],
+  },
+  // KBFF RNAV (GPS) RWY 12 (AL-383 Amdt 1B), native 655×1010: LEDSE, CAPGA, SACOP and AYAYI stars
+  // and the RW12 runway waypoint. 17.8 px/NM, every anchor within 0.4 px. Masked: MSA circle, the
+  // "MISSED APCH FIX" inset (HAKAB), and SPONS and ALBIN beyond their break symbols.
+  'kbff-rnav12': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 32, y: 245, w: 595, h: 363 },
+    insets: [
+      { x: 500, y: 280, w: 120, h: 120 }, // MSA circle
+      { x: 514, y: 543, w: 113, h: 65 }, // missed approach fix inset
+      { x: 438, y: 245, w: 75, h: 35 }, // SPONS, beyond a break
+      { x: 32, y: 565, w: 80, h: 43 }, // ALBIN, beyond a break
+    ],
+    anchors: [
+      { name: 'LEDSE', ref: { fix: 'LEDSE' }, x: 243.8, y: 388.7 },
+      { name: 'CAPGA', ref: { fix: 'CAPGA' }, x: 319.2, y: 465.3 },
+      { name: 'SACOP', ref: { fix: 'SACOP' }, x: 180, y: 450.8 },
+      { name: 'AYAYI', ref: { fix: 'AYAYI' }, x: 307, y: 326.3 },
+      { name: 'RW12', ref: { fix: 'RW12' }, x: 383.8, y: 530.8 },
+    ],
+  },
+  // KPUB RNAV (GPS) RWY 26L (AL-334 Amdt 1B), native 655×1010: BONUH, HELER, REDHI, JIKTA, MERTZ
+  // and ORWAY stars and the RW26L runway waypoint. 17.8 px/NM, residuals ≤ 1.5 px. Masked: airport
+  // sketch, MSA circle, and DRAKE, VIGIL and STAXX beyond their break symbols.
+  'kpub-rnav26l': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 32, y: 199, w: 595, h: 470 },
+    insets: [
+      { x: 32, y: 610, w: 190, h: 59 }, // airport sketch
+      { x: 504, y: 550, w: 112, h: 112 }, // MSA circle
+      { x: 268, y: 199, w: 72, h: 34 }, // DRAKE, beyond a break
+      { x: 318, y: 630, w: 60, h: 39 }, // VIGIL, beyond a break
+      { x: 428, y: 636, w: 62, h: 33 }, // STAXX, beyond a break
+    ],
+    anchors: [
+      { name: 'BONUH', ref: { fix: 'BONUH' }, x: 424.7, y: 360 },
+      { name: 'HELER', ref: { fix: 'HELER' }, x: 427.5, y: 466.7 },
+      { name: 'REDHI', ref: { fix: 'REDHI' }, x: 439.3, y: 574.3 },
+      { name: 'JIKTA', ref: { fix: 'JIKTA' }, x: 318.3, y: 469.7 },
+      { name: 'RW26L', ref: { fix: 'RW26L' }, x: 213, y: 472.7 },
+      { name: 'MERTZ', ref: { fix: 'MERTZ' }, x: 67.5, y: 477 },
+      { name: 'ORWAY', ref: { fix: 'ORWAY' }, x: 563.8, y: 486.7 },
+    ],
+  },
+  // KCPR RNAV (GPS) RWY 3 (AL-72 Amdt 1C), native 655×1010: CEYFI, AXIBY, IPEYE, YIWZE, KIVSE stars
+  // and the CHOMP triangle. 17.8 px/NM, residuals ≤ 1.1 px. Masked: the missed approach fix inset
+  // (DDY hold), the airport sketch, the MSA circle, and HEITY and HIKOX beyond their breaks.
+  'kcpr-rnav3': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 30, y: 209, w: 597, h: 445 },
+    insets: [
+      { x: 516, y: 209, w: 111, h: 117 }, // missed approach fix inset
+      { x: 436, y: 610, w: 191, h: 44 }, // airport sketch
+      { x: 585, y: 555, w: 42, h: 45 }, // HEITY, beyond a break
+      { x: 85, y: 209, w: 80, h: 41 }, // HIKOX, beyond a break
+      { x: 224, y: 228, w: 108, h: 112 }, // MSA circle
+    ],
+    anchors: [
+      { name: 'CEYFI', ref: { fix: 'CEYFI' }, x: 128.7, y: 406.7 },
+      { name: 'AXIBY', ref: { fix: 'AXIBY' }, x: 333.3, y: 603.3 },
+      { name: 'IPEYE', ref: { fix: 'IPEYE' }, x: 230.8, y: 503.7 },
+      { name: 'YIWZE', ref: { fix: 'YIWZE' }, x: 328.8, y: 402.3 },
+      { name: 'KIVSE', ref: { fix: 'KIVSE' }, x: 428.3, y: 299.7 },
+      { name: 'CHOMP', ref: { fix: 'CHOMP' }, x: 168.8, y: 644.2 },
+    ],
+  },
+  // KAPA RNAV (GPS) RWY 28 (AL-5715 Amdt 1C), native 655×1010: DOCKY, EZBEL, DILVE, MESME, NIDLY
+  // and FEGIB symbols. 17.8 px/NM, residuals ≤ 1.5 px. Masked: the MSA circle (the airport sketch
+  // is below the plan view; the EZBEL missed hold is drawn to scale).
+  'kapa-rnav28': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 30, y: 215, w: 600, h: 393 },
+    insets: [{ x: 503, y: 228, w: 125, h: 122 }], // MSA circle
+    anchors: [
+      { name: 'DOCKY', ref: { fix: 'DOCKY' }, x: 411.7, y: 473 },
+      { name: 'EZBEL', ref: { fix: 'EZBEL' }, x: 492.7, y: 436.7 },
+      { name: 'DILVE', ref: { fix: 'DILVE' }, x: 495, y: 505 },
+      { name: 'MESME', ref: { fix: 'MESME' }, x: 358.8, y: 454.5 },
+      { name: 'NIDLY', ref: { fix: 'NIDLY' }, x: 309.8, y: 434.3 },
+      { name: 'FEGIB', ref: { fix: 'FEGIB' }, x: 281, y: 422.3 },
+    ],
+  },
+  // KCOS RNAV (GPS) RWY 31 (AL-87 Amdt 2A), native 655×1010: ADANE triangle, ZENER, NUTVE, JATOL
+  // and ONKIE stars, RW31 runway waypoint. 17.8 px/NM, residuals ≤ 0.5 px. Masked: airport sketch,
+  // MSA circle, PUB beyond a break.
+  'kcos-rnav31': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 31, y: 199, w: 596, h: 483 },
+    insets: [
+      { x: 31, y: 610, w: 191, h: 72 }, // airport sketch
+      { x: 500, y: 555, w: 127, h: 127 }, // MSA circle
+      { x: 415, y: 633, w: 80, h: 49 }, // PUB, beyond a break
+    ],
+    anchors: [
+      { name: 'ADANE', ref: { fix: 'ADANE' }, x: 513.7, y: 227.3 },
+      { name: 'RW31', ref: { fix: 'RW31' }, x: 266.7, y: 342 },
+      { name: 'JATOL', ref: { fix: 'JATOL' }, x: 329.7, y: 405.2 },
+      { name: 'ZENER', ref: { fix: 'ZENER' }, x: 506, y: 437.5 },
+      { name: 'NUTVE', ref: { fix: 'NUTVE' }, x: 406.3, y: 482.2 },
+      { name: 'ONKIE', ref: { fix: 'ONKIE' }, x: 423.7, y: 569.7 },
+    ],
+  },
+  // KALS RNAV (GPS) RWY 2 (AL-18 Amdt 2), native 655×1010: GEMKY and WAPRE triangles, VEPUY,
+  // KROWZ and BREZE stars, RODDS (where the courses meet), RW02 and the ALS VORTAC. 17.7 px/NM,
+  // residuals ≤ 2.3 px. Masked: the missed approach fix inset (not to scale), the airport sketch,
+  // the MSA circle, ZOTOS beyond a break.
+  'kals-rnav2': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 31, y: 213, w: 596, h: 467 },
+    insets: [
+      { x: 498, y: 213, w: 129, h: 173 }, // missed approach fix inset
+      { x: 31, y: 610, w: 191, h: 70 }, // airport sketch
+      { x: 155, y: 218, w: 118, h: 130 }, // MSA circle
+      { x: 335, y: 640, w: 75, h: 40 }, // ZOTOS, beyond a break
+    ],
+    anchors: [
+      { name: 'GEMKY', ref: { fix: 'GEMKY' }, x: 60.3, y: 477.5 },
+      { name: 'WAPRE', ref: { fix: 'WAPRE' }, x: 202.8, y: 562.7 },
+      { name: 'VEPUY', ref: { fix: 'VEPUY' }, x: 320.2, y: 638.3 },
+      { name: 'RODDS', ref: { fix: 'RODDS' }, x: 287.3, y: 494 },
+      { name: 'KROWZ', ref: { fix: 'KROWZ' }, x: 361.5, y: 374.7 },
+      { name: 'BREZE', ref: { fix: 'BREZE' }, x: 380.8, y: 343.3 },
+      { name: 'RW02', ref: { fix: 'RW02' }, x: 430.3, y: 260.5 },
+      { name: 'ALS', ref: { navaid: 'ALS' }, x: 482, y: 344.7 },
+    ],
+  },
+  // KCNY RNAV (GPS) RWY 3 (AL-5585 Amdt 2), native 655×1010: KIDNE, PIGSE and ARCHH triangles,
+  // HANOG (fly-over) and NERRI symbols, the FOGUG MAP (offset final, not the runway). 17.8 px/NM,
+  // residuals ≤ 0.8 px. Masked: the MSA circle and the top of the airport sketch.
+  'kcny-rnav3': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 31, y: 212, w: 598, h: 456 },
+    insets: [
+      { x: 472, y: 483, w: 114, h: 122 }, // MSA circle
+      { x: 436, y: 609, w: 193, h: 59 }, // airport sketch
+    ],
+    anchors: [
+      { name: 'KIDNE', ref: { fix: 'KIDNE' }, x: 65.5, y: 460.5 },
+      { name: 'PIGSE', ref: { fix: 'PIGSE' }, x: 220.3, y: 626.3 },
+      { name: 'HANOG', ref: { fix: 'HANOG' }, x: 213, y: 439.7 },
+      { name: 'NERRI', ref: { fix: 'NERRI' }, x: 300.8, y: 380.8 },
+      { name: 'FOGUG', ref: { fix: 'FOGUG' }, x: 394.2, y: 312.3 },
+      { name: 'ARCHH', ref: { fix: 'ARCHH' }, x: 554.2, y: 249.7 },
+    ],
+  },
   'kcfo-ils26': {
     imageW: 715,
     imageH: 1100,
@@ -76,6 +267,27 @@ export const PLATE_CALIBRATION: Record<string, PlateCalibration> = {
       { name: 'WELDS', ref: { fix: 'WELDS' }, x: 369.2, y: 574.5 },
       { name: 'CEDUK', ref: { fix: 'CEDUK' }, x: 587.3, y: 507.3 },
       { name: 'WAVDI', ref: { fix: 'WAVDI' }, x: 601.7, y: 531.7 },
+    ],
+  },
+  // KCYS ILS or LOC RWY 27 (AL-80 Amdt 36), native 655×1010: CYS VORTAC, MARKL tick, the EGBER
+  // and HAMER triangles, COLLA and HORSE on the localizer, the I-CYS antenna. 17.9 px/NM,
+  // rotation -0.09°, every anchor within 2.4 px. Masked: MSA circle, airport sketch.
+  'kcys-ils27': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 33, y: 192, w: 594, h: 489 },
+    insets: [
+      { x: 498, y: 212, w: 122, h: 137 }, // MSA circle
+      { x: 436, y: 605, w: 191, h: 76 }, // airport sketch
+    ],
+    anchors: [
+      { name: 'CYS', ref: { navaid: 'CYS' }, x: 190.3, y: 402 },
+      { name: 'MARKL', ref: { fix: 'MARKL' }, x: 278, y: 246 },
+      { name: 'EGBER', ref: { fix: 'EGBER' }, x: 605.2, y: 433.3 },
+      { name: 'HAMER', ref: { fix: 'HAMER' }, x: 399.8, y: 581.2 },
+      { name: 'COLLA', ref: { fix: 'COLLA' }, x: 408.3, y: 483.7 },
+      { name: 'HORSE', ref: { fix: 'HORSE' }, x: 266.7, y: 469.2 },
+      { name: 'I-CYS', ref: { loc: 'I-CYS' }, x: 151.7, y: 460.3 },
     ],
   },
   // KMTJ (AL-668 Amdt 3A): MTJ VOR/DME, RW17, the I-MTJ antenna, ZIMVI, WIDRU and BRUUK on the
@@ -159,6 +371,24 @@ export const PLATE_CALIBRATION: Record<string, PlateCalibration> = {
       { name: 'OGJUN', ref: { fix: 'OGJUN' }, x: 219.5, y: 686.5 },
       { name: 'JUNAD', ref: { fix: 'JUNAD' }, x: 211.7, y: 340.8 },
       { name: 'CHAKO', ref: { fix: 'CHAKO' }, x: 283.3, y: 432.5 },
+    ],
+  },
+  // KSKX (AL-5863 Amdt 3B): TAS VORTAC, the RESOY and ZUTRI ticks on the 116° course, and the
+  // runway 13 end of the to-scale runway drawn at ZUTRI (the only anchor off the course line).
+  // 17.86 px/NM, rotation 0.04°, all anchors within 1.5 px.
+  'kskx-vordme-b': {
+    imageW: 655,
+    imageH: 1010,
+    planArea: { x: 32, y: 199, w: 600, h: 543 },
+    insets: [
+      { x: 35, y: 612, w: 137, h: 128 }, // MSA circle
+      { x: 435, y: 607, w: 197, h: 135 }, // airport sketch
+    ],
+    anchors: [
+      { name: 'TAS', ref: { navaid: 'TAS' }, x: 191, y: 337.3 },
+      { name: 'RESOY', ref: { fix: 'RESOY' }, x: 302.5, y: 426.3 },
+      { name: 'ZUTRI', ref: { fix: 'ZUTRI' }, x: 392, y: 497.2 },
+      { name: 'RW13', ref: { fix: 'RW13' }, x: 382.5, y: 499.2 },
     ],
   },
 };

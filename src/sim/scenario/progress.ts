@@ -17,7 +17,7 @@ import { distanceNm, type LatLon } from '../geo/geodesy';
 import { crossedInbound } from '../scoring/geometry';
 import type { SimState } from '../state';
 import { runwayInSight } from './outside';
-import { activeMinimums, type Scenario } from './scenario';
+import { activeMinimums, type Scenario, waasOf } from './scenario';
 
 /** A fix counts as crossed when the closest approach was within this distance. */
 const PASSAGE_NM = 1.0;
@@ -120,7 +120,12 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
   });
 
   if (p.phase === 'approach') {
-    const min = activeMinimums(sc.procedure, sc.options.gsOutOfService, s.panel.iasCmdKt);
+    const min = activeMinimums(
+      sc.procedure,
+      sc.options.gsOutOfService,
+      s.panel.iasCmdKt,
+      waasOf(sc.options),
+    );
     const [map, mapCrossed] = crossing(
       p.map,
       distanceNm(s.aircraft.position, sc.fixes[sc.final.map.fix]!),
@@ -131,7 +136,13 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
     const inSight = runwayInSight(s, sc);
     let events = p.events;
     if (inSight && !events.some((e) => e.kind === 'runwayInSight'))
-      events = [...events, ev('runwayInSight', `Runway in sight at ${Math.round(alt)} ft`)];
+      events = [
+        ...events,
+        ev(
+          'runwayInSight',
+          `${sc.circlingTo ? 'Airport' : 'Runway'} in sight at ${Math.round(alt)} ft`,
+        ),
+      ];
 
     // The learner's go-around decision.
     if (s.goAroundTick !== null) {
@@ -145,7 +156,7 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
           ...events,
           ev(
             'goMissed',
-            `Go-around (GA) at ${Math.round(alt)} ft${inSight ? ', runway in sight' : ''}`,
+            `Go-around (GA) at ${Math.round(alt)} ft${inSight ? `, ${sc.circlingTo ? 'airport' : 'runway'} in sight` : ''}`,
           ),
         ],
       };
@@ -169,7 +180,9 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
         ? `Descended below the ${label}`
         : `Passed the missed approach point (${sc.final.map.fix})`;
       if (inSight) {
-        const text = `Runway in sight: landing. ${where} with the runway in sight.`;
+        const text = sc.circlingTo
+          ? `Airport in sight: circling to land on runway ${sc.procedure.runway}. ${where} with the airport in sight.`
+          : `Runway in sight: landing. ${where} with the runway in sight.`;
         return {
           ...next,
           phase: 'ended',
@@ -178,7 +191,7 @@ export function updateProgress(p: ScenarioProgress, s: SimState, sc: Scenario): 
           events: [...events, ev('landed', text)],
         };
       }
-      const text = `${where} without the runway in sight. A missed approach (GA) was required. Flight ended.`;
+      const text = `${where} without the ${sc.circlingTo ? 'airport' : 'runway'} in sight. A missed approach (GA) was required. Flight ended.`;
       return {
         ...next,
         phase: 'ended',

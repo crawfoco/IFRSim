@@ -12,6 +12,9 @@ export default defineConfig({
   test: {
     include: ['tests/**/*.test.{ts,tsx}'],
     environment: 'node',
+    // Headless flights through a missed approach take a few seconds; under full parallel
+    // load the default 5 s is too tight.
+    testTimeout: 20_000,
     coverage: {
       provider: 'v8',
       include: ['src/sim/**'],

@@ -81,6 +81,21 @@ So the debrief's Plate tab can draw the flown track on the plate (details in the
    it: the blue fixes are an independent check.
 7. `tests/ui/plate-overlay.test.ts` checks every calibration against the same limits.
 
+## RNAV (GPS) plates
+
+Follow **RNAV (GPS) procedures** in `docs/procedure-encoding.md`. Differences from the steps above:
+
+- Step 2: add the approach to `WANTED_RNAV` (airport + CIFP ident; list the idents with
+  `grep "^SUSAP KXXXK.F" data/raw/cifp-<cycle>/FAACIFP18 | cut -c14-19 | sort -u`), its waypoints
+  to `WANTED.fixes` (ident + state, as the NASR cross-check) and the runway end, then
+  `npm run navdata`. Print the coded legs to encode from (path terminator, fix, fly-over,
+  altitudes, holds) with a small `node -e` over `navdata.json → cifp.approaches`.
+- Step 3: encode from the plate, then run `checkAgainstCifp()` (tests/procedures/cifp-check.test.ts)
+  and resolve every difference against the plate. TAA areas are not in the FAA CIFP: encode them
+  from the plate.
+- Step 5: golden GPS readings at every fix and headless GPS runs (LPV or best line; LNAV with WAAS
+  unavailable plus the missed approach), modelled on the KLAA tests.
+
 ## 7. Finish
 
 `npx prettier --check .`, `npm run typecheck`, `npm run lint`, `npm test` and

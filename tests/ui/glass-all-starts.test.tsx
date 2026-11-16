@@ -17,8 +17,8 @@ import { pfdData } from '../../src/ui/instruments/glass/pfd-data';
 const starts = PROCEDURES.flatMap((p) => p.starts.map((s) => [p, s] as const));
 
 describe('Glass PFD at every start condition', () => {
-  it('covers all 20 starts', () => {
-    expect(starts).toHaveLength(20);
+  it('covers all 42 starts', () => {
+    expect(starts).toHaveLength(42);
   });
 
   for (const [p, start] of starts) {

@@ -3,7 +3,7 @@
  * - segment minimums: not more than 100 ft below the current leg's minimum altitude;
  * - decision: at DA/MDA, land only with the runway in sight; otherwise go missed (GA).
  */
-import { activeMinimums } from '../../scenario/scenario';
+import { activeMinimums, waasOf } from '../../scenario/scenario';
 import type { SequencerState } from '../sequencer';
 import { currentLeg } from '../sequencer';
 import type { Scenario } from '../../scenario/scenario';
@@ -24,8 +24,10 @@ export function segmentMinimum(seq: SequencerState, sc: Scenario): number | null
     case 'arc':
     case 'heading':
     case 'direct':
-    case 'hold':
       return leg.minAltFt ?? null;
+    case 'hold':
+      // Crossed straight in, not yet turned outbound: may be the start of the final instead.
+      return seq.reversal.straightInTick !== null ? null : (leg.minAltFt ?? null);
     case 'procedureTurn':
       // Until established inbound the procedure-turn rule judges the PT altitude.
       return seq.reversal.inboundTick !== null ? (leg.inboundMinAltFt ?? leg.minAltFt) : null;
@@ -35,8 +37,12 @@ export function segmentMinimum(seq: SequencerState, sc: Scenario): number | null
       if (seq.fafTick === null) return leg.fafAltFt;
       const precision = !!leg.glideslope && !sc.options.gsOutOfService;
       if (precision) return null;
+      // RNAV on a vertical line (LPV, LNAV/VNAV): LNAV-only step-downs do not apply.
+      const vertical =
+        !!sc.procedure.rnav &&
+        activeMinimums(sc.procedure, false, 100, waasOf(sc.options)).kind === 'DA';
       const passed = new Set(seq.passages.filter((p) => p.tick >= seq.fafTick!).map((p) => p.fix));
-      const next = leg.stepDowns.find((sd) => !passed.has(sd.fix));
+      const next = leg.stepDowns.find((sd) => !passed.has(sd.fix) && !(vertical && sd.lnavOnly));
       return next ? next.minAltFt : null;
     }
   }
@@ -102,8 +108,12 @@ export const decision: Rule<null> = {
       scenario.procedure,
       scenario.options.gsOutOfService,
       state.panel.iasCmdKt,
+      waasOf(scenario.options),
     );
-    const title = `Decision at the ${m.kind}: land only with the runway in sight, otherwise go missed`;
+    const what = scenario.circlingTo
+      ? 'circle to land only with the airport'
+      : 'land only with the runway';
+    const title = `Decision at the ${m.kind}: ${what} in sight, otherwise go missed`;
     const end = progress.events.find((e) => e.kind === 'landed' || e.kind === 'belowMinimums');
     const ga = progress.events.find((e) => e.kind === 'goMissed');
     if (end)
@@ -122,7 +132,7 @@ export const decision: Rule<null> = {
           id: 'decision',
           title,
           status: 'pass',
-          measured: `${ga.text}${ga.text.includes('runway in sight') ? ' (landing was possible; going missed is always allowed)' : ''}`,
+          measured: `${ga.text}${/(runway|airport) in sight/.test(ga.text) ? ' (landing was possible; going missed is always allowed)' : ''}`,
           tick: ga.tick,
         },
       ];

@@ -18,10 +18,13 @@ export interface HsiProps {
   deviation: CourseDeviation;
   /** Null when no ILS is tuned (pointer stowed). */
   glideslope: GlideslopeDeviation | null;
+  /** The NAV/GPS switch selects the GPS: course pointer and bar in the GPS colour, "GPS" shown. */
+  gps?: boolean;
 }
 
 function summary(p: HsiProps): string {
   const parts = [`heading ${pad3(p.headingMagDeg)}`, `course ${pad3(p.courseDeg)}`];
+  if (p.gps) parts.push('GPS');
   if (p.deviation.flag) parts.push('NAV flag');
   else {
     const d = p.deviation.dots;
@@ -70,10 +73,24 @@ export function Hsi(props: HsiProps) {
   }
   const barX = deviation.dots * HSI_DOT_PX;
   return (
-    <figure className="inst inst-hsi" data-testid="hsi">
-      <svg viewBox="0 0 250 200" role="img" aria-label={`HSI: ${summary(props)}`}>
+    <figure className={`inst inst-hsi${props.gps ? ' inst-hsi-gps' : ''}`} data-testid="hsi">
+      {/* The dial at 0..200 with the side strip to its right; the viewBox pads the left as
+          much, so the dial is centred (in line with the instrument below). */}
+      <svg viewBox="-50 0 300 200" role="img" aria-label={`HSI: ${summary(props)}`}>
         <circle className="inst-bezel" cx={C} cy={C} r={99} />
         <circle className="inst-face" cx={C} cy={C} r={92} />
+        {props.gps && (
+          <text
+            data-testid="hsi-gps"
+            className="inst-gps-label"
+            x={C + 104}
+            y={18}
+            textAnchor="start"
+            dominantBaseline="central"
+          >
+            GPS
+          </text>
+        )}
         <g data-testid="hsi-card" transform={rotate(hsiCardDeg(headingMagDeg))}>
           {card}
         </g>
@@ -204,7 +221,7 @@ export function Hsi(props: HsiProps) {
           </text>
         </g>
       </svg>
-      <figcaption className="inst-caption">HSI · NAV1</figcaption>
+      <figcaption className="inst-caption">HSI · {props.gps ? 'GPS' : 'NAV1'}</figcaption>
     </figure>
   );
 }

@@ -2,6 +2,7 @@
 import type { AircraftControls } from '../aircraft/model';
 import { magToTrue } from '../geo/angles';
 import type { NavReading } from '../nav/radios';
+import type { GpsReading } from '../gps/receiver';
 import type { Sensors, SimState } from '../state';
 import type { World } from '../world';
 import {
@@ -15,20 +16,24 @@ import {
 } from './laws';
 import { updateModes, type ApModes, type ModeContext } from './modes';
 
+export type ApNavSource =
+  | { kind: 'VLOC'; reading: NavReading; obsDeg: number }
+  /** The GPS: its CRS auto-slews to the desired track. */
+  | { kind: 'GPS'; gps: GpsReading; obsDeg: number };
+
 /**
- * The autopilot's nav source: the radio the CDI selects, and that radio's CRS. The steam panel
- * never changes the CDI, so there it is always NAV1.
+ * The autopilot's nav source: the radio the CDI selects and that radio's CRS, or the GPS. The
+ * steam panel's CDI is NAV1 unless its NAV/GPS button selects the GPS.
  */
-export function apNavSource(
-  state: SimState,
-  sensors: Sensors,
-): { reading: NavReading; obsDeg: number } {
+export function apNavSource(state: SimState, sensors: Sensors): ApNavSource {
   const src = state.panel.cdiSource;
   switch (src) {
     case 'NAV1':
-      return { reading: sensors.nav1, obsDeg: state.radios.nav1.obsDeg };
+      return { kind: 'VLOC', reading: sensors.nav1, obsDeg: state.radios.nav1.obsDeg };
     case 'NAV2':
-      return { reading: sensors.nav2, obsDeg: state.radios.nav2.obsDeg };
+      return { kind: 'VLOC', reading: sensors.nav2, obsDeg: state.radios.nav2.obsDeg };
+    case 'GPS':
+      return { kind: 'GPS', gps: sensors.gps, obsDeg: Math.round(sensors.gps.dtkMagDeg) % 360 };
     default: {
       // A new source (e.g. GPS) must be handled here: this fails to compile until it is.
       const unhandled: never = src;
@@ -39,7 +44,16 @@ export function apNavSource(
 
 /** Mode-logic view of the current situation, on the CDI's nav source. */
 export function modeContext(state: SimState, sensors: Sensors): ModeContext {
-  const st = apNavSource(state, sensors).reading.station;
+  const src = apNavSource(state, sensors);
+  if (src.kind === 'GPS')
+    return {
+      navKind: src.gps.flag ? null : 'GPS',
+      hasGs: src.gps.vnavAvailable,
+      altitudeFt: state.aircraft.altitudeFt,
+      vsFpm: state.aircraft.vsFpm,
+      altPreselectFt: state.panel.altPreselectFt,
+    };
+  const st = src.reading.station;
   return {
     navKind: st?.kind ?? null,
     hasGs: st?.kind === 'LOC' && st.glidePath !== null,
@@ -77,10 +91,16 @@ export function runAutopilot(
   }
 
   const src = apNavSource(state, sensors);
-  const nav = src.reading.indication;
-  const course = navCourseTrue(src.reading, src.obsDeg);
-  const gs = src.reading.gs;
-  const gp = src.reading.station?.kind === 'LOC' ? src.reading.station.glidePath : null;
+  const nav = src.kind === 'GPS' ? src.gps : src.reading.indication;
+  const course = src.kind === 'GPS' ? src.gps.dtkTrueDeg : navCourseTrue(src.reading, src.obsDeg);
+  // The advisory +V glidepath is never coupled.
+  const gs = src.kind === 'GPS' ? (src.gps.gpAdvisory ? null : src.gps.gp) : src.reading.gs;
+  const gp =
+    src.kind === 'GPS'
+      ? world.gps?.db.glidePath
+      : src.reading.station?.kind === 'LOC'
+        ? src.reading.station.glidePath
+        : null;
   const gsAngle = gp?.angleDeg ?? 3;
 
   const ap = updateModes(

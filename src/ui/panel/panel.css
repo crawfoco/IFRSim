@@ -333,7 +333,12 @@
 }
 .timer {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 6px;
+}
+.timer-btns {
+  display: flex;
   gap: 6px;
 }
 .timer-value {
@@ -356,6 +361,11 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  /* The DME at the top of the cell; the timer centred in the space below it. */
+  align-self: stretch;
+}
+.dme-timer > .timer {
+  margin-block: auto;
 }
 
 .power-row {

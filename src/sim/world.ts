@@ -1,6 +1,7 @@
 /** Static world the sim flies in: navdata plus scenario settings. Never changes during a run. */
 import type { NavData } from './navdata/types';
 import { glidePathFor, type GlidePath } from './nav/gs';
+import type { GpsWorld } from './gps/receiver';
 
 export interface World {
   navdata: NavData;
@@ -12,6 +13,8 @@ export interface World {
   gsOutOfService: boolean;
   /** Expanded service volumes by VOR or localizer id, NM. */
   serviceRangeNm: Record<string, number>;
+  /** The GPS database for an RNAV approach (V3), or null. */
+  gps: GpsWorld | null;
 }
 
 export interface WorldOptions {
@@ -20,6 +23,7 @@ export interface WorldOptions {
   tchFt?: Record<string, number>;
   gsOutOfService?: boolean;
   expandedServiceVolumeNm?: Record<string, number>;
+  gps?: GpsWorld | null;
 }
 
 export function buildWorld(navdata: NavData, opts: WorldOptions): World {
@@ -38,5 +42,6 @@ export function buildWorld(navdata: NavData, opts: WorldOptions): World {
     glidePaths,
     gsOutOfService: opts.gsOutOfService ?? false,
     serviceRangeNm: opts.expandedServiceVolumeNm ?? {},
+    gps: opts.gps ?? null,
   };
 }

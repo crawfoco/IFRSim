@@ -1,0 +1,289 @@
+{
+  "id": "kapa-rnav28",
+  "airport": "KAPA",
+  "runway": "28",
+  "name": "RNAV (GPS) RWY 28",
+  "chart": {
+    "number": "AL-5715",
+    "amendment": "Amdt 1C",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kapa-rnav28.png"
+  },
+  "rnav": {
+    "cifp": "KAPA R28",
+    "waas": {
+      "channel": "82107",
+      "id": "W28A"
+    },
+    "equipment": "RNP APCH."
+  },
+  "navaids": [],
+  "fixes": {
+    "DILVE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "DILVE"
+      },
+      "faaId": "DILVE",
+      "note": "IAF"
+    },
+    "EZBEL": {
+      "def": {
+        "kind": "waypoint",
+        "id": "EZBEL"
+      },
+      "faaId": "EZBEL",
+      "note": "IAF, missed approach holding fix"
+    },
+    "DOCKY": {
+      "def": {
+        "kind": "waypoint",
+        "id": "DOCKY"
+      },
+      "faaId": "DOCKY",
+      "note": "IF"
+    },
+    "MESME": {
+      "def": {
+        "kind": "waypoint",
+        "id": "MESME"
+      },
+      "faaId": "MESME",
+      "note": "Step-down fix before the FAF"
+    },
+    "NIDLY": {
+      "def": {
+        "kind": "waypoint",
+        "id": "NIDLY"
+      },
+      "faaId": "NIDLY",
+      "note": "FAF"
+    },
+    "FEGIB": {
+      "def": {
+        "kind": "waypoint",
+        "id": "FEGIB"
+      },
+      "faaId": "FEGIB",
+      "note": "Step-down fix (LNAV only), 3.5 NM to RW28"
+    },
+    "RW28": {
+      "def": {
+        "kind": "waypoint",
+        "id": "RW28"
+      },
+      "note": "Missed approach point"
+    }
+  },
+  "transitions": [
+    {
+      "id": "dilve",
+      "name": "DILVE (IAF)",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "DOCKY",
+          "course": {
+            "rnavFrom": "DILVE",
+            "rnavTo": "DOCKY"
+          },
+          "minAltFt": 8100
+        }
+      ]
+    },
+    {
+      "id": "ezbel",
+      "name": "EZBEL (IAF)",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "DOCKY",
+          "course": {
+            "rnavFrom": "EZBEL",
+            "rnavTo": "DOCKY"
+          },
+          "minAltFt": 8100
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "MESME",
+      "course": {
+        "rnavFrom": "DOCKY",
+        "rnavTo": "MESME"
+      },
+      "minAltFt": 7600
+    },
+    {
+      "type": "track",
+      "to": "NIDLY",
+      "course": {
+        "rnavFrom": "MESME",
+        "rnavTo": "NIDLY"
+      },
+      "minAltFt": 7500
+    },
+    {
+      "type": "final",
+      "faf": "NIDLY",
+      "course": {
+        "rnavFrom": "NIDLY",
+        "rnavTo": "RW28"
+      },
+      "fafAltFt": 7500,
+      "gp": {
+        "angleDeg": 3,
+        "tchFt": 41
+      },
+      "stepDowns": [
+        {
+          "fix": "FEGIB",
+          "minAltFt": 6940,
+          "lnavOnly": true
+        }
+      ],
+      "map": {
+        "fix": "RW28"
+      }
+    }
+  ],
+  "missed": [
+    {
+      "type": "climb",
+      "toAltFt": 6400
+    },
+    {
+      "type": "direct",
+      "to": "EZBEL",
+      "turn": "R",
+      "climbToFt": 9000,
+      "flyOver": true
+    },
+    {
+      "type": "hold",
+      "fix": "EZBEL",
+      "inboundCourseMag": 238,
+      "course": {
+        "rnavFix": "EZBEL",
+        "courseMag": 238
+      },
+      "turn": "R",
+      "legNm": 7,
+      "minAltFt": 9000
+    }
+  ],
+  "missedText": "Climb to 6400 then climbing right turn to 9000 direct EZBEL and hold.",
+  "minimums": [
+    {
+      "kind": "LPV",
+      "label": "LPV",
+      "A": {
+        "altFt": 6079,
+        "visibilitySm": 0.875
+      },
+      "B": {
+        "altFt": 6079,
+        "visibilitySm": 0.875
+      }
+    },
+    {
+      "kind": "LNAV/VNAV",
+      "label": "LNAV/VNAV",
+      "A": {
+        "altFt": 6119,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 6119,
+        "visibilitySm": 1
+      }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": {
+        "altFt": 6260,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 6260,
+        "visibilitySm": 1
+      }
+    }
+  ],
+  "starts": [
+    {
+      "id": "from-dilve",
+      "name": "Direct DILVE from the south",
+      "clearance": "Descend and maintain 9000, proceed direct DILVE, cleared RNAV runway 28 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "DILVE"
+      },
+      "offset": {
+        "bearingMag": 180,
+        "distanceNm": 10
+      },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9000, "until": "DILVE" },
+      "headingMag": 40,
+      "iasKt": 100,
+      "transition": "dilve",
+      "nav1MHz": 116.3,
+      "nav2MHz": 116.3
+    },
+    {
+      "id": "from-ezbel",
+      "name": "Direct EZBEL from the north",
+      "clearance": "Descend and maintain 9000, proceed direct EZBEL, cleared RNAV runway 28 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "EZBEL"
+      },
+      "offset": {
+        "bearingMag": 350,
+        "distanceNm": 10
+      },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9000, "until": "EZBEL" },
+      "headingMag": 120,
+      "iasKt": 100,
+      "transition": "ezbel",
+      "nav1MHz": 116.3,
+      "nav2MHz": 116.3
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 250, maintain 8100 until established on the final approach course, cleared RNAV runway 28 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "DOCKY"
+      },
+      "leadInNm": 3,
+      "altitudeFt": 8100,
+      "assigned": { "altFt": 8100 },
+      "headingMag": 250,
+      "iasKt": 100,
+      "nav1MHz": 116.3,
+      "nav2MHz": 116.3
+    }
+  ],
+  "notes": [
+    "RNP APCH.",
+    "For uncompensated Baro-VNAV systems, LNAV/VNAV NA below -26°C or above 49°C. (This aircraft's WAAS GPS flies LNAV/VNAV on WAAS vertical guidance, so the limits do not apply to it.)",
+    "WAAS channel 82107, W28A. GP 3.00°, TCH 41.",
+    "MESME (3.2 NM after DOCKY) minimum 7600 before the FAF; NIDLY (FAF) 7500.",
+    "FEGIB (3.5 NM to RW28) minimum 6940 applies to LNAV only.",
+    "VDP 1.3 NM to RW28, LNAV only.",
+    "Rwy 28 helicopter visibility reduction below ¾ SM NA.",
+    "Circling Rwy 35L NA at night. Circling: Cat A 6400-1, Cat B 6540-1.",
+    "MSA RW28 25 NM: 12000."
+  ]
+}

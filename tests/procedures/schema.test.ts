@@ -16,6 +16,8 @@ describe('procedure schema', () => {
       'over-fqf',
       'join-feeder',
       'direct-skipi',
+      'direct-skipi-northwest',
+      'direct-skipi-east',
       'vectors-final',
     ]);
   });

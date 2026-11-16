@@ -1,5 +1,5 @@
 /** Glass panel buttons: CDI (HSI nav source) and the two bearing-pointer selectors. */
-import { radioOf, type BearingSource } from '../../sim/nav/source';
+import { sourceLabel, type BearingSource } from '../../sim/nav/source';
 import type { SimState } from '../../sim/state';
 import type { Send } from './controls';
 
@@ -31,7 +31,7 @@ export function GlassControls({ state, send }: { state: SimState; send: Send }) 
       {btn(
         'btn-cdi',
         'CDI',
-        `VLOC${radioOf(cdiSource)}`,
+        sourceLabel(cdiSource),
         'Switch the HSI and autopilot nav source',
         () => send({ type: 'cdi' }),
       )}

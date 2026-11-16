@@ -1,23 +1,40 @@
 /** Every registered procedure loads, matches the navdata, and builds every start condition. */
 import { describe, expect, it } from 'vitest';
-import { NAVDATA, PROCEDURES } from '../../src/procedures';
+import { NAVDATA, PROCEDURES, RNAV_PROCEDURES } from '../../src/procedures';
 import { checkAgainstNavdata } from '../../src/procedures/resolve';
 import { briefing, buildScenario } from '../../src/sim/scenario/scenario';
 import { sense } from '../../src/sim/sensors';
 
 describe('registered procedures', () => {
-  it('has the six V1 approaches with unique ids', () => {
+  it('has the nine radio approaches (V1 six, V3 three more) with unique ids', () => {
     expect(PROCEDURES.map((p) => p.id)).toEqual([
       'kcfo-ils26',
       'kgxy-ils35',
       'kmtj-ils17',
+      'kcys-ils27',
       'kako-vor29',
       'klar-vor30',
       'ksny-vor13',
+      'kcez-vor21',
+      'kskx-vordme-b',
     ]);
   });
 
-  for (const p of PROCEDURES) {
+  it('has the nine V3 RNAV approaches', () => {
+    expect(RNAV_PROCEDURES.map((p) => p.id)).toEqual([
+      'klaa-rnav18',
+      'koga-rnav8',
+      'kbff-rnav12',
+      'kpub-rnav26l',
+      'kcpr-rnav3',
+      'kapa-rnav28',
+      'kcos-rnav31',
+      'kals-rnav2',
+      'kcny-rnav3',
+    ]);
+  });
+
+  for (const p of [...PROCEDURES, ...RNAV_PROCEDURES]) {
     describe(p.id, () => {
       it('matches the FAA navdata', () => {
         expect(checkAgainstNavdata(p, NAVDATA)).toEqual([]);

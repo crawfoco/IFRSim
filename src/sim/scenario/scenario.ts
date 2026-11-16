@@ -8,13 +8,22 @@
  * at DA/MDA is the learner's decision to make (see progress.ts and OutsideView).
  */
 import { courseTrueDeg, resolveFixDef, resolveFixes, runwayEndFor } from '../../procedures/resolve';
-import type { Leg, Minimums, Procedure, Start } from '../../procedures/schema';
+import {
+  isDaLine,
+  type Leg,
+  type Minimums,
+  type Procedure,
+  type Start,
+} from '../../procedures/schema';
 import { magToTrue, reciprocal } from '../geo/angles';
 import { destination, type LatLon } from '../geo/geodesy';
 import { initialState } from '../loop';
 import type { NavData } from '../navdata/types';
+import { navdataForProcedure } from '../navdata/rnav';
 import type { SimState } from '../state';
 import { buildWorld, type World } from '../world';
+import { gpsDatabase } from '../gps/flightplan';
+import { buildGpsWorld } from '../gps/receiver';
 
 export type Ceiling = 'above' | 'below';
 
@@ -31,7 +40,26 @@ export interface ScenarioOptions {
   weatherPick?: WeatherPick;
   /** Instrument panel flown (default steam). The sim does not depend on it; the debrief shows it. */
   panel?: PanelKind;
+  /**
+   * RNAV: WAAS service this flight (hidden like the weather): true (default) → LPV / LNAV/VNAV /
+   * LP available; false → the GPS annunciates LNAV.
+   */
+  waasAvailable?: boolean;
+  /** Briefing choice for WAAS: random (default), or a fixed outcome. */
+  waasPick?: WaasPick;
 }
+
+export type WaasPick = 'random' | 'available' | 'unavailable';
+
+/** WAAS this flight: a chosen outcome, or random from `rand` in [0, 1). */
+export function pickWaas(pick: WaasPick | undefined, rand: number): boolean {
+  if (pick === 'available') return true;
+  if (pick === 'unavailable') return false;
+  return rand < 0.5;
+}
+
+/** WAAS for a scenario's options (default available). */
+export const waasOf = (o: ScenarioOptions): boolean => o.waasAvailable ?? true;
 
 /** Briefing choice for the runway at minimums. */
 export type WeatherPick = 'random' | Ceiling;
@@ -77,6 +105,11 @@ export interface Scenario {
   finalCourseTrueDeg: number;
   /** Landing threshold (displaced if any) and runway true alignment, for the outside view. */
   runway: { threshold: LatLon; trueAlignmentDeg: number };
+  /**
+   * Circling-only procedure (VOR/DME-B): the airport reference point, against which "in
+   * sight" is judged (any runway); continuing past the MAP circles to land on `runway`.
+   */
+  circlingTo: LatLon | null;
   weather: Weather;
 }
 
@@ -93,19 +126,30 @@ export interface ActiveMinimums {
   category: Category;
 }
 
-/** The minimums that apply: ILS when the GS is usable, else the LOC/VOR line. */
+/**
+ * The minimums that apply: ILS when the GS is usable, else the LOC/VOR line. RNAV: the best
+ * line the GPS can fly (LPV, LNAV/VNAV, LP, then LNAV), or LNAV without WAAS.
+ */
+/** A circling-only procedure (e.g. VOR/DME-B): every minimums line is a circling one. */
+export const isCirclingOnly = (p: Procedure) => p.minimums.every((m) => m.kind === 'CIRCLING');
+
 export function activeMinimums(
   p: Procedure,
   gsOutOfService: boolean,
   iasKt: number,
+  waasAvailable = true,
 ): ActiveMinimums {
   const hasGs = p.approach.some((l) => l.type === 'final' && l.glideslope) && !gsOutOfService;
   const pick = (k: Minimums['kind'][]) => p.minimums.find((m) => k.includes(m.kind));
-  const m = (hasGs ? pick(['ILS']) : pick(['LOC', 'VOR'])) ?? p.minimums[0]!;
+  const rnav = (waasAvailable ? (['LPV', 'LNAV/VNAV', 'LP', 'LNAV'] as const) : (['LNAV'] as const))
+    .map((k) => pick([k]))
+    .find((m) => m !== undefined);
+  const m =
+    (p.rnav ? rnav : hasGs ? pick(['ILS']) : pick(['LOC', 'VOR', 'CIRCLING'])) ?? p.minimums[0]!;
   const category = categoryFor(iasKt);
   return {
     label: m.label,
-    kind: m.kind === 'ILS' ? 'DA' : 'MDA',
+    kind: isDaLine(m.kind) ? 'DA' : 'MDA',
     altFt: m[category].altFt,
     visibilitySm: m[category].visibilitySm,
     category,
@@ -116,16 +160,54 @@ const roundUp100 = (ft: number) => Math.ceil(ft / 100) * 100;
 const roundDown100 = (ft: number) => Math.floor(ft / 100) * 100;
 const fmtFt = (ft: number) => ft.toLocaleString('en-US');
 
-/** Ceiling and visibility either side of the minimums, so the outcome at DA/MDA is clear. */
-function layers(min: ActiveMinimums, thresholdElevFt: number) {
-  const hat = min.altFt - thresholdElevFt;
+/**
+ * Ceiling and visibility either side of the minimums, so the outcome at DA/MDA is clear. With
+ * several possible minimums (RNAV: with or without WAAS, hidden until the annunciation) the
+ * layers clear all of them, so the reported weather does not give the WAAS outcome away.
+ */
+function layers(mins: ActiveMinimums[], thresholdElevFt: number) {
+  const each = mins.map((min) => {
+    const hat = min.altFt - thresholdElevFt;
+    return {
+      above: {
+        ceilingFtAgl: roundUp100(hat) + 300,
+        visibilitySm: Math.max(3, min.visibilitySm * 2),
+      },
+      below: {
+        ceilingFtAgl: Math.max(100, roundUp100(hat) - 300),
+        // Half the minimum visibility, as a reportable value (down to a quarter mile).
+        visibilitySm: Math.max(0.25, Math.floor((min.visibilitySm / 2) * 4) / 4),
+      },
+    };
+  });
   return {
-    above: { ceilingFtAgl: roundUp100(hat) + 300, visibilitySm: Math.max(3, min.visibilitySm * 2) },
+    above: {
+      ceilingFtAgl: Math.max(...each.map((l) => l.above.ceilingFtAgl)),
+      visibilitySm: Math.max(...each.map((l) => l.above.visibilitySm)),
+    },
     below: {
-      ceilingFtAgl: Math.max(100, roundUp100(hat) - 300),
-      visibilitySm: Math.max(0.25, min.visibilitySm / 2),
+      ceilingFtAgl: Math.min(...each.map((l) => l.below.ceilingFtAgl)),
+      visibilitySm: Math.min(...each.map((l) => l.below.visibilitySm)),
     },
   };
+}
+
+/**
+ * The minimums the learner plans with: on an RNAV approach, the best line the plate publishes
+ * (whether WAAS is available stays hidden until the GPS annunciates the line).
+ */
+export function plannedMinimums(p: Procedure, gsOutOfService: boolean, iasKt: number) {
+  return activeMinimums(p, gsOutOfService, iasKt, true);
+}
+
+/**
+ * The minimums the panel shows (glass minimums box and alert): the planned ones until the GPS
+ * has annunciated the line (`revealed`), then the ones actually in force.
+ */
+export function shownMinimums(sc: Scenario, iasKt: number, revealed: boolean): ActiveMinimums {
+  const p = sc.procedure;
+  if (p.rnav && !revealed) return plannedMinimums(p, sc.options.gsOutOfService, iasKt);
+  return activeMinimums(p, sc.options.gsOutOfService, iasKt, waasOf(sc.options));
 }
 
 /**
@@ -134,12 +216,12 @@ function layers(min: ActiveMinimums, thresholdElevFt: number) {
  * above the base.
  */
 export function weatherFor(
-  min: ActiveMinimums,
+  min: ActiveMinimums | ActiveMinimums[],
   thresholdElevFt: number,
   ceiling: Ceiling,
   startAltFt: number,
 ): Weather {
-  const l = layers(min, thresholdElevFt);
+  const l = layers(Array.isArray(min) ? min : [min], thresholdElevFt);
   const actual = l[ceiling];
   const baseFtMsl = thresholdElevFt + actual.ceilingFtAgl;
   const highBase = thresholdElevFt + l.above.ceilingFtAgl;
@@ -154,9 +236,12 @@ export function weatherFor(
 
 export function buildScenario(
   procedure: Procedure,
-  navdata: NavData,
+  allNavdata: NavData,
   options: ScenarioOptions,
 ): Scenario {
+  // This airport's view: runway and terminal waypoint idents shared with other airports
+  // (RW03 at KCPR and KCNY) resolve to this airport's.
+  const navdata = navdataForProcedure(allNavdata, procedure);
   const start = procedure.starts.find((s) => s.id === options.startId);
   if (!start) throw new Error(`${procedure.id} has no start "${options.startId}"`);
   const final = procedure.approach.find((l): l is FinalLeg => l.type === 'final');
@@ -168,9 +253,15 @@ export function buildScenario(
   if (!airport) throw new Error(`unknown airport ${procedure.airport}`);
   const tchFt: Record<string, number> = {};
   if (final.glideslope && 'loc' in final.course) tchFt[final.course.loc] = final.glideslope.tchFt;
+  const db = gpsDatabase(procedure, navdata, airport.magVarEastDeg);
   const world = buildWorld(navdata, {
     magVarEastDeg: airport.magVarEastDeg,
     tchFt,
+    gps: db
+      ? buildGpsWorld(db, navdata, waasOf(options), {
+          goAroundSequencesMissed: panelOf(options) === 'glass',
+        })
+      : null,
     gsOutOfService: options.gsOutOfService,
     ...(procedure.expandedServiceVolumeNm
       ? { expandedServiceVolumeNm: procedure.expandedServiceVolumeNm }
@@ -178,15 +269,22 @@ export function buildScenario(
   });
   const rwy = runwayEndFor(navdata, procedure.airport, procedure.runway);
   const thresholdElevationFt = rwy.displacedThreshold?.elevationFt ?? rwy.elevationFt;
-  // A lead-in starts the aircraft short of the start fix, on the reciprocal of its heading.
+  // A lead-in starts the aircraft short of the start fix, on the reciprocal of its heading;
+  // an offset starts it off to one side of the fix, on its own heading.
   const startFix = resolveFixDef(start.position, { navdata, procedure });
-  const startPosition = start.leadInNm
+  const startPosition = start.offset
     ? destination(
         startFix,
-        magToTrue(reciprocal(start.headingMag), airport.magVarEastDeg),
-        start.leadInNm,
+        magToTrue(start.offset.bearingMag, airport.magVarEastDeg),
+        start.offset.distanceNm,
       )
-    : startFix;
+    : start.leadInNm
+      ? destination(
+          startFix,
+          magToTrue(reciprocal(start.headingMag), airport.magVarEastDeg),
+          start.leadInNm,
+        )
+      : startFix;
   const initial = initialState(
     {
       position: startPosition,
@@ -198,7 +296,10 @@ export function buildScenario(
     },
     world,
   );
-  const min = activeMinimums(procedure, options.gsOutOfService, start.iasKt);
+  // RNAV: the weather clears the minimums with and without WAAS (the outcome stays hidden).
+  const mins = procedure.rnav
+    ? [true, false].map((w) => activeMinimums(procedure, options.gsOutOfService, start.iasKt, w))
+    : [activeMinimums(procedure, options.gsOutOfService, start.iasKt, waasOf(options))];
   return {
     procedure,
     start,
@@ -214,7 +315,8 @@ export function buildScenario(
       threshold: rwy.displacedThreshold?.position ?? rwy.threshold,
       trueAlignmentDeg: rwy.trueAlignmentDeg,
     },
-    weather: weatherFor(min, thresholdElevationFt, options.ceiling, start.altitudeFt),
+    circlingTo: isCirclingOnly(procedure) ? airport.position : null,
+    weather: weatherFor(mins, thresholdElevationFt, options.ceiling, start.altitudeFt),
   };
 }
 
@@ -226,6 +328,9 @@ export function rerollWeather(sc: Scenario, navdata: NavData, rand: number): Sce
   return buildScenario(sc.procedure, navdata, {
     ...sc.options,
     ceiling: pickCeiling(sc.options.weatherPick, rand),
+    ...(sc.procedure.rnav
+      ? { waasAvailable: pickWaas(sc.options.waasPick, (rand * 7.31) % 1) }
+      : {}),
   });
 }
 
@@ -251,18 +356,21 @@ export interface Briefing {
 
 export function briefing(sc: Scenario): Briefing {
   const p = sc.procedure;
-  const min = activeMinimums(p, sc.options.gsOutOfService, sc.start.iasKt);
+  // The planned minimums: on RNAV, WAAS availability is revealed only by the annunciation.
+  const min = plannedMinimums(p, sc.options.gsOutOfService, sc.start.iasKt);
   const hasGs = !!sc.final.glideslope;
   return {
     title: `${p.airport} ${p.name}`,
     startName: sc.start.name,
     clearance: sc.start.clearance,
     weather: sc.weather.reported,
-    glideslope: !hasGs
-      ? 'Non-precision approach (no glideslope).'
-      : sc.options.gsOutOfService
-        ? 'Glideslope OUT OF SERVICE: fly the LOC-only approach to the MDA.'
-        : 'Glideslope in service.',
+    glideslope: p.rnav
+      ? rnavEquipmentText(p)
+      : !hasGs
+        ? 'Non-precision approach (no glideslope).'
+        : sc.options.gsOutOfService
+          ? 'Glideslope OUT OF SERVICE: fly the LOC-only approach to the MDA.'
+          : 'Glideslope in service.',
     minimums: `${min.label}, category ${min.category} at ${sc.start.iasKt} KIAS: ${min.kind} ${min.altFt.toLocaleString('en-US')} ft, visibility ${fmtVis(min.visibilitySm)} SM`,
     missedApproach: p.missedText,
     hints: briefingHints(sc),
@@ -270,8 +378,17 @@ export function briefing(sc: Scenario): Briefing {
   };
 }
 
+/** Briefing equipment line for an RNAV approach. */
+function rnavEquipmentText(p: Procedure): string {
+  const r = p.rnav!;
+  const lines = p.minimums.map((m) => m.label).join(', ');
+  const waas = r.waas ? `WAAS channel ${r.waas.channel}, ${r.waas.id}.` : 'No WAAS: LNAV only.';
+  return `${r.equipment.replace(/\.$/, '')}. ${waas} Minimums lines: ${lines}. The GPS annunciates the line it can fly about 2 NM before the FAF.`;
+}
+
 function briefingHints(sc: Scenario): string[] {
   // The CRS-on-the-localizer advice is given in the debrief when it matters (rules/course-setting).
+  // TAA areas and altitudes are not repeated here: the learner reads them from the plate.
   const hints: string[] = [];
   if (sc.final.map.timing)
     hints.push(

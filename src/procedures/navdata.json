@@ -2,7 +2,7 @@
   "source": {
     "dataset": "FAA NASR",
     "cycle": "2026-10-29",
-    "extracted": "2026-11-14"
+    "extracted": "2026-11-16"
   },
   "airports": {
     "KCFO": {
@@ -76,6 +76,150 @@
       "elevationFt": 4314.2,
       "magVarEastDeg": 11,
       "magVarYear": 1980
+    },
+    "KLAA": {
+      "id": "KLAA",
+      "faaId": "LAA",
+      "name": "SOUTHEAST COLORADO RGNL",
+      "position": {
+        "latDeg": 38.06970388,
+        "lonDeg": -102.68849416
+      },
+      "elevationFt": 3705.3,
+      "magVarEastDeg": 7,
+      "magVarYear": 2020
+    },
+    "KPUB": {
+      "id": "KPUB",
+      "faaId": "PUB",
+      "name": "PUEBLO MEML",
+      "position": {
+        "latDeg": 38.2899475,
+        "lonDeg": -104.49802805
+      },
+      "elevationFt": 4729.3,
+      "magVarEastDeg": 8,
+      "magVarYear": 2015
+    },
+    "KBFF": {
+      "id": "KBFF",
+      "faaId": "BFF",
+      "name": "SCOTTSBLUFF/WESTERN NEBRASKA RGNL/WM  B HEILIG FLD",
+      "position": {
+        "latDeg": 41.87402777,
+        "lonDeg": -103.59563888
+      },
+      "elevationFt": 3967.3,
+      "magVarEastDeg": 10,
+      "magVarYear": 2000
+    },
+    "KCPR": {
+      "id": "KCPR",
+      "faaId": "CPR",
+      "name": "CASPER/NATRONA COUNTY INTL",
+      "position": {
+        "latDeg": 42.90587472,
+        "lonDeg": -106.46364861
+      },
+      "elevationFt": 5344,
+      "magVarEastDeg": 12,
+      "magVarYear": 1990
+    },
+    "KAPA": {
+      "id": "KAPA",
+      "faaId": "APA",
+      "name": "CENTENNIAL",
+      "position": {
+        "latDeg": 39.57011861,
+        "lonDeg": -104.84929305
+      },
+      "elevationFt": 5884.9,
+      "magVarEastDeg": 8,
+      "magVarYear": 2015
+    },
+    "KCOS": {
+      "id": "KCOS",
+      "faaId": "COS",
+      "name": "CITY OF COLORADO SPRINGS MUNI",
+      "position": {
+        "latDeg": 38.80581666,
+        "lonDeg": -104.70077638
+      },
+      "elevationFt": 6187,
+      "magVarEastDeg": 8,
+      "magVarYear": 2020
+    },
+    "KOGA": {
+      "id": "KOGA",
+      "faaId": "OGA",
+      "name": "SEARLE FLD",
+      "position": {
+        "latDeg": 41.11947222,
+        "lonDeg": -101.76969944
+      },
+      "elevationFt": 3279.3,
+      "magVarEastDeg": 7,
+      "magVarYear": 2015
+    },
+    "KCEZ": {
+      "id": "KCEZ",
+      "faaId": "CEZ",
+      "name": "CORTEZ MUNI",
+      "position": {
+        "latDeg": 37.3030025,
+        "lonDeg": -108.62804416
+      },
+      "elevationFt": 5917.6,
+      "magVarEastDeg": 12,
+      "magVarYear": 2000
+    },
+    "KCYS": {
+      "id": "KCYS",
+      "faaId": "CYS",
+      "name": "CHEYENNE RGNL/JERRY OLSON FLD",
+      "position": {
+        "latDeg": 41.155635,
+        "lonDeg": -104.81047138
+      },
+      "elevationFt": 6159.9,
+      "magVarEastDeg": 10,
+      "magVarYear": 2005
+    },
+    "KALS": {
+      "id": "KALS",
+      "faaId": "ALS",
+      "name": "SAN LUIS VALLEY RGNL/BERGMAN FLD",
+      "position": {
+        "latDeg": 37.435125,
+        "lonDeg": -105.86787527
+      },
+      "elevationFt": 7539.8,
+      "magVarEastDeg": 9,
+      "magVarYear": 2010
+    },
+    "KCNY": {
+      "id": "KCNY",
+      "faaId": "CNY",
+      "name": "CANYONLANDS RGNL",
+      "position": {
+        "latDeg": 38.75763083,
+        "lonDeg": -109.7534625
+      },
+      "elevationFt": 4579.2,
+      "magVarEastDeg": 10,
+      "magVarYear": 2020
+    },
+    "KSKX": {
+      "id": "KSKX",
+      "faaId": "SKX",
+      "name": "TAOS RGNL",
+      "position": {
+        "latDeg": 36.45169444,
+        "lonDeg": -105.67308333
+      },
+      "elevationFt": 7094.6,
+      "magVarEastDeg": 9,
+      "magVarYear": 2010
     }
   },
   "runwayEnds": [
@@ -158,6 +302,166 @@
       "tdzeFt": 4314.2,
       "trueAlignmentDeg": 135,
       "vgsiTchFt": 45
+    },
+    {
+      "airport": "LAA",
+      "runway": "18",
+      "threshold": {
+        "latDeg": 38.0748578,
+        "lonDeg": -102.68955491
+      },
+      "elevationFt": 3678.6,
+      "tdzeFt": 3694.5,
+      "trueAlignmentDeg": 190,
+      "vgsiTchFt": 45
+    },
+    {
+      "airport": "PUB",
+      "runway": "26L",
+      "threshold": {
+        "latDeg": 38.28798683,
+        "lonDeg": -104.47351711
+      },
+      "elevationFt": 4648.8,
+      "tdzeFt": 4658.9,
+      "trueAlignmentDeg": 268,
+      "vgsiTchFt": 62
+    },
+    {
+      "airport": "BFF",
+      "runway": "12",
+      "threshold": {
+        "latDeg": 41.88228458,
+        "lonDeg": -103.60495163
+      },
+      "elevationFt": 3961.8,
+      "tdzeFt": 3963.2,
+      "trueAlignmentDeg": 136,
+      "vgsiTchFt": 57
+    },
+    {
+      "airport": "CPR",
+      "runway": "03",
+      "threshold": {
+        "latDeg": 42.89340238,
+        "lonDeg": -106.47503094
+      },
+      "elevationFt": 5324.2,
+      "tdzeFt": 5327.9,
+      "trueAlignmentDeg": 44,
+      "vgsiTchFt": 50
+    },
+    {
+      "airport": "APA",
+      "runway": "28",
+      "threshold": {
+        "latDeg": 39.56818319,
+        "lonDeg": -104.83231722
+      },
+      "elevationFt": 5793.8,
+      "tdzeFt": 5812.7,
+      "trueAlignmentDeg": 291,
+      "vgsiTchFt": 43
+    },
+    {
+      "airport": "COS",
+      "runway": "31",
+      "threshold": {
+        "latDeg": 38.80708177,
+        "lonDeg": -104.69486983
+      },
+      "elevationFt": 6137.1,
+      "tdzeFt": 6156.3,
+      "trueAlignmentDeg": 315,
+      "vgsiTchFt": 52,
+      "displacedThreshold": {
+        "position": {
+          "latDeg": 38.80777358,
+          "lonDeg": -104.69575102
+        },
+        "elevationFt": 6134.6,
+        "lengthFt": 356
+      }
+    },
+    {
+      "airport": "OGA",
+      "runway": "08",
+      "threshold": {
+        "latDeg": 41.11779822,
+        "lonDeg": -101.78114319
+      },
+      "elevationFt": 3260.5,
+      "tdzeFt": 3260.5,
+      "trueAlignmentDeg": 90,
+      "vgsiTchFt": 39
+    },
+    {
+      "airport": "CEZ",
+      "runway": "21",
+      "threshold": {
+        "latDeg": 37.31040588,
+        "lonDeg": -108.61983361
+      },
+      "elevationFt": 5909.2,
+      "tdzeFt": 5912.8,
+      "trueAlignmentDeg": 222,
+      "vgsiTchFt": 50
+    },
+    {
+      "airport": "CYS",
+      "runway": "27",
+      "threshold": {
+        "latDeg": 41.15441408,
+        "lonDeg": -104.78764513
+      },
+      "elevationFt": 6094.1,
+      "tdzeFt": 6121.1,
+      "trueAlignmentDeg": 275,
+      "vgsiTchFt": 55,
+      "displacedThreshold": {
+        "position": {
+          "latDeg": 41.15458491,
+          "lonDeg": -104.79008452
+        },
+        "elevationFt": 6099.4,
+        "lengthFt": 675
+      }
+    },
+    {
+      "airport": "ALS",
+      "runway": "02",
+      "threshold": {
+        "latDeg": 37.42518127,
+        "lonDeg": -105.87559836
+      },
+      "elevationFt": 7539.5,
+      "tdzeFt": 7539.5,
+      "trueAlignmentDeg": 32,
+      "vgsiTchFt": 48
+    },
+    {
+      "airport": "CNY",
+      "runway": "03",
+      "threshold": {
+        "latDeg": 38.74693216,
+        "lonDeg": -109.76341555
+      },
+      "elevationFt": 4552.7,
+      "tdzeFt": 4558,
+      "trueAlignmentDeg": 40,
+      "vgsiTchFt": 41
+    },
+    {
+      "airport": "SKX",
+      "runway": "13",
+      "threshold": {
+        "latDeg": 36.45608138,
+        "lonDeg": -105.68368361
+      },
+      "elevationFt": 7047.3,
+      "tdzeFt": 7057,
+      "trueAlignmentDeg": 137,
+      "vgsiTchFt": 37
     }
   ],
   "navaids": {
@@ -331,6 +635,101 @@
         "latDeg": 39.89468941,
         "lonDeg": -104.624335
       }
+    },
+    "PUB": {
+      "id": "PUB",
+      "name": "PUEBLO",
+      "type": "VORTAC",
+      "position": {
+        "latDeg": 38.29425366,
+        "lonDeg": -104.42944741
+      },
+      "elevationFt": 4755.5,
+      "freqMHz": 116.7,
+      "declinationEastDeg": 8,
+      "declinationYear": 2020,
+      "serviceVolume": "H",
+      "dmeChannel": "114X",
+      "dmePosition": {
+        "latDeg": 38.29425366,
+        "lonDeg": -104.42944741
+      }
+    },
+    "DDY": {
+      "id": "DDY",
+      "name": "MUDDY MOUNTAIN",
+      "type": "VOR/DME",
+      "position": {
+        "latDeg": 43.09085638,
+        "lonDeg": -106.27702444
+      },
+      "elevationFt": 5863,
+      "freqMHz": 116.2,
+      "declinationEastDeg": 12,
+      "declinationYear": 1990,
+      "serviceVolume": "H",
+      "dmeChannel": "109X",
+      "dmePosition": {
+        "latDeg": 43.09085638,
+        "lonDeg": -106.27702444
+      }
+    },
+    "CEZ": {
+      "id": "CEZ",
+      "name": "CORTEZ",
+      "type": "VOR/DME",
+      "position": {
+        "latDeg": 37.38984977,
+        "lonDeg": -108.5617515
+      },
+      "elevationFt": 6232,
+      "freqMHz": 114.35,
+      "declinationEastDeg": 14,
+      "declinationYear": 1970,
+      "serviceVolume": "L",
+      "dmeChannel": "90Y",
+      "dmePosition": {
+        "latDeg": 37.38984977,
+        "lonDeg": -108.5617515
+      }
+    },
+    "ALS": {
+      "id": "ALS",
+      "name": "ALAMOSA",
+      "type": "VORTAC",
+      "position": {
+        "latDeg": 37.34915894,
+        "lonDeg": -105.81553269
+      },
+      "elevationFt": 7535.3,
+      "freqMHz": 113.9,
+      "declinationEastDeg": 13,
+      "declinationYear": 1965,
+      "serviceVolume": "H",
+      "dmeChannel": "86X",
+      "dmePosition": {
+        "latDeg": 37.34915894,
+        "lonDeg": -105.81553269
+      }
+    },
+    "TAS": {
+      "id": "TAS",
+      "name": "TAOS",
+      "type": "VORTAC",
+      "position": {
+        "latDeg": 36.60876888,
+        "lonDeg": -105.90632027
+      },
+      "elevationFt": 7860,
+      "freqMHz": 115.8,
+      "declinationEastDeg": 13,
+      "declinationYear": 1965,
+      "serviceVolume": "L",
+      "dmeChannel": "105X",
+      "dmePosition": {
+        "latDeg": 36.60876888,
+        "lonDeg": -105.90632027
+      }
     }
   },
   "localizers": {
@@ -414,6 +813,36 @@
         },
         "elevationFt": 5693,
         "angleDeg": 3
+      }
+    },
+    "I-CYS": {
+      "id": "I-CYS",
+      "airport": "CYS",
+      "runway": "27",
+      "systemType": "LD",
+      "position": {
+        "latDeg": 41.15686536,
+        "lonDeg": -104.82261613
+      },
+      "elevationFt": 6147.4,
+      "freqMHz": 110.1,
+      "courseMagDeg": 265.31,
+      "magVarEastDeg": 10,
+      "glideslope": {
+        "position": {
+          "latDeg": 41.15552836,
+          "lonDeg": -104.79331475
+        },
+        "elevationFt": 6100.7,
+        "angleDeg": 3
+      },
+      "dme": {
+        "position": {
+          "latDeg": 41.15520705,
+          "lonDeg": -104.82227808
+        },
+        "elevationFt": 6154.8,
+        "channel": "38X"
       }
     }
   },
@@ -687,6 +1116,4400 @@
         "lonDeg": -103.12111111
       },
       "use": "RP"
+    },
+    "OBOZU": {
+      "id": "OBOZU",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.26583611,
+        "lonDeg": -102.64849722
+      },
+      "use": "WP"
+    },
+    "WEYYI": {
+      "id": "WEYYI",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.28696111,
+        "lonDeg": -102.821125
+      },
+      "use": "RP"
+    },
+    "WIZGE": {
+      "id": "WIZGE",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.240725,
+        "lonDeg": -102.47588333
+      },
+      "use": "RP"
+    },
+    "LOLME": {
+      "id": "LOLME",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.16543333,
+        "lonDeg": -102.67011111
+      },
+      "use": "WP"
+    },
+    "IHIYO": {
+      "id": "IHIYO",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.86020555,
+        "lonDeg": -102.73540555
+      },
+      "use": "WP"
+    },
+    "DRAKE": {
+      "id": "DRAKE",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.60668055,
+        "lonDeg": -104.41421666
+      },
+      "use": "RP"
+    },
+    "BONUH": {
+      "id": "BONUH",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.39376388,
+        "lonDeg": -104.22119444
+      },
+      "use": "WP"
+    },
+    "HELER": {
+      "id": "HELER",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.29373055,
+        "lonDeg": -104.21775555
+      },
+      "use": "RP"
+    },
+    "ORWAY": {
+      "id": "ORWAY",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.27557777,
+        "lonDeg": -104.05559444
+      },
+      "use": "RP"
+    },
+    "STAXX": {
+      "id": "STAXX",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.98008055,
+        "lonDeg": -104.17484166
+      },
+      "use": "RP"
+    },
+    "REDHI": {
+      "id": "REDHI",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.19417777,
+        "lonDeg": -104.2041
+      },
+      "use": "WP"
+    },
+    "VIGIL": {
+      "id": "VIGIL",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.93426944,
+        "lonDeg": -104.51956388
+      },
+      "use": "RP"
+    },
+    "JIKTA": {
+      "id": "JIKTA",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.29088055,
+        "lonDeg": -104.34787777
+      },
+      "use": "RP"
+    },
+    "MERTZ": {
+      "id": "MERTZ",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.28378611,
+        "lonDeg": -104.64699722
+      },
+      "use": "WP"
+    },
+    "ALBIN": {
+      "id": "ALBIN",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.46776388,
+        "lonDeg": -104.29399444
+      },
+      "use": "RP"
+    },
+    "SACOP": {
+      "id": "SACOP",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.957775,
+        "lonDeg": -103.86075833
+      },
+      "use": "WP"
+    },
+    "LEDSE": {
+      "id": "LEDSE",
+      "state": "NE",
+      "position": {
+        "latDeg": 42.01626666,
+        "lonDeg": -103.78113333
+      },
+      "use": "RP"
+    },
+    "SPONS": {
+      "id": "SPONS",
+      "state": "NE",
+      "position": {
+        "latDeg": 42.16685833,
+        "lonDeg": -103.41276111
+      },
+      "use": "RP"
+    },
+    "AYAYI": {
+      "id": "AYAYI",
+      "state": "NE",
+      "position": {
+        "latDeg": 42.07470277,
+        "lonDeg": -103.70136388
+      },
+      "use": "WP"
+    },
+    "CAPGA": {
+      "id": "CAPGA",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.94425277,
+        "lonDeg": -103.68630555
+      },
+      "use": "RP"
+    },
+    "HAKAB": {
+      "id": "HAKAB",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.72891388,
+        "lonDeg": -103.40458611
+      },
+      "use": "WP"
+    },
+    "CHOMP": {
+      "id": "CHOMP",
+      "state": "WY",
+      "position": {
+        "latDeg": 42.60645833,
+        "lonDeg": -106.75859444
+      },
+      "use": "RP"
+    },
+    "IPEYE": {
+      "id": "IPEYE",
+      "state": "WY",
+      "position": {
+        "latDeg": 42.73703333,
+        "lonDeg": -106.67886111
+      },
+      "use": "WP"
+    },
+    "HEITY": {
+      "id": "HEITY",
+      "state": "WY",
+      "position": {
+        "latDeg": 42.67716111,
+        "lonDeg": -105.93681111
+      },
+      "use": "RP"
+    },
+    "AXIBY": {
+      "id": "AXIBY",
+      "state": "WY",
+      "position": {
+        "latDeg": 42.645075,
+        "lonDeg": -106.54884444
+      },
+      "use": "WP"
+    },
+    "HIKOX": {
+      "id": "HIKOX",
+      "state": "WY",
+      "position": {
+        "latDeg": 43.20451388,
+        "lonDeg": -106.87181666
+      },
+      "use": "RP"
+    },
+    "CEYFI": {
+      "id": "CEYFI",
+      "state": "WY",
+      "position": {
+        "latDeg": 42.82884166,
+        "lonDeg": -106.80926111
+      },
+      "use": "WP"
+    },
+    "YIWZE": {
+      "id": "YIWZE",
+      "state": "WY",
+      "position": {
+        "latDeg": 42.83297222,
+        "lonDeg": -106.55398055
+      },
+      "use": "WP"
+    },
+    "NOPTE": {
+      "id": "NOPTE",
+      "state": "WY",
+      "position": {
+        "latDeg": 42.86095555,
+        "lonDeg": -106.51745
+      },
+      "use": "WP"
+    },
+    "KIVSE": {
+      "id": "KIVSE",
+      "state": "WY",
+      "position": {
+        "latDeg": 42.92943611,
+        "lonDeg": -106.42784722
+      },
+      "use": "WP"
+    },
+    "DILVE": {
+      "id": "DILVE",
+      "state": "CO",
+      "position": {
+        "latDeg": 39.46985555,
+        "lonDeg": -104.50271111
+      },
+      "use": "WP"
+    },
+    "DOCKY": {
+      "id": "DOCKY",
+      "state": "CO",
+      "position": {
+        "latDeg": 39.49993333,
+        "lonDeg": -104.60310277
+      },
+      "use": "WP"
+    },
+    "EZBEL": {
+      "id": "EZBEL",
+      "state": "CO",
+      "position": {
+        "latDeg": 39.53386944,
+        "lonDeg": -104.50473611
+      },
+      "use": "WP"
+    },
+    "MESME": {
+      "id": "MESME",
+      "state": "CO",
+      "position": {
+        "latDeg": 39.51913611,
+        "lonDeg": -104.66739722
+      },
+      "use": "WP"
+    },
+    "NIDLY": {
+      "id": "NIDLY",
+      "state": "CO",
+      "position": {
+        "latDeg": 39.53694166,
+        "lonDeg": -104.72715277
+      },
+      "use": "WP"
+    },
+    "FEGIB": {
+      "id": "FEGIB",
+      "state": "CO",
+      "position": {
+        "latDeg": 39.54727777,
+        "lonDeg": -104.76189722
+      },
+      "use": "WP"
+    },
+    "ADANE": {
+      "id": "ADANE",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.91590555,
+        "lonDeg": -104.39901666
+      },
+      "use": "RP"
+    },
+    "ZENER": {
+      "id": "ZENER",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.71821111,
+        "lonDeg": -104.40875
+      },
+      "use": "WP"
+    },
+    "NUTVE": {
+      "id": "NUTVE",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.67650277,
+        "lonDeg": -104.52896944
+      },
+      "use": "WP"
+    },
+    "ONKIE": {
+      "id": "ONKIE",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.59478611,
+        "lonDeg": -104.50760277
+      },
+      "use": "WP"
+    },
+    "JATOL": {
+      "id": "JATOL",
+      "state": "CO",
+      "position": {
+        "latDeg": 38.7487,
+        "lonDeg": -104.62058055
+      },
+      "use": "WP"
+    },
+    "AHUFU": {
+      "id": "AHUFU",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.11706944,
+        "lonDeg": -102.07575
+      },
+      "use": "WP"
+    },
+    "EZIFU": {
+      "id": "EZIFU",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.11756666,
+        "lonDeg": -101.91266388
+      },
+      "use": "WP"
+    },
+    "YEYUC": {
+      "id": "YEYUC",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.11770277,
+        "lonDeg": -101.84509444
+      },
+      "use": "WP"
+    },
+    "TUKWY": {
+      "id": "TUKWY",
+      "state": "NE",
+      "position": {
+        "latDeg": 41.11774444,
+        "lonDeg": -101.48808888
+      },
+      "use": "WP"
+    },
+    "MARKL": {
+      "id": "MARKL",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.35674444,
+        "lonDeg": -104.66561944
+      },
+      "use": "RP"
+    },
+    "HORSE": {
+      "id": "HORSE",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.14655555,
+        "lonDeg": -104.67660555
+      },
+      "use": "RP"
+    },
+    "COLLA": {
+      "id": "COLLA",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.13417222,
+        "lonDeg": -104.50461944
+      },
+      "use": "RP"
+    },
+    "EGBER": {
+      "id": "EGBER",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.18116666,
+        "lonDeg": -104.26156666
+      },
+      "use": "RP"
+    },
+    "HAMER": {
+      "id": "HAMER",
+      "state": "WY",
+      "position": {
+        "latDeg": 41.04422222,
+        "lonDeg": -104.51561111
+      },
+      "use": "RP"
+    },
+    "GEMKY": {
+      "id": "GEMKY",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.22333055,
+        "lonDeg": -106.311025
+      },
+      "use": "RP"
+    },
+    "WAPRE": {
+      "id": "WAPRE",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.14321666,
+        "lonDeg": -106.144075
+      },
+      "use": "RP"
+    },
+    "VEPUY": {
+      "id": "VEPUY",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.06906388,
+        "lonDeg": -106.00546944
+      },
+      "use": "WP"
+    },
+    "ZOTOS": {
+      "id": "ZOTOS",
+      "state": "NM",
+      "position": {
+        "latDeg": 36.99078055,
+        "lonDeg": -105.85973611
+      },
+      "use": "RP"
+    },
+    "RODDS": {
+      "id": "RODDS",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.20490833,
+        "lonDeg": -106.04599722
+      },
+      "use": "RP"
+    },
+    "KROWZ": {
+      "id": "KROWZ",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.31912777,
+        "lonDeg": -105.95780277
+      },
+      "use": "RP"
+    },
+    "BREZE": {
+      "id": "BREZE",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.34890833,
+        "lonDeg": -105.93475833
+      },
+      "use": "RP"
+    },
+    "XOGSY": {
+      "id": "XOGSY",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.40058055,
+        "lonDeg": -105.89469722
+      },
+      "use": "RP"
+    },
+    "APKOW": {
+      "id": "APKOW",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.52445833,
+        "lonDeg": -105.79838055
+      },
+      "use": "WP"
+    },
+    "ICORY": {
+      "id": "ICORY",
+      "state": "CO",
+      "position": {
+        "latDeg": 37.80850277,
+        "lonDeg": -106.03787222
+      },
+      "use": "RP"
+    },
+    "KIDNE": {
+      "id": "KIDNE",
+      "state": "UT",
+      "position": {
+        "latDeg": 38.60131111,
+        "lonDeg": -110.16510833
+      },
+      "use": "RP"
+    },
+    "PIGSE": {
+      "id": "PIGSE",
+      "state": "UT",
+      "position": {
+        "latDeg": 38.44626388,
+        "lonDeg": -109.97954722
+      },
+      "use": "RP"
+    },
+    "ARCHH": {
+      "id": "ARCHH",
+      "state": "UT",
+      "position": {
+        "latDeg": 38.79956111,
+        "lonDeg": -109.57939722
+      },
+      "use": "RP"
+    },
+    "HANOG": {
+      "id": "HANOG",
+      "state": "UT",
+      "position": {
+        "latDeg": 38.62110277,
+        "lonDeg": -109.98815833
+      },
+      "use": "WP"
+    },
+    "NERRI": {
+      "id": "NERRI",
+      "state": "UT",
+      "position": {
+        "latDeg": 38.67723333,
+        "lonDeg": -109.88299722
+      },
+      "use": "WP"
+    },
+    "FELTA": {
+      "id": "FELTA",
+      "state": "UT",
+      "position": {
+        "latDeg": 38.70914722,
+        "lonDeg": -109.82623055
+      },
+      "use": "WP"
+    },
+    "FATPU": {
+      "id": "FATPU",
+      "state": "UT",
+      "position": {
+        "latDeg": 38.71751388,
+        "lonDeg": -109.81133055
+      },
+      "use": "WP"
+    },
+    "FOGUG": {
+      "id": "FOGUG",
+      "state": "UT",
+      "position": {
+        "latDeg": 38.74061111,
+        "lonDeg": -109.77015833
+      },
+      "use": "WP"
+    },
+    "RESOY": {
+      "id": "RESOY",
+      "state": "NM",
+      "position": {
+        "latDeg": 36.52556388,
+        "lonDeg": -105.776875
+      },
+      "use": "RP"
+    },
+    "ZUTRI": {
+      "id": "ZUTRI",
+      "state": "NM",
+      "position": {
+        "latDeg": 36.45968333,
+        "lonDeg": -105.67473888
+      },
+      "use": "RP"
+    }
+  },
+  "cifp": {
+    "dataset": "FAA CIFP",
+    "cycle": "2611",
+    "approaches": {
+      "KLAA R18": {
+        "airport": "KLAA",
+        "ident": "R18",
+        "runway": "RW18",
+        "minimumsLines": ["LPV", "LNAV/VNAV", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "OBOZU",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "OBOZU",
+                "fixSection": "PC",
+                "descriptor": "EE A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HF",
+                "recommendedNavaid": null,
+                "courseMagDeg": 182.7,
+                "distanceNm": 6,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "WEYYI",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "WEYYI",
+                "fixSection": "EA",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "OBOZU",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "WIZGE",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "WIZGE",
+                "fixSection": "EA",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "OBOZU",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "OBOZU",
+                "fixSection": "PC",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "LOLME",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5500,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "RW18",
+                "fixSection": "PG",
+                "descriptor": "GY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 3720,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3.05
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 182.6,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 3945,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "IHIYO",
+                "fixSection": "PC",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "IHIYO",
+                "fixSection": "PC",
+                "descriptor": "EE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 2.6,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW18",
+          "referencePathId": "W18A",
+          "ltp": {
+            "latDeg": 38.07485763888889,
+            "lonDeg": -102.68955513888889
+          },
+          "ellipsoidHeightM": 1098.1,
+          "gpaDeg": 3.05,
+          "fpap": {
+            "latDeg": 38.050428749999995,
+            "lonDeg": -102.69479097222222
+          },
+          "courseWidthM": 106.75,
+          "tchFt": 41,
+          "approachLabel": "LPV"
+        }
+      },
+      "KPUB R26L": {
+        "airport": "KPUB",
+        "ident": "R26L",
+        "runway": "RW26L",
+        "minimumsLines": ["LPV", "LNAV/VNAV", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "DRAKE",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "DRAKE",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "BONUH",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7700,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "HELER",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": 210,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "ORWAY",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "ORWAY",
+                "fixSection": "EA",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "HELER",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": 210,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "PUB",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "PUB",
+                "fixSection": "D",
+                "descriptor": "V   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "HELER",
+                "fixSection": "PC",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "HELER",
+                "fixSection": "PC",
+                "descriptor": "EE A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HF",
+                "recommendedNavaid": null,
+                "courseMagDeg": 260.5,
+                "distanceNm": 6,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "STAXX",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "STAXX",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "REDHI",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "HELER",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": 210,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "VIGIL",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "VIGIL",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "REDHI",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7900,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "HELER",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": 210,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "HELER",
+                "fixSection": "PC",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": 210,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "JIKTA",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6600,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "RW26L",
+                "fixSection": "PG",
+                "descriptor": "GY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 4709,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 260.4,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 4859,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "MERTZ",
+                "fixSection": "PC",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "MERTZ",
+                "fixSection": "PC",
+                "descriptor": "EE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "L",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 290,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW26L",
+          "referencePathId": "W26A",
+          "ltp": {
+            "latDeg": 38.28799166666666,
+            "lonDeg": -104.47351944444445
+          },
+          "ellipsoidHeightM": 1397.3,
+          "gpaDeg": 3,
+          "fpap": {
+            "latDeg": 38.28712611111111,
+            "lonDeg": -104.5100638888889
+          },
+          "courseWidthM": 106.75,
+          "tchFt": 60,
+          "approachLabel": "LPV"
+        }
+      },
+      "KBFF R12": {
+        "airport": "KBFF",
+        "ident": "R12",
+        "runway": "RW12",
+        "minimumsLines": ["LPV", "LNAV/VNAV", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "ALBIN",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "ALBIN",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "SACOP",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7800,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "LEDSE",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6900,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "LEDSE",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "LEDSE",
+                "fixSection": "PC",
+                "descriptor": "EE A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HF",
+                "recommendedNavaid": null,
+                "courseMagDeg": 125.5,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6900,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "SPONS",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "SPONS",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "AYAYI",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "LEDSE",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6900,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "LEDSE",
+                "fixSection": "PC",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6900,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "CAPGA",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5700,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "RW12",
+                "fixSection": "PG",
+                "descriptor": "GY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 4018,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 125.5,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 4213,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "HAKAB",
+                "fixSection": "PC",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6700,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "HAKAB",
+                "fixSection": "PC",
+                "descriptor": "EE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 305.7,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6700,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW12",
+          "referencePathId": "W12A",
+          "ltp": {
+            "latDeg": 41.88228333333333,
+            "lonDeg": -103.60495277777777
+          },
+          "ellipsoidHeightM": 1188.6,
+          "gpaDeg": 3,
+          "fpap": {
+            "latDeg": 41.865858333333335,
+            "lonDeg": -103.58343055555555
+          },
+          "courseWidthM": 106.5,
+          "tchFt": 56.7,
+          "approachLabel": "LPV"
+        }
+      },
+      "KCPR R03": {
+        "airport": "KCPR",
+        "ident": "R03",
+        "runway": "RW03",
+        "minimumsLines": ["LPV", "LNAV/VNAV", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "CHOMP",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "CHOMP",
+                "fixSection": "EA",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "IPEYE",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "HEITY",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "HEITY",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "AXIBY",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 10800,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "IPEYE",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "HIKOX",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "HIKOX",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "CEYFI",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "IPEYE",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "IPEYE",
+                "fixSection": "PC",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "YIWZE",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 21,
+                "fix": "NOPTE",
+                "fixSection": "PC",
+                "descriptor": "E S ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "V",
+                "alt1Ft": 6240,
+                "alt2Ft": 6244,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 30,
+                "fix": "RW03",
+                "fixSection": "PG",
+                "descriptor": "GY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 5377,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 31.8,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5643,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "KIVSE",
+                "fixSection": "PC",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "DDY",
+                "fixSection": "D",
+                "descriptor": "VY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7500,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 70,
+                "fix": "DDY",
+                "fixSection": "D",
+                "descriptor": "VE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 204.7,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7500,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW03",
+          "referencePathId": "W03A",
+          "ltp": {
+            "latDeg": 42.89340236111111,
+            "lonDeg": -106.47503083333334
+          },
+          "ellipsoidHeightM": 1609.7,
+          "gpaDeg": 3,
+          "fpap": {
+            "latDeg": 42.91356388888889,
+            "lonDeg": -106.4486388888889
+          },
+          "courseWidthM": 106.75,
+          "tchFt": 52.4,
+          "approachLabel": "LPV"
+        }
+      },
+      "KAPA R28": {
+        "airport": "KAPA",
+        "ident": "R28",
+        "runway": "RW28",
+        "minimumsLines": ["LPV", "LNAV/VNAV", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "DILVE",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "DILVE",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "DOCKY",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "EZBEL",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "EZBEL",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "DOCKY",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "DOCKY",
+                "fixSection": "PC",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 11,
+                "fix": "MESME",
+                "fixSection": "PC",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7600,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "NIDLY",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7500,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 21,
+                "fix": "FEGIB",
+                "fixSection": "PC",
+                "descriptor": "E S ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "V",
+                "alt1Ft": 6940,
+                "alt2Ft": 6950,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 30,
+                "fix": "RW28",
+                "fixSection": "PG",
+                "descriptor": "GY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 5835,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 283,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6400,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "EZBEL",
+                "fixSection": "PC",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "EZBEL",
+                "fixSection": "PC",
+                "descriptor": "EE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 238,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW28",
+          "referencePathId": "W28A",
+          "ltp": {
+            "latDeg": 39.56818305555556,
+            "lonDeg": -104.83231819444444
+          },
+          "ellipsoidHeightM": 1748.8,
+          "gpaDeg": 3,
+          "fpap": {
+            "latDeg": 39.57704166666667,
+            "lonDeg": -104.86221111111111
+          },
+          "courseWidthM": 106.75,
+          "tchFt": 40.8,
+          "approachLabel": "LPV"
+        }
+      },
+      "KCOS R31": {
+        "airport": "KCOS",
+        "ident": "R31",
+        "runway": "RW31",
+        "minimumsLines": ["LP", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "ADANE",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "ADANE",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "ZENER",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 2,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9400,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "NUTVE",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8600,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "PUB",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "PUB",
+                "fixSection": "D",
+                "descriptor": "V   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "ONKIE",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 2,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9400,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "NUTVE",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8600,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "NUTVE",
+                "fixSection": "PC",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8600,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "JATOL",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7800,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "RW31",
+                "fixSection": "PG",
+                "descriptor": "GY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 6187,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3.04
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 307.1,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 6700,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "ADANE",
+                "fixSection": "EA",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "ADANE",
+                "fixSection": "EA",
+                "descriptor": "EE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 296,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9000,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW31",
+          "referencePathId": "W31A",
+          "ltp": {
+            "latDeg": 38.80777416666666,
+            "lonDeg": -104.69575166666667
+          },
+          "ellipsoidHeightM": 1852.1,
+          "gpaDeg": 3.04,
+          "fpap": {
+            "latDeg": 38.82531736111112,
+            "lonDeg": -104.71811083333334
+          },
+          "courseWidthM": 106.75,
+          "tchFt": 52,
+          "approachLabel": "LP"
+        }
+      },
+      "KOGA R08": {
+        "airport": "KOGA",
+        "ident": "R08",
+        "runway": "RW08",
+        "minimumsLines": ["LPV", "LNAV/VNAV", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "AHUFU",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "AHUFU",
+                "fixSection": "PC",
+                "descriptor": "EE A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HF",
+                "recommendedNavaid": null,
+                "courseMagDeg": 82.7,
+                "distanceNm": 5,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5300,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "AHUFU",
+                "fixSection": "PC",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5300,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "EZIFU",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 21,
+                "fix": "YEYUC",
+                "fixSection": "PC",
+                "descriptor": "E S ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "V",
+                "alt1Ft": 4200,
+                "alt2Ft": 4224,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 30,
+                "fix": "RW08",
+                "fixSection": "PG",
+                "descriptor": "GY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 3301,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 82.8,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 3511,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "TUKWY",
+                "fixSection": "PC",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "TUKWY",
+                "fixSection": "PC",
+                "descriptor": "EE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 263.1,
+                "distanceNm": 5,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW08",
+          "referencePathId": "W08A",
+          "ltp": {
+            "latDeg": 41.11779819444445,
+            "lonDeg": -101.78114319444444
+          },
+          "ellipsoidHeightM": 972.9,
+          "gpaDeg": 3,
+          "fpap": {
+            "latDeg": 41.11782777777778,
+            "lonDeg": -101.74839680555556
+          },
+          "courseWidthM": 106.75,
+          "tchFt": 40,
+          "approachLabel": "LPV"
+        }
+      },
+      "KALS R02": {
+        "airport": "KALS",
+        "ident": "R02",
+        "runway": "RW02",
+        "minimumsLines": ["LPV", "LNAV/VNAV", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "ALS",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "ALS",
+                "fixSection": "D",
+                "descriptor": "V   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "RODDS",
+                "fixSection": "EA",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 12200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "RODDS",
+                "fixSection": "EA",
+                "descriptor": "EE A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HF",
+                "recommendedNavaid": null,
+                "courseMagDeg": 31.7,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 12200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "GEMKY",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "GEMKY",
+                "fixSection": "EA",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": 210,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "RODDS",
+                "fixSection": "EA",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 12200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "WAPRE",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "WAPRE",
+                "fixSection": "EA",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": 210,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "RODDS",
+                "fixSection": "EA",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 12200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "ZOTOS",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "ZOTOS",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "VEPUY",
+                "fixSection": "PC",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 12200,
+                "alt2Ft": null,
+                "speedKt": 210,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "RODDS",
+                "fixSection": "EA",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 12200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "RODDS",
+                "fixSection": "EA",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 12200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 11,
+                "fix": "KROWZ",
+                "fixSection": "PC",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9900,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "BREZE",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 9300,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 21,
+                "fix": "XOGSY",
+                "fixSection": "PC",
+                "descriptor": "E S ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "V",
+                "alt1Ft": 8140,
+                "alt2Ft": 8140,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 30,
+                "fix": "RW02",
+                "fixSection": "PG",
+                "descriptor": "GY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 7588,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 22.7,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7740,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "APKOW",
+                "fixSection": "PC",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "ICORY",
+                "fixSection": "EA",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 14600,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 70,
+                "fix": "ICORY",
+                "fixSection": "EA",
+                "descriptor": "EE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 317.1,
+                "distanceNm": 9,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 14600,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW02",
+          "referencePathId": "W02A",
+          "ltp": {
+            "latDeg": 37.425181249999994,
+            "lonDeg": -105.87559833333333
+          },
+          "ellipsoidHeightM": 2281.2,
+          "gpaDeg": 3,
+          "fpap": {
+            "latDeg": 37.44624694444444,
+            "lonDeg": -105.85923416666667
+          },
+          "courseWidthM": 106.75,
+          "tchFt": 48.1,
+          "approachLabel": "LPV"
+        }
+      },
+      "KCNY R03": {
+        "airport": "KCNY",
+        "ident": "R03",
+        "runway": "RW03",
+        "minimumsLines": ["LP", "LNAV"],
+        "routes": [
+          {
+            "routeType": "A",
+            "transition": "ARCHH",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "ARCHH",
+                "fixSection": "EA",
+                "descriptor": "E   ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "HANOG",
+                "fixSection": "PC",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 30,
+                "fix": "HANOG",
+                "fixSection": "PC",
+                "descriptor": "EE A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HF",
+                "recommendedNavaid": null,
+                "courseMagDeg": 45.7,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "KIDNE",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "KIDNE",
+                "fixSection": "EA",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "HANOG",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "A",
+            "transition": "PIGSE",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "PIGSE",
+                "fixSection": "EA",
+                "descriptor": "E  A",
+                "flyOver": false,
+                "role": "IAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": null,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "HANOG",
+                "fixSection": "PC",
+                "descriptor": "EE B",
+                "flyOver": false,
+                "role": "IF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          },
+          {
+            "routeType": "R",
+            "transition": "",
+            "legs": [
+              {
+                "seq": 10,
+                "fix": "HANOG",
+                "fixSection": "PC",
+                "descriptor": "E  I",
+                "flyOver": false,
+                "role": "FACF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "IF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 20,
+                "fix": "NERRI",
+                "fixSection": "PC",
+                "descriptor": "E  F",
+                "flyOver": false,
+                "role": "FAF",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 1,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 7200,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 21,
+                "fix": "FELTA",
+                "fixSection": "PC",
+                "descriptor": "E S ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "V",
+                "alt1Ft": 5980,
+                "alt2Ft": 5980,
+                "speedKt": null,
+                "verticalAngleDeg": -3.5
+              },
+              {
+                "seq": 22,
+                "fix": "FATPU",
+                "fixSection": "PC",
+                "descriptor": "E S ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "V",
+                "alt1Ft": 5660,
+                "alt2Ft": 5660,
+                "speedKt": null,
+                "verticalAngleDeg": -3.5
+              },
+              {
+                "seq": 30,
+                "fix": "FOGUG",
+                "fixSection": "PC",
+                "descriptor": "EY M",
+                "flyOver": true,
+                "role": "MAP",
+                "missedStart": false,
+                "turn": null,
+                "rnpNm": 0.3,
+                "pathTerminator": "TF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": null,
+                "alt1Ft": 4775,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": -3.5
+              },
+              {
+                "seq": 40,
+                "fix": null,
+                "fixSection": null,
+                "descriptor": "  M ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": true,
+                "turn": null,
+                "rnpNm": null,
+                "pathTerminator": "CA",
+                "recommendedNavaid": null,
+                "courseMagDeg": 44.3,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 5800,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 50,
+                "fix": "HANOG",
+                "fixSection": "PC",
+                "descriptor": "EY  ",
+                "flyOver": true,
+                "role": null,
+                "missedStart": false,
+                "turn": "L",
+                "rnpNm": 1,
+                "pathTerminator": "DF",
+                "recommendedNavaid": null,
+                "courseMagDeg": null,
+                "distanceNm": null,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              },
+              {
+                "seq": 60,
+                "fix": "HANOG",
+                "fixSection": "PC",
+                "descriptor": "EE  ",
+                "flyOver": false,
+                "role": null,
+                "missedStart": false,
+                "turn": "R",
+                "rnpNm": null,
+                "pathTerminator": "HM",
+                "recommendedNavaid": null,
+                "courseMagDeg": 45.7,
+                "distanceNm": 7,
+                "holdMinutes": null,
+                "altDesc": "+",
+                "alt1Ft": 8100,
+                "alt2Ft": null,
+                "speedKt": null,
+                "verticalAngleDeg": null
+              }
+            ]
+          }
+        ],
+        "pathPoint": {
+          "runway": "RW03",
+          "referencePathId": "W03A",
+          "ltp": {
+            "latDeg": 38.74540513888889,
+            "lonDeg": -109.7616063888889
+          },
+          "ellipsoidHeightM": 1366.8,
+          "gpaDeg": 3.5,
+          "fpap": {
+            "latDeg": 38.75982180555555,
+            "lonDeg": -109.73587680555556
+          },
+          "courseWidthM": 106.75,
+          "tchFt": 40,
+          "approachLabel": "LP"
+        }
+      }
+    },
+    "waypoints": {
+      "KLAA/OBOZU": {
+        "id": "OBOZU",
+        "region": "KLAA",
+        "position": {
+          "latDeg": 38.26583611111111,
+          "lonDeg": -102.64849722222223
+        },
+        "magVarEastDeg": 6.2
+      },
+      "WEYYI": {
+        "id": "WEYYI",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 38.28696111111111,
+          "lonDeg": -102.821125
+        },
+        "magVarEastDeg": 6.3
+      },
+      "WIZGE": {
+        "id": "WIZGE",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 38.240725,
+          "lonDeg": -102.47588333333333
+        },
+        "magVarEastDeg": 6.1
+      },
+      "KLAA/LOLME": {
+        "id": "LOLME",
+        "region": "KLAA",
+        "position": {
+          "latDeg": 38.16543333333333,
+          "lonDeg": -102.67011111111111
+        },
+        "magVarEastDeg": 6.2
+      },
+      "KLAA/RW18": {
+        "id": "RW18",
+        "region": "KLAA",
+        "position": {
+          "latDeg": 38.07485833333334,
+          "lonDeg": -102.68955555555556
+        },
+        "magVarEastDeg": 0
+      },
+      "KLAA/IHIYO": {
+        "id": "IHIYO",
+        "region": "KLAA",
+        "position": {
+          "latDeg": 37.86020555555556,
+          "lonDeg": -102.73540555555556
+        },
+        "magVarEastDeg": 6.2
+      },
+      "DRAKE": {
+        "id": "DRAKE",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 38.606680555555556,
+          "lonDeg": -104.41421666666668
+        },
+        "magVarEastDeg": 7.1
+      },
+      "KPUB/BONUH": {
+        "id": "BONUH",
+        "region": "KPUB",
+        "position": {
+          "latDeg": 38.39376388888889,
+          "lonDeg": -104.22119444444445
+        },
+        "magVarEastDeg": 7
+      },
+      "KPUB/HELER": {
+        "id": "HELER",
+        "region": "KPUB",
+        "position": {
+          "latDeg": 38.293730555555555,
+          "lonDeg": -104.21775555555556
+        },
+        "magVarEastDeg": 7
+      },
+      "ORWAY": {
+        "id": "ORWAY",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 38.27557777777778,
+          "lonDeg": -104.05559444444444
+        },
+        "magVarEastDeg": 6.9
+      },
+      "PUB": {
+        "id": "PUB",
+        "region": "NAVAID",
+        "position": {
+          "latDeg": 38.29425277777778,
+          "lonDeg": -104.42944722222222
+        },
+        "magVarEastDeg": 8
+      },
+      "STAXX": {
+        "id": "STAXX",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 37.98008055555556,
+          "lonDeg": -104.17484166666667
+        },
+        "magVarEastDeg": 6.9
+      },
+      "KPUB/REDHI": {
+        "id": "REDHI",
+        "region": "KPUB",
+        "position": {
+          "latDeg": 38.194177777777774,
+          "lonDeg": -104.2041
+        },
+        "magVarEastDeg": 7
+      },
+      "VIGIL": {
+        "id": "VIGIL",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 37.93426944444444,
+          "lonDeg": -104.51956388888888
+        },
+        "magVarEastDeg": 7.1
+      },
+      "KPUB/JIKTA": {
+        "id": "JIKTA",
+        "region": "KPUB",
+        "position": {
+          "latDeg": 38.29088055555555,
+          "lonDeg": -104.34787777777777
+        },
+        "magVarEastDeg": 7.1
+      },
+      "KPUB/RW26L": {
+        "id": "RW26L",
+        "region": "KPUB",
+        "position": {
+          "latDeg": 38.28798611111111,
+          "lonDeg": -104.47351666666667
+        },
+        "magVarEastDeg": 0
+      },
+      "KPUB/MERTZ": {
+        "id": "MERTZ",
+        "region": "KPUB",
+        "position": {
+          "latDeg": 38.28378611111111,
+          "lonDeg": -104.64699722222223
+        },
+        "magVarEastDeg": 7.2
+      },
+      "ALBIN": {
+        "id": "ALBIN",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 41.46776388888889,
+          "lonDeg": -104.29399444444444
+        },
+        "magVarEastDeg": 7.3
+      },
+      "KBFF/SACOP": {
+        "id": "SACOP",
+        "region": "KBFF",
+        "position": {
+          "latDeg": 41.957775000000005,
+          "lonDeg": -103.86075833333332
+        },
+        "magVarEastDeg": 7.1
+      },
+      "KBFF/LEDSE": {
+        "id": "LEDSE",
+        "region": "KBFF",
+        "position": {
+          "latDeg": 42.01626666666667,
+          "lonDeg": -103.78113333333333
+        },
+        "magVarEastDeg": 7.1
+      },
+      "SPONS": {
+        "id": "SPONS",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 42.16685833333333,
+          "lonDeg": -103.41276111111112
+        },
+        "magVarEastDeg": 6.9
+      },
+      "KBFF/AYAYI": {
+        "id": "AYAYI",
+        "region": "KBFF",
+        "position": {
+          "latDeg": 42.07470277777778,
+          "lonDeg": -103.70136388888889
+        },
+        "magVarEastDeg": 7
+      },
+      "KBFF/CAPGA": {
+        "id": "CAPGA",
+        "region": "KBFF",
+        "position": {
+          "latDeg": 41.94425277777778,
+          "lonDeg": -103.68630555555556
+        },
+        "magVarEastDeg": 7
+      },
+      "KBFF/RW12": {
+        "id": "RW12",
+        "region": "KBFF",
+        "position": {
+          "latDeg": 41.88228333333333,
+          "lonDeg": -103.60495277777777
+        },
+        "magVarEastDeg": 0
+      },
+      "KBFF/HAKAB": {
+        "id": "HAKAB",
+        "region": "KBFF",
+        "position": {
+          "latDeg": 41.72891388888889,
+          "lonDeg": -103.40458611111112
+        },
+        "magVarEastDeg": 6.8
+      },
+      "CHOMP": {
+        "id": "CHOMP",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 42.606458333333336,
+          "lonDeg": -106.75859444444444
+        },
+        "magVarEastDeg": 8.7
+      },
+      "KCPR/IPEYE": {
+        "id": "IPEYE",
+        "region": "KCPR",
+        "position": {
+          "latDeg": 42.737033333333336,
+          "lonDeg": -106.67886111111112
+        },
+        "magVarEastDeg": 8.7
+      },
+      "HEITY": {
+        "id": "HEITY",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 42.67716111111111,
+          "lonDeg": -105.93681111111111
+        },
+        "magVarEastDeg": 8.3
+      },
+      "KCPR/AXIBY": {
+        "id": "AXIBY",
+        "region": "KCPR",
+        "position": {
+          "latDeg": 42.645075,
+          "lonDeg": -106.54884444444444
+        },
+        "magVarEastDeg": 8.6
+      },
+      "HIKOX": {
+        "id": "HIKOX",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 43.20451388888889,
+          "lonDeg": -106.87181666666666
+        },
+        "magVarEastDeg": 8.9
+      },
+      "KCPR/CEYFI": {
+        "id": "CEYFI",
+        "region": "KCPR",
+        "position": {
+          "latDeg": 42.82884166666667,
+          "lonDeg": -106.80926111111111
+        },
+        "magVarEastDeg": 8.8
+      },
+      "KCPR/YIWZE": {
+        "id": "YIWZE",
+        "region": "KCPR",
+        "position": {
+          "latDeg": 42.832972222222224,
+          "lonDeg": -106.55398055555555
+        },
+        "magVarEastDeg": 8.6
+      },
+      "KCPR/NOPTE": {
+        "id": "NOPTE",
+        "region": "KCPR",
+        "position": {
+          "latDeg": 42.860955555555556,
+          "lonDeg": -106.51745
+        },
+        "magVarEastDeg": 8.6
+      },
+      "KCPR/RW03": {
+        "id": "RW03",
+        "region": "KCPR",
+        "position": {
+          "latDeg": 42.89340277777778,
+          "lonDeg": -106.47503055555556
+        },
+        "magVarEastDeg": 0
+      },
+      "KCPR/KIVSE": {
+        "id": "KIVSE",
+        "region": "KCPR",
+        "position": {
+          "latDeg": 42.92943611111111,
+          "lonDeg": -106.42784722222223
+        },
+        "magVarEastDeg": 8.6
+      },
+      "DDY": {
+        "id": "DDY",
+        "region": "NAVAID",
+        "position": {
+          "latDeg": 43.09085555555556,
+          "lonDeg": -106.277025
+        },
+        "magVarEastDeg": 12
+      },
+      "KAPA/DILVE": {
+        "id": "DILVE",
+        "region": "KAPA",
+        "position": {
+          "latDeg": 39.469855555555554,
+          "lonDeg": -104.50271111111111
+        },
+        "magVarEastDeg": 7.2
+      },
+      "KAPA/DOCKY": {
+        "id": "DOCKY",
+        "region": "KAPA",
+        "position": {
+          "latDeg": 39.49993333333333,
+          "lonDeg": -104.60310277777778
+        },
+        "magVarEastDeg": 7.3
+      },
+      "KAPA/EZBEL": {
+        "id": "EZBEL",
+        "region": "KAPA",
+        "position": {
+          "latDeg": 39.53386944444444,
+          "lonDeg": -104.50473611111111
+        },
+        "magVarEastDeg": 7.3
+      },
+      "KAPA/MESME": {
+        "id": "MESME",
+        "region": "KAPA",
+        "position": {
+          "latDeg": 39.51913611111111,
+          "lonDeg": -104.66739722222222
+        },
+        "magVarEastDeg": 7.3
+      },
+      "KAPA/NIDLY": {
+        "id": "NIDLY",
+        "region": "KAPA",
+        "position": {
+          "latDeg": 39.536941666666664,
+          "lonDeg": -104.72715277777777
+        },
+        "magVarEastDeg": 7.4
+      },
+      "KAPA/FEGIB": {
+        "id": "FEGIB",
+        "region": "KAPA",
+        "position": {
+          "latDeg": 39.54727777777778,
+          "lonDeg": -104.76189722222222
+        },
+        "magVarEastDeg": 7.4
+      },
+      "KAPA/RW28": {
+        "id": "RW28",
+        "region": "KAPA",
+        "position": {
+          "latDeg": 39.56818333333334,
+          "lonDeg": -104.83231666666666
+        },
+        "magVarEastDeg": 0
+      },
+      "ADANE": {
+        "id": "ADANE",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 38.915905555555554,
+          "lonDeg": -104.39901666666667
+        },
+        "magVarEastDeg": 7.1
+      },
+      "KCOS/ZENER": {
+        "id": "ZENER",
+        "region": "KCOS",
+        "position": {
+          "latDeg": 38.71821111111111,
+          "lonDeg": -104.40875000000001
+        },
+        "magVarEastDeg": 7.1
+      },
+      "KCOS/NUTVE": {
+        "id": "NUTVE",
+        "region": "KCOS",
+        "position": {
+          "latDeg": 38.67650277777778,
+          "lonDeg": -104.52896944444444
+        },
+        "magVarEastDeg": 7.2
+      },
+      "KCOS/ONKIE": {
+        "id": "ONKIE",
+        "region": "KCOS",
+        "position": {
+          "latDeg": 38.59478611111111,
+          "lonDeg": -104.50760277777778
+        },
+        "magVarEastDeg": 7.2
+      },
+      "KCOS/JATOL": {
+        "id": "JATOL",
+        "region": "KCOS",
+        "position": {
+          "latDeg": 38.7487,
+          "lonDeg": -104.62058055555555
+        },
+        "magVarEastDeg": 7.2
+      },
+      "KCOS/RW31": {
+        "id": "RW31",
+        "region": "KCOS",
+        "position": {
+          "latDeg": 38.80777222222222,
+          "lonDeg": -104.69575
+        },
+        "magVarEastDeg": 0
+      },
+      "KOGA/AHUFU": {
+        "id": "AHUFU",
+        "region": "KOGA",
+        "position": {
+          "latDeg": 41.117069444444446,
+          "lonDeg": -102.07575
+        },
+        "magVarEastDeg": 6
+      },
+      "KOGA/EZIFU": {
+        "id": "EZIFU",
+        "region": "KOGA",
+        "position": {
+          "latDeg": 41.11756666666667,
+          "lonDeg": -101.9126638888889
+        },
+        "magVarEastDeg": 5.9
+      },
+      "KOGA/YEYUC": {
+        "id": "YEYUC",
+        "region": "KOGA",
+        "position": {
+          "latDeg": 41.11770277777778,
+          "lonDeg": -101.84509444444444
+        },
+        "magVarEastDeg": 5.9
+      },
+      "KOGA/RW08": {
+        "id": "RW08",
+        "region": "KOGA",
+        "position": {
+          "latDeg": 41.11779722222222,
+          "lonDeg": -101.78114444444445
+        },
+        "magVarEastDeg": 0
+      },
+      "KOGA/TUKWY": {
+        "id": "TUKWY",
+        "region": "KOGA",
+        "position": {
+          "latDeg": 41.11774444444445,
+          "lonDeg": -101.4880888888889
+        },
+        "magVarEastDeg": 5.7
+      },
+      "ALS": {
+        "id": "ALS",
+        "region": "NAVAID",
+        "position": {
+          "latDeg": 37.349158333333335,
+          "lonDeg": -105.81553333333333
+        },
+        "magVarEastDeg": 13
+      },
+      "RODDS": {
+        "id": "RODDS",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 37.204908333333336,
+          "lonDeg": -106.04599722222223
+        },
+        "magVarEastDeg": 7.8
+      },
+      "GEMKY": {
+        "id": "GEMKY",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 37.223330555555556,
+          "lonDeg": -106.311025
+        },
+        "magVarEastDeg": 7.9
+      },
+      "WAPRE": {
+        "id": "WAPRE",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 37.14321666666667,
+          "lonDeg": -106.144075
+        },
+        "magVarEastDeg": 7.8
+      },
+      "ZOTOS": {
+        "id": "ZOTOS",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 36.99078055555556,
+          "lonDeg": -105.8597361111111
+        },
+        "magVarEastDeg": 7.7
+      },
+      "KALS/VEPUY": {
+        "id": "VEPUY",
+        "region": "KALS",
+        "position": {
+          "latDeg": 37.06906388888889,
+          "lonDeg": -106.00546944444444
+        },
+        "magVarEastDeg": 7.8
+      },
+      "KALS/KROWZ": {
+        "id": "KROWZ",
+        "region": "KALS",
+        "position": {
+          "latDeg": 37.31912777777778,
+          "lonDeg": -105.95780277777779
+        },
+        "magVarEastDeg": 7.8
+      },
+      "KALS/BREZE": {
+        "id": "BREZE",
+        "region": "KALS",
+        "position": {
+          "latDeg": 37.348908333333334,
+          "lonDeg": -105.93475833333333
+        },
+        "magVarEastDeg": 7.8
+      },
+      "KALS/XOGSY": {
+        "id": "XOGSY",
+        "region": "KALS",
+        "position": {
+          "latDeg": 37.40058055555556,
+          "lonDeg": -105.89469722222223
+        },
+        "magVarEastDeg": 7.7
+      },
+      "KALS/RW02": {
+        "id": "RW02",
+        "region": "KALS",
+        "position": {
+          "latDeg": 37.425180555555556,
+          "lonDeg": -105.87559722222221
+        },
+        "magVarEastDeg": 0
+      },
+      "KALS/APKOW": {
+        "id": "APKOW",
+        "region": "KALS",
+        "position": {
+          "latDeg": 37.524458333333335,
+          "lonDeg": -105.79838055555555
+        },
+        "magVarEastDeg": 7.7
+      },
+      "ICORY": {
+        "id": "ICORY",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 37.808502777777775,
+          "lonDeg": -106.03787222222222
+        },
+        "magVarEastDeg": 7.9
+      },
+      "ARCHH": {
+        "id": "ARCHH",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 38.79956111111111,
+          "lonDeg": -109.57939722222221
+        },
+        "magVarEastDeg": 9.5
+      },
+      "KCNY/HANOG": {
+        "id": "HANOG",
+        "region": "KCNY",
+        "position": {
+          "latDeg": 38.62110277777778,
+          "lonDeg": -109.98815833333333
+        },
+        "magVarEastDeg": 9.7
+      },
+      "KIDNE": {
+        "id": "KIDNE",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 38.601311111111116,
+          "lonDeg": -110.16510833333334
+        },
+        "magVarEastDeg": 9.7
+      },
+      "PIGSE": {
+        "id": "PIGSE",
+        "region": "ENRT",
+        "position": {
+          "latDeg": 38.446263888888886,
+          "lonDeg": -109.97954722222222
+        },
+        "magVarEastDeg": 9.7
+      },
+      "KCNY/NERRI": {
+        "id": "NERRI",
+        "region": "KCNY",
+        "position": {
+          "latDeg": 38.677233333333334,
+          "lonDeg": -109.88299722222222
+        },
+        "magVarEastDeg": 9.6
+      },
+      "KCNY/FELTA": {
+        "id": "FELTA",
+        "region": "KCNY",
+        "position": {
+          "latDeg": 38.70914722222223,
+          "lonDeg": -109.82623055555555
+        },
+        "magVarEastDeg": 9.6
+      },
+      "KCNY/FATPU": {
+        "id": "FATPU",
+        "region": "KCNY",
+        "position": {
+          "latDeg": 38.71751388888889,
+          "lonDeg": -109.81133055555556
+        },
+        "magVarEastDeg": 9.6
+      },
+      "KCNY/FOGUG": {
+        "id": "FOGUG",
+        "region": "KCNY",
+        "position": {
+          "latDeg": 38.740611111111114,
+          "lonDeg": -109.77015833333333
+        },
+        "magVarEastDeg": 9.6
+      },
+      "KCNY/RW03": {
+        "id": "RW03",
+        "region": "KCNY",
+        "position": {
+          "latDeg": 38.74693333333333,
+          "lonDeg": -109.76341666666667
+        },
+        "magVarEastDeg": 0
+      }
     }
   }
 }

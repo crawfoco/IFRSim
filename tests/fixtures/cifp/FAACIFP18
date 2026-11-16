@@ -1,0 +1,22 @@
+HDR01FAACIFP18      001P013203973042611  07-OCT-202615:55:03  U.S.A. DOT FAA                                                9D60747B
+SUSAP KLAAK2CIHIYO K20    W     N37513674W102440746                       E0062     NAR           IHIYO                    341202605
+SUSAP KLAAK2CLOLME K20    W     N38095556W102401240                       E0062     NAR           LOLME                    341242504
+SUSAP KLAAK2COBOZU K20    W     N38155701W102385459                       E0062     NAR           OBOZU                    341272504
+SUSAP KLAAK2FR18   AOBOZU 010OBOZUK2PC0EE AR   HF                     18270060    + 06000     18000                 A JS   341482006
+SUSAP KLAAK2FR18   AWEYYI 010WEYYIK2EA0E  A    IF                                             18000                 A JS   341490909
+SUSAP KLAAK2FR18   AWEYYI 020OBOZUK2PC0EE B 010TF                                 + 06000                           A JS   341502006
+SUSAP KLAAK2FR18   AWIZGE 010WIZGEK2EA0E  A    IF                                             18000                 A JS   341510909
+SUSAP KLAAK2FR18   AWIZGE 020OBOZUK2PC0EE B 010TF                                 + 06000                           A JS   341522006
+SUSAP KLAAK2FR18   R      010OBOZUK2PC0E  I    IF                                 + 06000     18000                 A JS   341531310
+SUSAP KLAAK2FR18   R      020LOLMEK2PC1E  F 010TF                                 + 05500                 RW18  K2PGA JS   341542006
+SUSAP KLAAK2FR18   R      020LOLMEK2PC2WALPV       ALNAV/VNAV ALNAV                                                   JS   341551310
+SUSAP KLAAK2FR18   R      030RW18 K2PG0GY M 031TF                                   03720             -305          A JS   341562102
+SUSAP KLAAK2FR18   R      040         0  M     CA                     1826        + 03945                           A JS   341572006
+SUSAP KLAAK2FR18   R      050IHIYOK2PC0EY   010DF                                 + 06200                           A JS   341581310
+SUSAP KLAAK2FR18   R      060IHIYOK2PC0EE  R   HM                     00260070    + 06200                           A JS   341592006
+SUSAP KLAAK2GRW18    0063041830 N38042949W102412240         +1098103679000041100R                                          342102006
+SUSAP KLAAK2PR18   RW18 001 0000W18A0N3804294875W10241223985+109810305N3803015435W10241412475106750832000410F400500374992E0342152102
+SUSAP KLAAK2PR18   RW18 002E      +11213+11213LPV       86613                                                              342160909
+SUSAEAENRT   WEYYI K20    C   L N38171306W102491605                       E0063     NAR           WEYYI                    535382504
+SUSAEAENRT   WIZGE K20    C   L N38142661W102283318                       E0061     NAR           WIZGE                    538922504
+SUSAD        PUB   K2011670VTHW N38173931W104254601    N38173931W104254601E0080047562     NARPUEBLO                        257011911

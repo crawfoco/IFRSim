@@ -14,30 +14,41 @@ your track, altitude profile and a score.
 > ⚠️ **Training use only. Not for real-world navigation.** Charts and nav data
 > come from a single FAA cycle and are not kept current.
 
-## Approaches in V1
+## Approaches
 
-All in Colorado, Wyoming and Nebraska. The chart cycle is shown in the app.
+Eighteen approaches in Colorado, Wyoming, Nebraska, New Mexico and Utah. The
+chart cycle is shown in the app.
 
-| Airport | Procedure |
+| ILS · LOC · VOR | RNAV (GPS) |
 |---|---|
-| KCFO Colorado Air and Space Port | ILS or LOC RWY 26 |
-| KGXY Greeley-Weld County | ILS or LOC RWY 35 |
-| KMTJ Montrose Regional | ILS or LOC RWY 17 |
-| KAKO Colorado Plains Regional | VOR RWY 29 |
-| KLAR Laramie Regional | VOR/DME RWY 30 |
-| KSNY Sidney Municipal | VOR/DME RWY 13 |
+| KAKO VOR RWY 29 | KALS RNAV (GPS) RWY 2 |
+| KCEZ VOR RWY 21 | KAPA RNAV (GPS) RWY 28 |
+| KCFO ILS or LOC RWY 26 | KBFF RNAV (GPS) RWY 12 |
+| KCYS ILS or LOC RWY 27 | KCNY RNAV (GPS) RWY 3 |
+| KGXY ILS or LOC RWY 35 | KCOS RNAV (GPS) RWY 31 |
+| KLAR VOR/DME RWY 30 | KCPR RNAV (GPS) RWY 3 |
+| KMTJ ILS or LOC RWY 17 | KLAA RNAV (GPS) RWY 18 |
+| KSKX VOR/DME-B (circling) | KOGA RNAV (GPS) RWY 8 (TAA) |
+| KSNY VOR/DME RWY 13 | KPUB RNAV (GPS) RWY 26L |
 
-Each has several start conditions (feeder routes, arcs, vectors to final), and
-the weather at minimums is hidden until the debrief.
+Each has several start conditions (feeder routes, arcs, direct to an IAF off to
+one side, vectors to final), and the weather at minimums, and on RNAV approaches
+whether WAAS is available, is hidden until the debrief. The RNAV approaches are
+flown with a generic WAAS GPS (LPV, LNAV/VNAV, LP and LNAV lines).
 
 ## How to fly
 
 1. Pick an approach and start.
 2. Read the briefing and the plate.
-3. Tune and identify the navaids, then fly with the autopilot.
+3. Tune and identify the navaids, or load the approach in the GPS, then fly with
+   the autopilot.
 4. At DA/MDA, if the runway is in sight, continue and the sim lands
    automatically; if not, press GA and fly the missed approach.
 5. Review the debrief.
+
+RNAV (GPS): PROC, pick the transition (and whether to hold at the IAF),
+LOAD + ACTIVATE; CDI on GPS, then NAV and APR. SUSP (steam) or GA (glass) starts
+the missed approach.
 
 On the briefing, choose the Steam gauges or the Glass PFD.
 

@@ -9,6 +9,7 @@ import type { LocIndication } from '../nav/loc';
 import type { VorIndication } from '../nav/vor';
 import { LOC_FULL_SCALE_DEG } from '../nav/loc';
 import { VOR_FULL_SCALE_DEG } from '../nav/vor';
+import type { GpsReading } from '../gps/receiver';
 
 export const GAINS = {
   /** Degrees of bank per degree of heading error. */
@@ -31,15 +32,20 @@ export function headingBank(headingTrueDeg: number, targetTrueDeg: number): numb
   return GAINS.headingBankPerDeg * signedAngleDiff(targetTrueDeg, headingTrueDeg);
 }
 
-type NavInd = VorIndication | LocIndication;
+type NavInd = VorIndication | LocIndication | GpsReading;
 
 /** Signed cross-track distance: + = the course lies to the right. */
 export function crossTrackNm(ind: NavInd): number {
+  if (ind.kind === 'GPS') return ind.xtkNm;
   return ind.distanceNm * Math.sin(ind.offsetDeg * DEG);
 }
 
-/** Direction of the course line where the aircraft is (course plus meridian convergence). */
+/**
+ * Direction of the course line where the aircraft is (course plus meridian convergence). The
+ * GPS gives its desired track where the aircraft is, so there is no convergence to add.
+ */
 export function localCourseTrue(ind: NavInd, courseTrueDeg: number): number {
+  if (ind.kind === 'GPS') return courseTrueDeg;
   return courseTrueDeg + ind.convergenceDeg;
 }
 
@@ -66,8 +72,12 @@ export function lateralCaptureReady(
   courseTrueDeg: number,
 ): boolean {
   if (ind.flag) return false;
-  const fullScale = ind.kind === 'LOC' ? LOC_FULL_SCALE_DEG : VOR_FULL_SCALE_DEG;
-  if (Math.abs(ind.offsetDeg) >= fullScale) return false;
+  // Needle position as a fraction of full scale (GPS: linear or angular, from the receiver).
+  const needle =
+    ind.kind === 'GPS'
+      ? Math.abs(ind.xtkNm) / ind.fullScaleNm
+      : Math.abs(ind.offsetDeg) / (ind.kind === 'LOC' ? LOC_FULL_SCALE_DEG : VOR_FULL_SCALE_DEG);
+  if (needle >= 1) return false;
   const xtk = crossTrackNm(ind);
   const angle =
     signedAngleDiff(headingTrueDeg, localCourseTrue(ind, courseTrueDeg)) * Math.sign(xtk);
@@ -75,7 +85,7 @@ export function lateralCaptureReady(
   // as one nearly parallel to it, so fold angles past 90° back (180° closes at zero).
   const closing = Math.abs(angle) > 90 ? Math.sign(angle) * (180 - Math.abs(angle)) : angle;
   const alongCourse = Math.abs(angle) <= PARALLEL_CAPTURE_MAX_DEG;
-  if (alongCourse && closing < 10 && Math.abs(ind.offsetDeg) <= fullScale / 2) return true;
+  if (alongCourse && closing < 10 && needle <= 0.5) return true;
   return GAINS.interceptDegPerNm * Math.abs(xtk) <= Math.max(closing, 0) + 5;
 }
 

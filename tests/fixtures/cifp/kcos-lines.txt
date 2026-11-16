@@ -1,0 +1,4 @@
+HDR01FAACIFP18      001P013203973042611  07-OCT-202615:55:03  U.S.A. DOT FAA                                                9D60747B
+SUSAP KCOSK2FR31   R      020JATOLK2PC1E  F 010TF                                 + 07800                 RW31  K2PGA JS   552092304
+SUSAP KCOSK2FR31   R      020JATOLK2PC2WALP        N          ALNAV                                                   JS   552101606
+SUSAP KCOSK2CJATOL K20    W     N38445532W104371409                       E0072     NAR           JATOL                    549642605

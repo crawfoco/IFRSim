@@ -1,0 +1,245 @@
+{
+  "id": "kcys-ils27",
+  "airport": "KCYS",
+  "runway": "27",
+  "name": "ILS or LOC RWY 27",
+  "chart": {
+    "number": "AL-80",
+    "amendment": "Amdt 36",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kcys-ils27.png"
+  },
+  "navaids": ["I-CYS", "CYS", "GLL"],
+  "expandedServiceVolumeNm": { "I-CYS": 30 },
+  "fixes": {
+    "CYS": { "def": { "kind": "navaid", "navaid": "CYS" }, "faaId": "CYS" },
+    "EGBER": {
+      "def": { "kind": "radialDme", "navaid": "CYS", "radialMag": 81.3, "dmeNm": 23.2 },
+      "faaId": "EGBER",
+      "note": "IAF, charted CYS 23.2 DME (no radial on the plate; NASR puts it on R-081.3). NoPT: heading 220° (5.5) to the localizer, then 265° (6.8) to COLLA."
+    },
+    "HAMER": {
+      "def": { "kind": "radialDme", "navaid": "GLL", "radialMag": 350, "dmeNm": 32.5 },
+      "faaId": "HAMER",
+      "note": "IAF, GLL R-350 at 32.5 DME. NoPT on R-350 (5.4) to COLLA; lead radial CYS R-106."
+    },
+    "COLLA": {
+      "def": { "kind": "locDme", "loc": "I-CYS", "dmeNm": 14.5 },
+      "faaId": "COLLA",
+      "note": "IF/IAF; also CYS R-098 at 13 NM and GLL R-350. Hold-in-lieu of PT."
+    },
+    "HORSE": {
+      "def": { "kind": "locDme", "loc": "I-CYS", "dmeNm": 6.6 },
+      "faaId": "HORSE",
+      "note": "FAF (LOC); also CYS R-118. Glideslope intercept at 7800."
+    },
+    "I-CYS 2.7": {
+      "def": { "kind": "locDme", "loc": "I-CYS", "dmeNm": 2.7 },
+      "note": "VDP, LOC only"
+    },
+    "I-CYS 1.5": {
+      "def": { "kind": "locDme", "loc": "I-CYS", "dmeNm": 1.5 },
+      "note": "Missed approach point, LOC only"
+    },
+    "MARKL": {
+      "def": { "kind": "radialDme", "navaid": "CYS", "radialMag": 16, "dmeNm": 10 },
+      "faaId": "MARKL",
+      "note": "Missed-approach holding fix for TACAN aircraft (CYS R-016 / 10 DME)"
+    },
+    "RW27": { "def": { "kind": "threshold" } }
+  },
+  "transitions": [
+    {
+      "id": "cys",
+      "name": "CYS R-098 feeder",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "COLLA",
+          "course": { "navaid": "CYS", "courseMag": 98, "toFrom": "FROM" },
+          "minAltFt": 8500
+        },
+        {
+          "type": "hold",
+          "fix": "COLLA",
+          "inboundCourseMag": 265,
+          "course": { "loc": "I-CYS" },
+          "turn": "R",
+          "legMinutes": 1,
+          "minAltFt": 7800
+        }
+      ]
+    },
+    {
+      "id": "egber",
+      "name": "EGBER, heading 220° to the localizer, then 265° to COLLA",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "heading",
+          "headingMag": 220,
+          "intercept": { "loc": "I-CYS" },
+          "minAltFt": 7800
+        },
+        {
+          "type": "track",
+          "to": "COLLA",
+          "course": { "loc": "I-CYS" },
+          "minAltFt": 7800
+        }
+      ]
+    },
+    {
+      "id": "hamer",
+      "name": "HAMER, GLL R-350 to COLLA",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "COLLA",
+          "course": { "navaid": "GLL", "courseMag": 350, "toFrom": "FROM" },
+          "minAltFt": 7800
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "HORSE",
+      "course": { "loc": "I-CYS" },
+      "minAltFt": 7800
+    },
+    {
+      "type": "final",
+      "faf": "HORSE",
+      "course": { "loc": "I-CYS" },
+      "fafAltFt": 7800,
+      "glideslope": { "angleDeg": 3, "tchFt": 55 },
+      "stepDowns": [],
+      "vdp": "I-CYS 2.7",
+      "map": {
+        "fix": "I-CYS 1.5",
+        "timing": [
+          { "groundspeedKt": 60, "seconds": 312 },
+          { "groundspeedKt": 90, "seconds": 208 },
+          { "groundspeedKt": 120, "seconds": 156 },
+          { "groundspeedKt": 150, "seconds": 125 },
+          { "groundspeedKt": 180, "seconds": 104 }
+        ]
+      }
+    }
+  ],
+  "missed": [
+    { "type": "climb", "toAltFt": 6800 },
+    { "type": "direct", "to": "CYS", "turn": "R", "climbToFt": 8000 },
+    {
+      "type": "hold",
+      "fix": "CYS",
+      "inboundCourseMag": 196,
+      "course": { "navaid": "CYS", "courseMag": 196, "toFrom": "TO" },
+      "turn": "R",
+      "legMinutes": 1,
+      "climbInHold": true,
+      "minAltFt": 8000
+    }
+  ],
+  "missedText": "Climb to 6800, then climbing right turn to 8000 direct CYS VORTAC and hold, continue climb-in-hold to 8000 (TACAN aircraft continue on CYS VORTAC R-016 to MARKL/CYS 10 DME and hold N, RT, 196° inbound).",
+  "minimums": [
+    {
+      "kind": "ILS",
+      "label": "S-ILS 27",
+      "note": "RVR 1800 authorized with the use of FD or AP or HUD to DA.",
+      "A": { "altFt": 6321, "visibilitySm": 0.5 },
+      "B": { "altFt": 6321, "visibilitySm": 0.5 }
+    },
+    {
+      "kind": "LOC",
+      "label": "S-LOC 27",
+      "A": { "altFt": 6560, "visibilitySm": 0.5 },
+      "B": { "altFt": 6560, "visibilitySm": 0.5 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "over-cys",
+      "name": "Inbound to CYS from the north",
+      "clearance": "Descend and maintain 8500, proceed direct Cheyenne, cleared ILS runway 27 approach via the Cheyenne 098 radial.",
+      "position": { "kind": "navaid", "navaid": "CYS" },
+      "leadInNm": 8,
+      "altitudeFt": 10500,
+      "assigned": { "altFt": 8500, "until": "CYS" },
+      "headingMag": 196,
+      "iasKt": 100,
+      "transition": "cys",
+      "nav1MHz": 113.1,
+      "nav2MHz": 113.1
+    },
+    {
+      "id": "direct-colla-southwest",
+      "name": "Direct COLLA from the south-west",
+      "clearance": "Descend and maintain 8500, proceed direct COLLA, cleared ILS runway 27 approach.",
+      "position": { "kind": "locDme", "loc": "I-CYS", "dmeNm": 14.5 },
+      "offset": { "bearingMag": 225, "distanceNm": 12 },
+      "altitudeFt": 10500,
+      "assigned": { "altFt": 8500, "until": "COLLA" },
+      "headingMag": 80,
+      "iasKt": 100,
+      "transition": "cys",
+      "joinAt": "COLLA",
+      "nav1MHz": 113.1,
+      "nav2MHz": 113.1
+    },
+    {
+      "id": "egber",
+      "name": "Direct EGBER from the south-east",
+      "clearance": "Descend and maintain 7800, proceed direct EGBER, cleared ILS runway 27 approach.",
+      "position": { "kind": "radialDme", "navaid": "CYS", "radialMag": 81.3, "dmeNm": 23.2 },
+      "offset": { "bearingMag": 150, "distanceNm": 8 },
+      "altitudeFt": 9800,
+      "assigned": { "altFt": 7800, "until": "EGBER" },
+      "headingMag": 10,
+      "iasKt": 100,
+      "transition": "egber",
+      "nav1MHz": 113.1,
+      "nav2MHz": 113.1
+    },
+    {
+      "id": "direct-hamer-south",
+      "name": "Direct HAMER from the south",
+      "clearance": "Descend and maintain 8500, proceed direct HAMER, cleared ILS runway 27 approach.",
+      "position": { "kind": "radialDme", "navaid": "GLL", "radialMag": 350, "dmeNm": 32.5 },
+      "offset": { "bearingMag": 190, "distanceNm": 10 },
+      "altitudeFt": 10500,
+      "assigned": { "altFt": 8500, "until": "HAMER" },
+      "headingMag": 50,
+      "iasKt": 100,
+      "transition": "hamer",
+      "nav1MHz": 114.2,
+      "nav2MHz": 114.2
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 235, maintain 7800 until established on the localizer, cleared ILS runway 27 approach.",
+      "position": { "kind": "radialDme", "navaid": "I-CYS", "radialMag": 78, "dmeNm": 22 },
+      "altitudeFt": 7800,
+      "assigned": { "altFt": 7800 },
+      "headingMag": 235,
+      "iasKt": 100,
+      "nav1MHz": 110.1,
+      "nav2MHz": 113.1
+    }
+  ],
+  "notes": [
+    "Use I-CYS DME when on the localizer course.",
+    "RVR 1800 authorized with the use of FD or AP or HUD to DA.",
+    "TACAN aircraft: missed approach on CYS VORTAC R-016 to MARKL/CYS 10 DME and hold N, right turns, 196° inbound (the sim flies the VORTAC hold).",
+    "Lead radial CYS R-106 for the turn from the HAMER route (GLL R-350) onto the localizer at COLLA.",
+    "MSA CYS 25 NM: 7600 for bearings 170°–300° to CYS (north-east), 8500 for 300°–030° (south), 10200 for 030°–170° (north-west).",
+    "Take-off minimums, departure procedures and alternate minimums are non-standard (see the chart). ASR/PAR available.",
+    "Circling minimums are on the chart and not part of scoring."
+  ]
+}

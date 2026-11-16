@@ -5,7 +5,7 @@
  */
 import { hsiCardDeg, hsiRelativeDeg } from '../geometry';
 import { fmt, polar } from '../dial';
-import { radioOf } from '../../../sim/nav/source';
+import { sourceLabel } from '../../../sim/nav/source';
 import { HSI, type GlassHsiProps } from './layout';
 import './hsi.css';
 
@@ -84,7 +84,7 @@ const COURSE_TAIL_D = `M ${CX - 3} ${CY + BAR_HALF + 4} h 6 V ${CY + R - 6} h -6
 
 /** Text summary of the HSI (heading, course, source, needle, TO/FROM, GS), for screen readers. */
 export function hsiSummary(p: GlassHsiProps): string {
-  const source = `VLOC${radioOf(p.cdiSource)}`;
+  const source = sourceLabel(p.cdiSource);
   const parts = [`heading ${pad3(p.headingMagDeg)}`, `course ${pad3(p.courseDeg)}`, source];
   if (p.deviation.flag) parts.push('NAV flag');
   else {
@@ -111,11 +111,11 @@ export function hsiSummary(p: GlassHsiProps): string {
 
 export function GlassHsi(p: GlassHsiProps) {
   const { headingMagDeg: hdg, deviation, glideslope } = p;
-  const source = `VLOC${radioOf(p.cdiSource)}`;
+  const source = sourceLabel(p.cdiSource);
   // Outside the rose, upper left, clear of the card's numbers.
   const [srcX, srcY] = [CX - R - 8, CY - R * 0.45];
   return (
-    <g data-testid="pfd-hsi">
+    <g data-testid="pfd-hsi" className={p.cdiSource === 'GPS' ? 'g-hsi-src-gps' : undefined}>
       <title>{hsiSummary(p)}</title>
       <circle className="g-hsi-disc" cx={CX} cy={CY} r={R + 4} />
 
@@ -202,6 +202,18 @@ export function GlassHsi(p: GlassHsiProps) {
       >
         {source}
       </text>
+      {p.cdiSource === 'GPS' && p.gpsMode && (
+        <text
+          data-testid="pfd-hsi-gps-mode"
+          className="g-hsi-source"
+          x={fmt(srcX)}
+          y={fmt(srcY + 15)}
+          textAnchor="end"
+          dominantBaseline="central"
+        >
+          {p.gpsMode}
+        </text>
+      )}
 
       {/* Fixed: aircraft symbol, lubber triangle, heading readout. */}
       <path className="g-hsi-aircraft" d={AIRCRAFT_D} />

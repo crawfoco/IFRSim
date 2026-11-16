@@ -29,11 +29,12 @@ describe('home screen How to fly panel', () => {
     expect(textsOf(ol, 'li')).toEqual([
       'Pick an approach and start.',
       'Read the briefing and the plate.',
-      'Tune and identify the navaids, then fly with the autopilot.',
+      'Tune and identify the navaids, or load the approach in the GPS, then fly with the autopilot.',
       'At DA/MDA, if the runway is in sight, continue and the sim lands automatically; if not, press GA and fly the missed approach.',
       'Review the debrief.',
     ]);
-    expect(textsOf(panel![1]!, 'p')).toEqual([
+    expect(textsOf(panel![1]!, 'p').map((t) => t.replace(/\s+/g, ' ').trim())).toEqual([
+      'RNAV (GPS): PROC, pick the transition (and whether to hold at the IAF), LOAD + ACTIVATE; CDI on GPS, then NAV and APR. SUSP (steam) or GA (glass) starts the missed approach.',
       'On the briefing, choose the Steam gauges or the Glass PFD.',
     ]);
   });
@@ -101,5 +102,15 @@ describe('briefing choices', () => {
   it('panel: steam gauges or Glass PFD', () => {
     expect(html).toContain('data-testid="panel-steam"');
     expect(html).toContain('data-testid="panel-glass"');
+  });
+});
+
+describe('approach list order', () => {
+  it('lists the approaches alphabetically by airport', () => {
+    const html = renderToStaticMarkup(<Select procedures={PROCEDURES} onPick={() => {}} />);
+    const airports = [...html.matchAll(/class="select-airport">([^<]*)</g)].map((m) => m[1]!);
+    expect(airports).toHaveLength(PROCEDURES.length);
+    expect(airports).toEqual([...airports].sort());
+    expect(airports[0]).toBe('KAKO');
   });
 });

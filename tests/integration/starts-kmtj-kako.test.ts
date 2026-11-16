@@ -8,6 +8,8 @@ import { describe, expect, it } from 'vitest';
 import { NAVDATA, procedureById } from '../../src/procedures';
 import { buildScenario } from '../../src/sim/scenario/scenario';
 import type { FlightAnalysis } from '../../src/sim/scoring/analyze';
+import { signedAngleDiff, trueToMag } from '../../src/sim/geo/angles';
+import { distanceNm, initialBearingTrueDeg } from '../../src/sim/geo/geodesy';
 import { Flight } from '../sim/scripted';
 
 const failed = (a: FlightAnalysis) => a.items.filter((x) => x.status === 'fail').map((x) => x.id);
@@ -45,6 +47,7 @@ describe('KMTJ ILS 17: HAQHY and PAGRE arc starts', () => {
     engage(f, 98);
     f.tune(1, 112.4, 98); // JNC R-098 (NAV2 is on JNC too)
     f.send({ type: 'button', button: 'NAV' });
+    f.descendOrClimb(12000, -1000); // the assigned altitude, from 14000
     f.untilDme('JNC', 36.2, true, 900); // past HAQHY at 12000
     f.descendOrClimb(9400, -600);
     // Re-tune for the localizer ~3 NM before BRUUK (JNC 46 DME).
@@ -71,6 +74,7 @@ describe('KMTJ ILS 17: HAQHY and PAGRE arc starts', () => {
     engage(f, 117);
     f.tune(1, 117.1, 117); // MTJ, inbound on R-297
     f.send({ type: 'button', button: 'NAV' });
+    f.descendOrClimb(12000, -1000); // the assigned altitude, from 14000
     f.untilDme('MTJ', 15.3, false, 900);
     f.descendOrClimb(9400, -600); // reaching PAGRE: down to the arc altitude
     f.flyArc('MTJ', 14.8, 'R', 341); // the charted lead radial
@@ -141,8 +145,9 @@ describe('KAKO VOR 29: AKO 10 DME arc starts', () => {
     engage(f, 230);
     f.tune(1, 114.4, 230); // AKO (already on NAV1), inbound on R-050
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(6000, -500);
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
     f.untilDme('AKO', 10.5, false, 600);
+    f.descendOrClimb(6000, -500); // on the arc: down to its 6000
     f.flyArc('AKO', 10, 'R', 105); // lead 5° before R-110
     inboundAndFinal(f, 260);
     expect(f.until(() => f.progress.phase === 'ended', 600)).toBe(true);
@@ -158,8 +163,9 @@ describe('KAKO VOR 29: AKO 10 DME arc starts', () => {
     engage(f, 350);
     f.tune(1, 114.4, 350); // AKO, inbound on R-170
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(6000, -500);
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
     f.untilDme('AKO', 10.5, false, 600);
+    f.descendOrClimb(6000, -500); // on the arc: down to its 6000
     f.flyArc('AKO', 10, 'L', 115); // lead 5° before R-110
     inboundAndFinal(f, 320);
     expect(f.until(() => f.progress.phase === 'ended', 600)).toBe(true);
@@ -169,5 +175,164 @@ describe('KAKO VOR 29: AKO 10 DME arc starts', () => {
     expect(item(a, 'ident:AKO')).toMatchObject({ status: 'pass' });
     expect(item(a, 'fix-order')!.measured).toMatch(/GERON → AKO/);
     expect(item(a, 'decision')).toMatchObject({ status: 'pass' });
+  });
+});
+
+/** Steer in HDG mode straight for a fix (radar vectors / own navigation) until within `nm`. */
+function steerTo(f: Flight, fix: string, nm: number, maxS = 1200) {
+  const mv = f.sc.world.magVarEastDeg;
+  if (f.r.state.ap.lateral !== 'HDG') f.send({ type: 'button', button: 'HDG' });
+  for (let i = 0; i < maxS / 5; i++) {
+    if (f.distTo(fix) <= nm) return;
+    const brg = initialBearingTrueDeg(f.r.state.aircraft.position, f.sc.fixes[fix]!);
+    f.send({ type: 'headingBug', deg: Math.round(trueToMag(brg, mv)) });
+    f.wait(5);
+  }
+  expect.fail(`did not reach ${fix}`);
+}
+
+describe('offset starts: off the course, clear of other fixes', () => {
+  const cases: [string, string, string][] = [
+    ['kmtj-ils17', 'direct-haqhy', 'HAQHY'],
+    ['kmtj-ils17', 'over-mtj', 'MTJ'],
+    ['kmtj-ils17', 'direct-bruuk', 'BRUUK'],
+    ['kako-vor29', 'direct-ako-east', 'AKO'],
+  ];
+  for (const [proc, startId, target] of cases)
+    it(`${proc} ${startId}: at least 3 NM from every fix, the line to ${target} crosses none`, () => {
+      const sc = scenario(proc, startId, 'above');
+      const ac = sc.initial.aircraft.position;
+      const to = sc.fixes[target]!;
+      const legNm = distanceNm(ac, to);
+      const brg = initialBearingTrueDeg(ac, to);
+      for (const [name, pos] of Object.entries(sc.fixes)) {
+        expect(distanceNm(ac, pos), name).toBeGreaterThanOrEqual(3);
+        if (name === target || distanceNm(pos, to) < 3) continue;
+        // Cross-track distance of the fix from the start → target line, where it is abeam.
+        const d = distanceNm(ac, pos);
+        const off = (signedAngleDiff(initialBearingTrueDeg(ac, pos), brg) * Math.PI) / 180;
+        const along = d * Math.cos(off);
+        if (along > 0 && along < legNm)
+          expect(Math.abs(d * Math.sin(off)), name).toBeGreaterThan(2);
+      }
+    });
+
+  it('direct-haqhy arrives at HAQHY needing a turn of 60° or more onto the JNC R-098 feeder', () => {
+    const sc = scenario('kmtj-ils17', 'direct-haqhy', 'above');
+    const arrival = trueToMag(
+      initialBearingTrueDeg(sc.initial.aircraft.position, sc.fixes.HAQHY!),
+      sc.world.magVarEastDeg,
+    );
+    expect(Math.abs(signedAngleDiff(98, arrival))).toBeGreaterThanOrEqual(60);
+  });
+
+  it('direct-bruuk and direct-ako-east arrive nearly straight in, yet the reversal is required', () => {
+    for (const [proc, startId, fix, inbound] of [
+      ['kmtj-ils17', 'direct-bruuk', 'BRUUK', 168],
+      ['kako-vor29', 'direct-ako-east', 'AKO', 290],
+    ] as const) {
+      const sc = scenario(proc, startId, 'above');
+      const t = sc.procedure.transitions.find((x) => x.id === sc.start.transition)!;
+      expect(t.noPT).toBe(false);
+      const arrival = trueToMag(
+        initialBearingTrueDeg(sc.initial.aircraft.position, sc.fixes[fix]!),
+        sc.world.magVarEastDeg,
+      );
+      expect(Math.abs(signedAngleDiff(inbound, arrival))).toBeLessThan(45);
+    }
+  });
+});
+
+describe('KMTJ ILS 17: direct HAQHY from the south-west (offset start)', () => {
+  it('turn onto the feeder at HAQHY, no procedure turn (NoPT), ceiling above: 100%', () => {
+    const f = new Flight(scenario('kmtj-ils17', 'direct-haqhy', 'above'));
+    engage(f, 350);
+    f.descendOrClimb(12000, -1000); // the assigned altitude, from 14000
+    f.tune(1, 112.4, 98); // JNC R-098 FROM, the feeder
+    steerTo(f, 'HAQHY', 3);
+    f.send({ type: 'button', button: 'NAV' }); // captures R-098 at HAQHY: the turn onto the feeder
+    const dev = () => Math.abs(f.sensors.nav1.indication?.deviationDeg ?? 10);
+    expect(f.until(() => f.r.state.ap.lateral === 'NAV' && dev() < 1, 600)).toBe(true);
+    f.descendOrClimb(9400, -600);
+    f.untilDme('JNC', 43, true, 900);
+    f.send({ type: 'button', button: 'HDG' }, { type: 'headingBug', deg: 98 });
+    f.tune(1, 111.3, 168);
+    f.tune(2, 117.1);
+    f.send({ type: 'dmeSource', radio: 2 }, { type: 'button', button: 'APR' });
+    expect(f.until(() => f.r.state.ap.lateral === 'APR' && dev() < 0.5, 600)).toBe(true);
+    f.crossFix('BRUUK', 1.0, 600);
+    f.descendOrClimb(8100, -800);
+    expect(f.until(() => f.progress.phase === 'ended', 900)).toBe(true);
+    expect(f.progress.outcome).toBe('landed');
+    const a = f.analyze();
+    expect(failed(a), summary(a)).toEqual([]);
+    expect(item(a, 'fix-order')!.measured).toMatch(/BRUUK → WIDRU/);
+  });
+});
+
+describe('KMTJ ILS 17: direct BRUUK from the north-north-west (offset start)', () => {
+  it('turns outbound over BRUUK and flies the procedure turn: 100%', () => {
+    const f = new Flight(scenario('kmtj-ils17', 'direct-bruuk', 'above'));
+    engage(f, 200);
+    f.descendOrClimb(12500, -1000); // the assigned altitude, from 14500
+    f.tune(1, 111.3, 168); // I-MTJ
+    f.send({ type: 'dmeSource', radio: 2 }, { type: 'ident', radio: 2 }); // NAV2: MTJ 117.1
+    steerTo(f, 'BRUUK', 1.5);
+    f.crossFix('BRUUK', 1.0, 300);
+    // Arrived heading ~150, nearly inbound: the PT is still required. Turn right (the PT
+    // side) round to the outbound 348, a minute out, the 303 barb, back to 123.
+    f.turn(240, 330, 348);
+    f.wait(120); // room to descend to 9400 on the inbound leg
+    f.turn(303);
+    f.wait(60);
+    f.turn(33, 123);
+    f.send({ type: 'button', button: 'APR' });
+    const dev = () => Math.abs(f.sensors.nav1.indication?.deviationDeg ?? 10);
+    expect(f.until(() => f.r.state.ap.lateral === 'APR' && dev() < 0.5, 600)).toBe(true);
+    f.descendOrClimb(9400, -1000); // established inbound: down to 9400 to BRUUK
+    f.crossFix('BRUUK', 1.0, 600);
+    f.descendOrClimb(8100, -1000);
+    expect(f.until(() => f.progress.phase === 'ended', 900)).toBe(true);
+    expect(f.progress.outcome).toBe('landed');
+    const a = f.analyze();
+    expect(failed(a), summary(a)).toEqual([]);
+    expect(item(a, 'procedure-turn:BRUUK'), summary(a)).toMatchObject({ status: 'pass' });
+  });
+});
+
+describe('KAKO VOR 29: direct AKO from the east (offset start)', () => {
+  it('turns outbound over AKO and flies the barbed procedure turn: 100%', () => {
+    const f = new Flight(scenario('kako-vor29', 'direct-ako-east', 'above'));
+    engage(f, 210);
+    const toAko = () => Math.round((f.radialFrom('AKO').radial + 180) % 360);
+    f.tune(1, 114.4);
+    f.turn(toAko());
+    f.send({ type: 'course', radio: 1, deg: toAko() }, { type: 'button', button: 'NAV' });
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
+    f.crossFix('AKO', 1.0, 600);
+    f.descendOrClimb(6000, -500); // over the IAF: down to the 6000 PT altitude
+    // Arrived heading ~255, within 45° of the 290 inbound: the PT is still required.
+    // Right turn (toward the PT side, north) round to the outbound R-110: the turn ends
+    // north of it, so intercept it from the left at 30°, then a minute outbound.
+    f.send({ type: 'course', radio: 1, deg: 110 });
+    f.turn(360, 140);
+    f.send({ type: 'button', button: 'NAV' });
+    const dev = () => Math.abs(f.sensors.nav1.indication?.deviationDeg ?? 10);
+    expect(f.until(() => f.r.state.ap.lateral === 'NAV' && dev() < 1, 300)).toBe(true);
+    f.wait(60);
+    f.turn(65);
+    f.wait(60);
+    f.turn(155, 245);
+    f.send({ type: 'course', radio: 1, deg: 290 }, { type: 'button', button: 'NAV' });
+    expect(f.until(() => f.r.state.ap.lateral === 'NAV' && dev() < 1, 300)).toBe(true);
+    f.descendOrClimb(5300, -500);
+    f.crossFix('AKO', 1.0, 600);
+    f.send({ type: 'course', radio: 1, deg: 289 });
+    f.descendOrClimb(5100, -700);
+    expect(f.until(() => f.progress.phase === 'ended', 600)).toBe(true);
+    expect(f.progress.outcome).toBe('landed');
+    const a = f.analyze();
+    expect(failed(a), summary(a)).toEqual([]);
+    expect(item(a, 'procedure-turn:AKO'), summary(a)).toMatchObject({ status: 'pass' });
   });
 });
