@@ -10,6 +10,8 @@ import { activeMinimums, panelOf, type Scenario } from '../../sim/scenario/scena
 import { analyzeFlight } from '../../sim/scoring/analyze';
 import { clock } from '../../sim/scoring/rules/types';
 import { ChartViewer } from '../chart/ChartViewer';
+import { fitPlate, PLATE_CALIBRATION } from '../chart/overlay';
+import { PlateTrack } from '../chart/PlateTrack';
 import { finalProfile } from '../map/finalProfile';
 import { FinalProfileView } from '../map/FinalProfileView';
 import { PlanView } from '../map/PlanView';
@@ -84,6 +86,20 @@ export function Debrief({
     () => activeMinimums(scenario.procedure, scenario.options.gsOutOfService, scenario.start.iasKt),
     [scenario],
   );
+  const plateOverlay = useMemo(() => {
+    const cal = PLATE_CALIBRATION[scenario.procedure.id];
+    if (!cal) return null;
+    const fit = fitPlate(cal, scenario);
+    const track = a.samples.map((x) => ({ latDeg: x.latDeg, lonDeg: x.lonDeg }));
+    return {
+      errorNm: Math.max(...fit.residuals.map((r) => r.px)) / fit.scalePxPerNm,
+      overlay: {
+        width: cal.imageW,
+        height: cal.imageH,
+        content: <PlateTrack cal={cal} fit={fit} track={track} />,
+      },
+    };
+  }, [scenario, a.samples]);
   const fp = useMemo(
     () => finalProfile(scenario, mins, a.sequencer.route, a.samples),
     [scenario, mins, a],
@@ -179,7 +195,14 @@ export function Debrief({
             </>
           ) : (
             <div className="debrief-plate">
-              <ChartViewer procedure={scenario.procedure} />
+              {plateOverlay && (
+                <p className="debrief-overlay-note" data-testid="plate-track-note">
+                  Your track on the plan view (fitted to the plate within about{' '}
+                  {plateOverlay.errorNm.toFixed(1)} NM). Plates draw holds and procedure turns
+                  schematically.
+                </p>
+              )}
+              <ChartViewer procedure={scenario.procedure} overlay={plateOverlay?.overlay} />
             </div>
           )}
         </section>

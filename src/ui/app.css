@@ -68,6 +68,19 @@ body {
   gap: 10px;
   align-items: center;
 }
+.flight-clock {
+  font:
+    600 15px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  background: #000;
+  color: #f4f5f6;
+  border-radius: 4px;
+  padding: 3px 8px;
+  min-width: 6ch;
+  text-align: center;
+}
 .sim-controls > button,
 .da-banner button {
   font:
@@ -512,6 +525,16 @@ body {
   }
   .topbar .disclaimer {
     font-size: 12px;
+  }
+  .sim-controls {
+    gap: 6px;
+  }
+  .sim-controls > button {
+    padding: 5px 9px;
+  }
+  .flight-clock {
+    font-size: 13px;
+    padding: 3px 6px;
   }
   .debrief-main {
     grid-template-columns: minmax(460px, 1.2fr) minmax(320px, 1fr);

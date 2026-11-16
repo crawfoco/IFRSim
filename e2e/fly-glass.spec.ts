@@ -23,6 +23,9 @@ test('glass: vectors to the KCFO ILS 26, coupled down to DA, MINIMUMS alert', as
   await page.getByTestId('panel-glass').check();
   await page.getByTestId('fly').click();
   await expect(page.getByTestId('pfd')).toBeVisible();
+  // The flight clock counts sim time.
+  await expect(page.getByTestId('flight-clock')).toHaveText(/^00:0\d$/);
+  await expect(page.getByTestId('flight-clock')).not.toHaveText('00:00', { timeout: 5_000 });
   // The AP panel's own mode row is not shown on the glass panel.
   await expect(page.getByTestId('annunciator')).toHaveCount(0);
   await expect(page.getByTestId('pfd-ann-ap')).toHaveCount(0);

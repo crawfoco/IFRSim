@@ -38,6 +38,9 @@ test('a short flight ends in a debrief with score, plan, profile, timeline and r
   await expect(page.getByTestId('profile-view')).toHaveCount(0);
   await expect(page.getByTestId('final-profile')).toHaveCount(0);
   await expect(page.getByTestId('replay-play')).toHaveCount(0);
+  // KCFO's plate is calibrated: the flown track is drawn on its plan view.
+  await expect(page.getByTestId('plate-track')).toHaveCount(1);
+  await expect(page.getByTestId('plate-track-note')).toContainText('Your track on the plan view');
   await page.setViewportSize({ width: 1024, height: 768 });
   const plate = await page.getByTestId('chart').boundingBox();
   const column = await page.locator('.debrief-left').boundingBox();

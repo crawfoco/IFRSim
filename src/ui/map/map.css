@@ -250,7 +250,13 @@
   min-height: 300px;
 }
 /* The Plate tab shows the plate alone, filling the column. */
-.debrief-left > .debrief-plate {
+.debrief-left > .debrief-overlay-note {
+  margin: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.debrief-plate {
   flex: 1 1 auto;
   min-height: 0;
 }

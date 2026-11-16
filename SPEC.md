@@ -471,8 +471,8 @@ adds a short "How to fly" guide to the home screen and tidies the briefing scree
     - The technical chart notes (`b.notes`) go inside a `<details>` element labelled **"Details
       about this approach chart"**, closed by default and not remembered. The hints (`b.hints`)
       stay visible.
-    - **Runway at minimums** (added 2026-11-15): Random (hidden, the default and the V1
-      behaviour), In sight, or Not in sight. Restart and Fly again keep a chosen outcome and pick
+    - **Runway at minimums** (added 2026-11-15): **Surprise me** (random and hidden, the default
+      and the V1 behaviour), In sight, or Not in sight. Restart and Fly again keep a chosen outcome and pick
       a random one again.
     - The **HSI course hint** ("set CRS to the localizer course") is no longer on the briefing.
       The debrief notes it instead when it matters (story 12).
@@ -482,10 +482,24 @@ adds a short "How to fly" guide to the home screen and tidies the briefing scree
     - Flight screen: the briefing card there no longer shows the minimums or the missed
       approach; the student reads them from the plate. The go-around callout says only "Going
       missed.".
-    - The moving map takes the plate's place while it is on (issue #7). The steam AP mode row
-      shows the selected heading, e.g. "HDG 293°" (issue #8).
+    - The moving map takes the plate's place while it is on (issue #7). The steam AP strip shows
+      the selected heading (issue #8): its modes are on the left (the vertical mode reads just
+      "VS"), and on the right one selected-value window sits over each knob: heading, altitude,
+      and vertical speed (blank outside VS mode), in the knobs' order. Generic, after the common
+      GA autopilot layout of modes on the left and the selected value over its knob.
     - Debrief: the Plan / Plate toggle switches the whole left column: Plan shows the track,
       replay and profiles; Plate shows the plate alone.
+    - A **flight clock** in the top bar shows sim time since the start (it runs faster at 2× and
+      4×). The stopwatch is unchanged.
+    - **DME on glass stays separate from the CDI**, as on a typical integrated panel: DME SRC
+      chooses NAV1 or NAV2, and the bearing boxes show DME for their radios. Each nav source keeps
+      its own course; switching the CDI shows that radio's CRS, and the CRS knob then sets it.
+    - **Track on the plate:** the debrief's Plate tab draws the flown track on the plate's plan
+      view, for all six plates. Each plate is fitted to the sim's geography from four to eight
+      measured anchors (19.2–19.4 px per NM, north-up, every anchor within 0.2 NM); insets and
+      legs beyond a break symbol are masked. The plate's profile box is schematic, so no altitude
+      overlay. Calibrations live in `src/ui/chart/overlay.ts`; new plates are calibrated with
+      `npm run plate` (see docs/procedure-encoding.md and the `add-approach-plate` skill).
     - Debrief note (informational, no points), `loc-crs`: the autopilot was armed or coupled on
       a localizer while its CRS was more than 10° off the localizer course, for 5 s or more in
       total. It gives the setting, the localizer course and the effect (reverse sensing on the

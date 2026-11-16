@@ -29,11 +29,22 @@
   outline: 3px solid #2ec4f0;
   outline-offset: -3px;
 }
+.chart-layer {
+  position: relative;
+  width: 100%;
+  transform-origin: 0 0;
+}
 .chart-box img {
   display: block;
   width: 100%;
-  transform-origin: 0 0;
   user-select: none;
+  pointer-events: none;
+}
+.chart-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 .chart-tools {
@@ -65,4 +76,31 @@
   padding: 0 4px;
   min-width: 3.5em;
   text-align: right;
+}
+
+/* Flown track on the plate (debrief). Bright, with a white halo over the chart's black lines. */
+.plate-track,
+.plate-track-halo {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.plate-track {
+  stroke: #d1149a;
+  stroke-width: 2.2;
+}
+.plate-track-halo {
+  stroke: #fff;
+  stroke-width: 5;
+  opacity: 0.85;
+}
+.plate-track-start {
+  fill: #fff;
+  stroke: #d1149a;
+  stroke-width: 2;
+}
+.plate-track-end {
+  fill: #d1149a;
+  stroke: #fff;
+  stroke-width: 1.5;
 }

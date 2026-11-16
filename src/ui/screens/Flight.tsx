@@ -29,6 +29,7 @@ import '../panel/panel.css';
 import { PowerSelector } from '../panel/PowerSelector';
 import { Timer } from '../panel/Timer';
 import { BriefingCard } from './Briefing';
+import { formatFlightTime } from './flight-clock';
 import { useSim } from './useSim';
 
 const OUTCOME_TEXT = {
@@ -80,6 +81,14 @@ export function Flight({
           {TRAINING_DISCLAIMER}
         </p>
         <div className="sim-controls" role="group" aria-label="Simulation">
+          <span
+            className="flight-clock"
+            data-testid="flight-clock"
+            title="Flight time (sim time since the start; runs faster at 2× and 4×)"
+            aria-label={`Flight time ${formatFlightTime(state.tick)}`}
+          >
+            {formatFlightTime(state.tick)}
+          </span>
           <button
             type="button"
             data-testid="pause"

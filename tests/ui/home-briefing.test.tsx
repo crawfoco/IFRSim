@@ -89,8 +89,9 @@ describe('briefing choices', () => {
     <Briefing procedure={procedureById('kcfo-ils26')!} onBack={() => {}} onFly={() => {}} />,
   );
 
-  it('runway at minimums: random (default), in sight, or not in sight', () => {
+  it('runway at minimums: Surprise me (random, the default), in sight, or not in sight', () => {
     expect(html).toContain('Runway at minimums');
+    expect(html).toMatch(/data-testid="weather-random"[^>]*\/>Surprise me</);
     expect(html).toMatch(/<input[^>]*data-testid="weather-random"[^>]*checked=""/);
     expect(html).not.toMatch(/<input[^>]*data-testid="weather-above"[^>]*checked=""/);
     expect(html).toContain('data-testid="weather-above"');

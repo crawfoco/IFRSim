@@ -12,6 +12,9 @@
 .ap {
   display: grid;
   gap: 8px;
+  /* One column per AP knob; the strip's selected-value windows use the same columns. */
+  --ap-knob-col: 60px;
+  --ap-knob-gap: 12px;
 }
 .ap-row {
   display: flex;
@@ -19,20 +22,32 @@
   align-items: center;
 }
 .ap-annunciator {
-  display: grid;
-  /* AP, lateral, armed, vertical, armed, selected heading, selected altitude */
-  grid-template-columns: 34px 52px 52px 96px 64px 1fr auto;
-  gap: 6px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  gap: 6px;
   background: #000;
   border-radius: 4px;
-  padding: 6px 8px;
+  /* No right padding: the value windows line up with the knob columns below. */
+  padding: 6px 0 6px 8px;
   min-height: 22px;
   font:
     700 14px ui-monospace,
     'Cascadia Mono',
     Consolas,
     monospace;
+}
+.ap-modes {
+  display: grid;
+  /* AP, lateral, armed, vertical, armed */
+  grid-template-columns: 34px 52px 52px 52px 76px;
+  gap: 6px;
+  align-items: center;
+}
+.ap-sel {
+  display: grid;
+  grid-template-columns: repeat(3, var(--ap-knob-col));
+  gap: var(--ap-knob-gap);
 }
 .ann {
   white-space: nowrap;
@@ -51,7 +66,7 @@
 }
 .ann-sel {
   color: #2ec4f0;
-  text-align: right;
+  text-align: center;
 }
 .ap-buttons {
   flex: 1;
@@ -109,8 +124,10 @@
   background: #22262c;
 }
 .ap-knobs {
-  display: flex;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, var(--ap-knob-col));
+  gap: var(--ap-knob-gap);
+  justify-items: center;
 }
 
 .knob {

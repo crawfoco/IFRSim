@@ -19,7 +19,7 @@ import {
 import { ChartViewer } from '../chart/ChartViewer';
 
 const WEATHER_PICKS: { id: WeatherPick; name: string }[] = [
-  { id: 'random', name: 'Random (hidden)' },
+  { id: 'random', name: 'Surprise me' },
   { id: 'above', name: 'In sight' },
   { id: 'below', name: 'Not in sight' },
 ];

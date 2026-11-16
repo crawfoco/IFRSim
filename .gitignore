@@ -12,6 +12,7 @@ data/raw/
 # Locally installed Claude skill packs (third-party; reinstall from skills-lock.json)
 .claude/skills/*
 !.claude/skills/bug-triage/
+!.claude/skills/add-approach-plate/
 
 # Local planning notes (plan, task list, prompts); not published
 tasks/

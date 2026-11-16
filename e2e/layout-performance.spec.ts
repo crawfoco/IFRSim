@@ -61,6 +61,17 @@ for (const vp of [
         await expect(page.getByTestId('pfd-dme')).toBeVisible();
         await expect(page.getByTestId('dme')).toHaveCount(0);
       } else {
+        // Each selected-value window on the AP strip sits over its knob.
+        const centre = async (id: string) => {
+          const b = (await page.getByTestId(id).boundingBox())!;
+          return b.x + b.width / 2;
+        };
+        for (const [win, knob] of [
+          ['ann-hdg-sel', 'knob-hdg'],
+          ['ann-alt-sel', 'knob-alt'],
+          ['ann-vs-sel', 'knob-vs'],
+        ] as const)
+          expect(Math.abs((await centre(win)) - (await centre(knob))), win).toBeLessThanOrEqual(2);
         await expect(page.getByTestId('dme')).toBeInViewport({ ratio: 1 });
         await expect(page.getByTestId('dme-value')).toBeVisible();
       }

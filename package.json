@@ -19,7 +19,8 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "navdata:download": "tsx scripts/navdata/download.ts",
-    "navdata": "tsx scripts/navdata/run-extract.ts"
+    "navdata": "tsx scripts/navdata/run-extract.ts",
+    "plate": "tsx scripts/plates/plate.ts"
   },
   "dependencies": {
     "react": "^19.3.1",
