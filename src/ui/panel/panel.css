@@ -320,3 +320,25 @@
   outline: 3px solid #2ec4f0;
   outline-offset: 2px;
 }
+
+/* Tablet landscape: two radios must fit side by side in the 700 px panel with
+   room to spare for wider fallback fonts (e.g. DejaVu on Linux), so the
+   columns may shrink and the radio parts sit a little tighter. */
+@media (max-width: 1199px) {
+  .radios {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .radio {
+    gap: 4px;
+  }
+  .radio-freq {
+    padding: 3px 5px;
+  }
+  .radio-active,
+  .radio-standby {
+    font-size: 16px;
+  }
+  .radio-swap {
+    padding: 6px 7px;
+  }
+}

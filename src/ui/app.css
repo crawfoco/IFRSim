@@ -59,8 +59,10 @@ body {
 .topbar .disclaimer {
   margin: 0;
   font-size: 13px;
+  min-width: 0; /* wraps first when space is short (e.g. wider fallback fonts) */
 }
 .sim-controls {
+  flex-shrink: 0; /* never squeeze the speed buttons under Restart */
   margin-left: auto;
   display: flex;
   gap: 10px;

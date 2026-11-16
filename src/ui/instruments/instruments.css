@@ -150,6 +150,7 @@
 }
 .outside svg {
   display: block;
+  box-sizing: border-box; /* keep the 1 px border inside the 100% width */
   width: 100%;
   height: 84px;
   border-radius: 6px;
