@@ -100,7 +100,12 @@ describe('KLAA RNAV 18 on the GPS', () => {
     f.descendOrClimb(5500, -500);
     f.send({ type: 'button', button: 'APR' });
     f.wait(0.5);
-    expect(f.r.state.ap.gsArmed).toBe(false); // LNAV: no glidepath to arm
+    // Before the annunciation the GPS does not know WAAS is out: APR arms the glidepath as usual.
+    expect(f.r.state.ap.gsArmed).toBe(true);
+    expect(f.until(() => f.sensors.gps.annunciation !== null, 900)).toBe(true);
+    expect(f.sensors.gps.annunciation).toBe('LNAV');
+    f.wait(1);
+    expect(f.r.state.ap.gsArmed).toBe(false); // LNAV: the glidepath arm is dropped
     expect(f.until(() => f.sensors.gps.activeWaypoint === 'RW18')).toBe(true);
     expect(f.sensors.gps.annunciation).toBe('LNAV');
     // Step down to the LNAV MDA (4260) once past the FAF.

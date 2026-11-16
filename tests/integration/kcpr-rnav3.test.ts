@@ -111,7 +111,12 @@ describe('KCPR RNAV 3 on the GPS', () => {
     f.descendOrClimb(7000, -500);
     f.send({ type: 'button', button: 'APR' });
     f.wait(0.5);
-    expect(f.r.state.ap.gsArmed).toBe(false); // LNAV: no glidepath to arm
+    // Before the annunciation the GPS does not know WAAS is out: APR arms the glidepath as usual.
+    expect(f.r.state.ap.gsArmed).toBe(true);
+    expect(f.until(() => f.sensors.gps.annunciation !== null, 900)).toBe(true);
+    expect(f.sensors.gps.annunciation).toBe('LNAV');
+    f.wait(1);
+    expect(f.r.state.ap.gsArmed).toBe(false); // LNAV: the glidepath arm is dropped
     expect(f.until(() => f.sensors.gps.activeWaypoint === 'NOPTE', 900)).toBe(true);
     expect(f.sensors.gps.annunciation).toBe('LNAV');
     // Past the FAF: down to the NOPTE step-down (6240), then past NOPTE to the MDA (5780).

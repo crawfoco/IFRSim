@@ -160,17 +160,54 @@ const roundUp100 = (ft: number) => Math.ceil(ft / 100) * 100;
 const roundDown100 = (ft: number) => Math.floor(ft / 100) * 100;
 const fmtFt = (ft: number) => ft.toLocaleString('en-US');
 
-/** Ceiling and visibility either side of the minimums, so the outcome at DA/MDA is clear. */
-function layers(min: ActiveMinimums, thresholdElevFt: number) {
-  const hat = min.altFt - thresholdElevFt;
+/**
+ * Ceiling and visibility either side of the minimums, so the outcome at DA/MDA is clear. With
+ * several possible minimums (RNAV: with or without WAAS, hidden until the annunciation) the
+ * layers clear all of them, so the reported weather does not give the WAAS outcome away.
+ */
+function layers(mins: ActiveMinimums[], thresholdElevFt: number) {
+  const each = mins.map((min) => {
+    const hat = min.altFt - thresholdElevFt;
+    return {
+      above: {
+        ceilingFtAgl: roundUp100(hat) + 300,
+        visibilitySm: Math.max(3, min.visibilitySm * 2),
+      },
+      below: {
+        ceilingFtAgl: Math.max(100, roundUp100(hat) - 300),
+        // Half the minimum visibility, as a reportable value (down to a quarter mile).
+        visibilitySm: Math.max(0.25, Math.floor((min.visibilitySm / 2) * 4) / 4),
+      },
+    };
+  });
   return {
-    above: { ceilingFtAgl: roundUp100(hat) + 300, visibilitySm: Math.max(3, min.visibilitySm * 2) },
+    above: {
+      ceilingFtAgl: Math.max(...each.map((l) => l.above.ceilingFtAgl)),
+      visibilitySm: Math.max(...each.map((l) => l.above.visibilitySm)),
+    },
     below: {
-      ceilingFtAgl: Math.max(100, roundUp100(hat) - 300),
-      // Half the minimum visibility, as a reportable value (down to a quarter mile).
-      visibilitySm: Math.max(0.25, Math.floor((min.visibilitySm / 2) * 4) / 4),
+      ceilingFtAgl: Math.min(...each.map((l) => l.below.ceilingFtAgl)),
+      visibilitySm: Math.min(...each.map((l) => l.below.visibilitySm)),
     },
   };
+}
+
+/**
+ * The minimums the learner plans with: on an RNAV approach, the best line the plate publishes
+ * (whether WAAS is available stays hidden until the GPS annunciates the line).
+ */
+export function plannedMinimums(p: Procedure, gsOutOfService: boolean, iasKt: number) {
+  return activeMinimums(p, gsOutOfService, iasKt, true);
+}
+
+/**
+ * The minimums the panel shows (glass minimums box and alert): the planned ones until the GPS
+ * has annunciated the line (`revealed`), then the ones actually in force.
+ */
+export function shownMinimums(sc: Scenario, iasKt: number, revealed: boolean): ActiveMinimums {
+  const p = sc.procedure;
+  if (p.rnav && !revealed) return plannedMinimums(p, sc.options.gsOutOfService, iasKt);
+  return activeMinimums(p, sc.options.gsOutOfService, iasKt, waasOf(sc.options));
 }
 
 /**
@@ -179,12 +216,12 @@ function layers(min: ActiveMinimums, thresholdElevFt: number) {
  * above the base.
  */
 export function weatherFor(
-  min: ActiveMinimums,
+  min: ActiveMinimums | ActiveMinimums[],
   thresholdElevFt: number,
   ceiling: Ceiling,
   startAltFt: number,
 ): Weather {
-  const l = layers(min, thresholdElevFt);
+  const l = layers(Array.isArray(min) ? min : [min], thresholdElevFt);
   const actual = l[ceiling];
   const baseFtMsl = thresholdElevFt + actual.ceilingFtAgl;
   const highBase = thresholdElevFt + l.above.ceilingFtAgl;
@@ -259,7 +296,10 @@ export function buildScenario(
     },
     world,
   );
-  const min = activeMinimums(procedure, options.gsOutOfService, start.iasKt, waasOf(options));
+  // RNAV: the weather clears the minimums with and without WAAS (the outcome stays hidden).
+  const mins = procedure.rnav
+    ? [true, false].map((w) => activeMinimums(procedure, options.gsOutOfService, start.iasKt, w))
+    : [activeMinimums(procedure, options.gsOutOfService, start.iasKt, waasOf(options))];
   return {
     procedure,
     start,
@@ -276,7 +316,7 @@ export function buildScenario(
       trueAlignmentDeg: rwy.trueAlignmentDeg,
     },
     circlingTo: isCirclingOnly(procedure) ? airport.position : null,
-    weather: weatherFor(min, thresholdElevationFt, options.ceiling, start.altitudeFt),
+    weather: weatherFor(mins, thresholdElevationFt, options.ceiling, start.altitudeFt),
   };
 }
 
@@ -316,7 +356,8 @@ export interface Briefing {
 
 export function briefing(sc: Scenario): Briefing {
   const p = sc.procedure;
-  const min = activeMinimums(p, sc.options.gsOutOfService, sc.start.iasKt, waasOf(sc.options));
+  // The planned minimums: on RNAV, WAAS availability is revealed only by the annunciation.
+  const min = plannedMinimums(p, sc.options.gsOutOfService, sc.start.iasKt);
   const hasGs = !!sc.final.glideslope;
   return {
     title: `${p.airport} ${p.name}`,

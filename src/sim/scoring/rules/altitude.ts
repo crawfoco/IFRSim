@@ -37,8 +37,12 @@ export function segmentMinimum(seq: SequencerState, sc: Scenario): number | null
       if (seq.fafTick === null) return leg.fafAltFt;
       const precision = !!leg.glideslope && !sc.options.gsOutOfService;
       if (precision) return null;
+      // RNAV on a vertical line (LPV, LNAV/VNAV): LNAV-only step-downs do not apply.
+      const vertical =
+        !!sc.procedure.rnav &&
+        activeMinimums(sc.procedure, false, 100, waasOf(sc.options)).kind === 'DA';
       const passed = new Set(seq.passages.filter((p) => p.tick >= seq.fafTick!).map((p) => p.fix));
-      const next = leg.stepDowns.find((sd) => !passed.has(sd.fix));
+      const next = leg.stepDowns.find((sd) => !passed.has(sd.fix) && !(vertical && sd.lnavOnly));
       return next ? next.minAltFt : null;
     }
   }

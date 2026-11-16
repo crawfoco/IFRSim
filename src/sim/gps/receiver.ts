@@ -372,6 +372,9 @@ function legStartCourse(leg: GpsLeg, from: LatLon): number | null {
 }
 
 /** Fly-by lead distance: R·tan(Δ/2), for course changes up to 120°. */
+/** Farther than this from a fly-by arc, the turn is not being flown: the GPS leaves it. */
+const FLY_BY_OFF_ARC_NM = 0.5;
+
 function anticipationNm(dtk: number, next: number | null, gsKt: number): number {
   if (next === null) return 0;
   const delta = Math.abs(signedAngleDiff(next, dtk));
@@ -484,9 +487,20 @@ export function stepGps(
   };
 
   if (gps.flyBy) {
-    // The turn is done once the track is within a few degrees of the new leg's course.
-    if (Math.abs(signedAngleDiff(trackTrueDeg, gps.flyBy.toCourseTrueDeg)) < 2)
-      return { ...gps, flyBy: null, legStart: p };
+    // The turn is done once the track is within a few degrees of the new leg's course, or
+    // once the aircraft is past the arc's exit point along the new leg, or well off the arc
+    // (a turn not flown, e.g. on HDG: the GPS then guides on the new leg).
+    const fb = gps.flyBy;
+    const aligned = Math.abs(signedAngleDiff(trackTrueDeg, fb.toCourseTrueDeg)) < 2;
+    const s = fb.turn === 'R' ? 1 : -1;
+    const exit = destination(fb.centre, normalize360(fb.toCourseTrueDeg - 90 * s), fb.radiusNm);
+    const d = distanceNm(exit, p);
+    const beyondExit =
+      d > 0 &&
+      Math.cos(signedAngleDiff(initialBearingTrueDeg(exit, p), fb.toCourseTrueDeg) * DEG) * d > 0;
+    // Clearly off the arc (not turning with it): guide on the new leg from here.
+    const offArc = Math.abs(distanceNm(fb.centre, p) - fb.radiusNm) > FLY_BY_OFF_ARC_NM;
+    if (aligned || beyondExit || offArc) return { ...gps, flyBy: null, legStart: p };
     return gps;
   }
 
@@ -639,8 +653,11 @@ export function gpsReading(
   }
   const adv = !!world?.db.advisoryVertical && world.waasAvailable;
   const best = world ? availableLine(world) : null;
+  // Until the GPS annunciates the line, it is the best published one (WAAS integrity is only
+  // known then): the GP shows and APR arms it whether or not WAAS turns out to be available.
+  const expected = line === null ? (world?.db.lines[0] ?? null) : best;
   const vnavAvailable =
-    !!plan && gps.active && gps.leg < plan.missedLeg && !!best && lineHasGlidepath(best);
+    !!plan && gps.active && gps.leg < plan.missedLeg && !!expected && lineHasGlidepath(expected);
   const annunciation =
     line === null ? null : (line === 'LNAV' || line === 'LP') && adv ? `${line}+V` : line;
   // The coupled glidepath is available as soon as the approach is active (APR arms GP; it

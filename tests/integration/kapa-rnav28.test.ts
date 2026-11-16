@@ -101,7 +101,12 @@ describe('KAPA RNAV 28 on the GPS', () => {
     intermediate(f);
     f.send({ type: 'button', button: 'APR' });
     f.wait(0.5);
-    expect(f.r.state.ap.gsArmed).toBe(false); // LNAV: no glidepath to arm
+    // Before the annunciation the GPS does not know WAAS is out: APR arms the glidepath as usual.
+    expect(f.r.state.ap.gsArmed).toBe(true);
+    expect(f.until(() => f.sensors.gps.annunciation !== null, 900)).toBe(true);
+    expect(f.sensors.gps.annunciation).toBe('LNAV');
+    f.wait(1);
+    expect(f.r.state.ap.gsArmed).toBe(false); // LNAV: the glidepath arm is dropped
     expect(f.until(() => f.sensors.gps.activeWaypoint === 'FEGIB', 900)).toBe(true);
     expect(f.sensors.gps.annunciation).toBe('LNAV');
     // Past the FAF: down to the FEGIB step-down (6940), then past FEGIB to the MDA (6260).

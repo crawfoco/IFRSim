@@ -1,7 +1,7 @@
 /**
  * RNAV (GPS) rules (V3):
  * - gps-approach-active: the approach was loaded with the cleared transition (or vectors to
- *   final) and active before the FAF;
+ *   final) and active before the IAF (vectors: before intercepting the final course);
  * - gps-approach-mode: the FAF crossed with the CDI on the GPS in approach mode (APR scaling);
  * - glidepath: GP deviation within half scale inside the FAF, above the DA (LPV, LNAV/VNAV);
  * - missed-sequencing: after GA, the GPS sequenced into the missed approach (SUSP) within 30 s
@@ -17,6 +17,7 @@ import { GS_FULL_SCALE_DEG, gsIndication } from '../../nav/gs';
 import { lineHasGlidepath } from '../../gps/flightplan';
 import { activeMinimums, waasOf } from '../../scenario/scenario';
 import { distanceNm } from '../../geo/geodesy';
+import { coursePosition, established } from '../geometry';
 import { clock, type Rule, type ScoreItem } from './types';
 
 /** The transition a start is cleared for, as the GPS names it. */
@@ -79,36 +80,79 @@ function stepAtFaf(s: AtFaf, ctx: Parameters<Rule<AtFaf>['step']>[1]): AtFaf {
   };
 }
 
-export const gpsApproachActive: Rule<AtFaf> = {
-  init: atFafInit,
-  step: stepAtFaf,
+interface Activation {
+  /** Judged once: at the IAF, or (vectors) when established on the final course. */
+  done: boolean;
+  tick: number;
+  /** Where it was judged ("WEYYI", "the final course", "the FAF"). */
+  where: string;
+  loaded: string | null;
+  active: boolean;
+}
+
+/** The IAF of the cleared transition (where the GPS route starts), or null for vectors. */
+function clearedIaf(sc: Parameters<Rule<Activation>['step']>[1]['scenario']): string | null {
+  const t = sc.start.transition;
+  if (!t || !sc.world.gps) return null;
+  return sc.world.gps.db.transitions.find((x) => x.id === t)?.fix ?? null;
+}
+
+/**
+ * Loaded with the cleared transition and active before the IAF, or, on vectors, before
+ * intercepting the final course (SPEC story 17). The FAF is the last point it is judged at.
+ */
+export const gpsApproachActive: Rule<Activation> = {
+  init: () => ({ done: false, tick: 0, where: '', loaded: null, active: false }),
+  step(s, { scenario, state, seq }) {
+    if (s.done || !scenario.world.gps) return s;
+    const iaf = clearedIaf(scenario);
+    let where: string | null = null;
+    if (iaf && seq.passages.some((p) => p.fix === iaf)) where = iaf;
+    else if (!iaf) {
+      const ac = { position: state.aircraft.position, altitudeFt: state.aircraft.altitudeFt };
+      const pos = coursePosition(scenario.final.course, ac, scenario.world.navdata);
+      if (established(pos, state.aircraft.headingTrueDeg, 1.0)) where = 'the final course';
+    }
+    if (where === null && seq.fafTick !== null) where = 'the FAF';
+    if (where === null) return s;
+    return {
+      done: true,
+      tick: state.tick,
+      where,
+      loaded: state.gps.loaded?.transition ?? null,
+      active: state.gps.active,
+    };
+  },
   finish(s, last): ScoreItem[] {
     const sc = last.scenario;
     if (!sc.world.gps) return [];
     const want = clearedTransition(sc.start.transition);
     const names = Object.fromEntries(sc.world.gps.db.transitions.map((t) => [t.id, t.name]));
-    const title = `GPS approach loaded via ${transitionName(want, names)} and active before the FAF`;
+    const iaf = clearedIaf(sc);
+    const before = iaf ? iaf : 'intercepting the final course';
+    const title = `GPS approach loaded via ${transitionName(want, names)} and active before ${before}`;
     if (!s.done)
       return [
         {
           id: 'gps-approach-active',
           title,
           status: 'info',
-          measured: 'The FAF was not reached.',
+          measured: `${iaf ?? 'The final course'} was not reached.`,
         },
       ];
     const ok = s.active && s.loaded === want;
+    const at = `at ${s.where} (${clock(s.tick)})`;
     return [
       {
         id: 'gps-approach-active',
         title,
         status: ok ? 'pass' : 'fail',
         measured: ok
-          ? `Loaded and active at the FAF (${clock(s.tick)})`
+          ? `Loaded and active ${at}`
           : s.loaded === null
-            ? `No approach loaded at the FAF (${clock(s.tick)})`
+            ? `No approach loaded ${at}`
             : !s.active
-              ? `Loaded but not activated at the FAF (${clock(s.tick)})`
+              ? `Loaded but not activated ${at}`
               : `Loaded via ${transitionName(s.loaded, names)}, cleared via ${transitionName(want, names)}`,
         ...(ok ? {} : { tick: s.tick }),
       },

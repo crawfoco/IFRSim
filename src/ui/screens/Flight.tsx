@@ -5,7 +5,7 @@ import { TIME_SCALES, type LoggedCommand } from '../../sim/recorder';
 import { buildRoute } from '../../sim/scoring/sequencer';
 import { PlanView } from '../map/PlanView';
 import '../map/map.css';
-import { activeMinimums, panelOf, type Scenario, waasOf } from '../../sim/scenario/scenario';
+import { panelOf, type Scenario, shownMinimums } from '../../sim/scenario/scenario';
 import { isVloc, radioOf } from '../../sim/nav/source';
 import { Pfd } from '../instruments/glass/Pfd';
 import { pfdData } from '../instruments/glass/pfd-data';
@@ -85,15 +85,12 @@ export function Flight({
     if (glass && minsTick !== null) playMinimumsChime();
   }, [glass, minsTick]);
   const iasCmdKt = state.panel.iasCmdKt;
+  // RNAV: whether WAAS is available shows only once the GPS annunciates the line. The
+  // annunciation stays until the missed approach, when the outcome is known anyway.
+  const revealed = sensors.gps.annunciation !== null || progress.phase !== 'approach';
   const minimums = useMemo(
-    () =>
-      activeMinimums(
-        scenario.procedure,
-        scenario.options.gsOutOfService,
-        iasCmdKt,
-        waasOf(scenario.options),
-      ),
-    [scenario, iasCmdKt],
+    () => shownMinimums(scenario, iasCmdKt, revealed),
+    [scenario, iasCmdKt, revealed],
   );
 
   return (
