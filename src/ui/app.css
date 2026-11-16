@@ -461,13 +461,26 @@ body {
   margin: 8px 12px;
   font-size: 13px;
 }
+/* Flight: the moving map replaces the plate while it is on, using all of its room. */
 .moving-map {
   padding: 6px 12px;
-  border-bottom: 1px solid var(--line);
-  flex: 0 0 auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
 }
 .moving-map .plan {
-  max-height: 38vh;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+.plate-slot {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.plate-slot[hidden] {
+  display: none;
 }
 .sim-controls > button.on {
   background: #2ec4f0;

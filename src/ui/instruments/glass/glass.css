@@ -96,3 +96,68 @@
   font-size: 14px;
   font-weight: 700;
 }
+
+/* Mode annunciator bar */
+.g-modebar {
+  fill: var(--g-black);
+  stroke: var(--g-line);
+  stroke-width: 1;
+}
+.g-modebar-sep {
+  stroke: var(--g-line);
+  stroke-width: 1;
+}
+.g-ann-active {
+  fill: var(--g-active);
+  font-size: 14px;
+  font-weight: 700;
+}
+.g-ann-armed {
+  fill: var(--g-armed);
+  font-size: 14px;
+  font-weight: 700;
+}
+/* A mode that changes flashes for about 3 s (each field remounts when its text changes). */
+.g-flash {
+  animation: g-flash 0.5s steps(1, end) 6;
+}
+@keyframes g-flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* No blinking: a steady highlight for the same 3 s. */
+  .g-flash {
+    animation: g-flash-steady 3s steps(1, end) 1;
+  }
+}
+@keyframes g-flash-steady {
+  0% {
+    fill: var(--g-warn);
+  }
+  100% {
+    fill: inherit;
+  }
+}
+
+/* Minimums */
+.g-mins-text {
+  fill: var(--g-warn);
+  font-size: 12px;
+  font-weight: 700;
+}
+.g-mins-alert {
+  fill: var(--g-black);
+  stroke: var(--g-warn);
+  stroke-width: 1.5;
+}
+.g-mins-alert-text {
+  fill: var(--g-warn);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}

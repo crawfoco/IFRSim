@@ -103,6 +103,25 @@ describe('panel rendering', () => {
     expect(html).toContain('7,000 FT');
   });
 
+  it('shows the selected heading (bug) as a number, AP on or off', () => {
+    const off = renderToStaticMarkup(
+      <ApPanel state={run(s0, { type: 'headingBug', deg: 293 })} send={noop} />,
+    );
+    expect(off).toMatch(/data-testid="ann-hdg-sel"[^>]*>HDG 293°</);
+    const on = renderToStaticMarkup(
+      <ApPanel
+        state={run(s0, { type: 'button', button: 'AP' }, { type: 'headingBug', deg: 5 })}
+        send={noop}
+      />,
+    );
+    expect(on).toMatch(/data-testid="ann-hdg-sel"[^>]*>HDG 005°</);
+    expect(
+      renderToStaticMarkup(
+        <ApPanel state={run(s0, { type: 'headingBug', deg: 360 })} send={noop} />,
+      ),
+    ).toMatch(/data-testid="ann-hdg-sel"[^>]*>HDG 360°</);
+  });
+
   it('the HDG knob tells the learner a double-click syncs the bug', () => {
     const html = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
     expect(html).toMatch(

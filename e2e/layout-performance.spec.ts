@@ -56,6 +56,14 @@ for (const vp of [
         await expect(page.getByTestId(id)).toBeInViewport();
       }
       if (panel === 'glass') await expect(page.getByTestId('pfd')).toBeInViewport({ ratio: 1 });
+      // The DME readout: the PFD's DME window on glass, the separate DME unit on steam.
+      if (panel === 'glass') {
+        await expect(page.getByTestId('pfd-dme')).toBeVisible();
+        await expect(page.getByTestId('dme')).toHaveCount(0);
+      } else {
+        await expect(page.getByTestId('dme')).toBeInViewport({ ratio: 1 });
+        await expect(page.getByTestId('dme-value')).toBeVisible();
+      }
       await page.screenshot({ path: `${SHOT_DIR}/flight-${panel}-${vp.name}.png` });
     });
 }

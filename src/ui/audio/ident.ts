@@ -1,15 +1,15 @@
 /** Plays a navaid's Morse ident as a 1020 Hz tone with the Web Audio API (no assets). */
 import { dotMs, morseSchedule } from '../../sim/nav/morse';
+import { audioContext } from './context';
 
 const TONE_HZ = 1020;
-let ctx: AudioContext | null = null;
 
 /** Play the ident once; returns its duration in ms. Silently does nothing without audio. */
 export function playIdent(ident: string, wpm = 7): number {
   const { tones, units } = morseSchedule(ident);
   const unit = dotMs(wpm) / 1000;
   try {
-    ctx ??= new AudioContext();
+    const ctx = audioContext();
     const t0 = ctx.currentTime + 0.05;
     const gain = ctx.createGain();
     gain.gain.value = 0;

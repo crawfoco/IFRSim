@@ -1,6 +1,6 @@
 /** Flight screen: briefing and plate on the left, instrument panel and autopilot on the right. */
 import { BUILD_STAMP, TRAINING_DISCLAIMER } from '../../app-info';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { TIME_SCALES, type LoggedCommand } from '../../sim/recorder';
 import { buildRoute } from '../../sim/scoring/sequencer';
 import { PlanView } from '../map/PlanView';
@@ -8,6 +8,8 @@ import '../map/map.css';
 import { activeMinimums, panelOf, type Scenario } from '../../sim/scenario/scenario';
 import { Pfd } from '../instruments/glass/Pfd';
 import { pfdData } from '../instruments/glass/pfd-data';
+import { minimumsAlertOn, minimumsEventTick, modeBarFields } from '../instruments/glass/modes';
+import { playMinimumsChime } from '../audio/alert';
 import { ChartViewer } from '../chart/ChartViewer';
 import { Altimeter } from '../instruments/Altimeter';
 import { Asi } from '../instruments/Asi';
@@ -53,6 +55,11 @@ export function Flight({
   const cdi2 = courseDeviation(sensors.nav2);
   const route = useMemo(() => buildRoute(scenario), [scenario]);
   const glass = panelOf(scenario.options) === 'glass';
+  // Glass: the aural minimums alert, once per "Minimums." event.
+  const minsTick = minimumsEventTick(progress);
+  useEffect(() => {
+    if (glass && minsTick !== null) playMinimumsChime();
+  }, [glass, minsTick]);
   const iasCmdKt = state.panel.iasCmdKt;
   const minimums = useMemo(
     () => activeMinimums(scenario.procedure, scenario.options.gsOutOfService, iasCmdKt),
@@ -171,7 +178,11 @@ export function Flight({
             />
           </div>
         )}
-        <ChartViewer procedure={scenario.procedure} />
+        {/* The map takes the plate's place while it is on; the plate is only hidden, so its
+            zoom and pan are kept for when the map is switched off. */}
+        <div className="plate-slot" hidden={state.panel.mapOn}>
+          <ChartViewer procedure={scenario.procedure} />
+        </div>
       </aside>
 
       <main className="panel-pane">
@@ -187,7 +198,11 @@ export function Flight({
         />
         {glass ? (
           <div className="glass-row">
-            <Pfd data={pfdData(state, sensors, scenario.world, minimums)} />
+            <Pfd
+              data={pfdData(state, sensors, scenario.world, minimums)}
+              modes={modeBarFields(state.ap)}
+              minimumsAlert={minimumsAlertOn(progress, state.tick)}
+            />
             <div className="glass-side">
               <GlassControls state={state} send={send} />
               <div className="glass-knobs">
@@ -213,7 +228,7 @@ export function Flight({
             </div>
             <Altimeter altitudeFt={state.aircraft.altitudeFt} />
             <div className="dme-timer">
-              <DmeUnit nm={sensors.dmeNm} state={state} send={send} readout={false} />
+              <DmeUnit nm={sensors.dmeNm} state={state} send={send} />
               <Timer state={state} send={send} />
             </div>
             <div className="inst-with-knob">
@@ -224,7 +239,7 @@ export function Flight({
           </div>
         )}
         <div className="controls-row">
-          <ApPanel state={state} send={send} />
+          <ApPanel state={state} send={send} annunciator={!glass} />
           <PowerSelector state={state} send={send} />
         </div>
       </main>

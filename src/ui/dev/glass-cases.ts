@@ -1,4 +1,5 @@
 /** Dev gallery: representative Glass PFD states (built directly, not from a flight). */
+import type { ModeBarFields } from '../instruments/glass/modes';
 import { BARO_IN_HG, type PfdData } from '../instruments/glass/pfd-data';
 
 type Overrides = {
@@ -37,8 +38,37 @@ function pfd(o: Overrides): PfdData {
   };
 }
 
-export const GLASS_CASES: { title: string; data: PfdData }[] = [
-  { title: 'Level cruise, 8,000 ft, 100 KIAS', data: pfd({}) },
+const modes = (m: Partial<ModeBarFields>): ModeBarFields => ({
+  ap: true,
+  lateral: '',
+  lateralArmed: '',
+  vertical: '',
+  verticalArmed: '',
+  ...m,
+});
+
+export const GLASS_CASES: {
+  title: string;
+  data: PfdData;
+  modes?: ModeBarFields;
+  minimumsAlert?: boolean;
+}[] = [
+  {
+    title: 'Level cruise, 8,000 ft, 100 KIAS; HDG, ALT, LOC armed',
+    data: pfd({}),
+    modes: modes({ lateral: 'HDG', lateralArmed: 'LOC', vertical: 'ALT', verticalArmed: 'GS' }),
+  },
+  {
+    title: 'At DA: MINIMUMS alert',
+    data: pfd({
+      speed: { iasKt: 90 },
+      alt: { altitudeFt: 5689, selectedAltFt: 7200, minimums: { kind: 'DA', altFt: 5689 } },
+      vsi: { vsFpm: -480 },
+      hsi: { glideslope: { dots: 0.1, flag: false } },
+    }),
+    modes: modes({ lateral: 'LOC', vertical: 'GS' }),
+    minimumsAlert: true,
+  },
   {
     title: 'ILS established, slightly high, 90 KIAS',
     data: pfd({
@@ -93,6 +123,7 @@ export const GLASS_CASES: { title: string; data: PfdData }[] = [
     }),
   },
   {
+    modes: modes({ lateral: 'ROL', vertical: 'GA', verticalArmed: 'ALTS' }),
     title: 'Go-around climb, NAV flagged',
     data: pfd({
       attitude: { pitchDeg: 7.5, bankDeg: 0 },

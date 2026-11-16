@@ -20,7 +20,8 @@
 }
 .ap-annunciator {
   display: grid;
-  grid-template-columns: 34px 52px 52px 96px 64px 1fr;
+  /* AP, lateral, armed, vertical, armed, selected heading, selected altitude */
+  grid-template-columns: 34px 52px 52px 96px 64px 1fr auto;
   gap: 6px;
   align-items: center;
   background: #000;

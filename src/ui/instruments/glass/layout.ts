@@ -29,6 +29,8 @@ export const VSI = { x: 508, w: 40, maxFpm: 2000 } as const;
 /** Selected-altitude readout above the altitude tape; BARO box below it. */
 export const SEL_ALT_BOX = { x: 432, y: 26, w: 72, h: 14 } as const;
 export const BARO_BOX = { x: 432, y: 262, w: 116, h: 14 } as const;
+/** DA/MDA value box, below BARO. */
+export const MINS_BOX = { x: 432, y: 279, w: 116, h: 14 } as const;
 
 /** HSI rose: centre and radius; heading readout box sits just above the rose. */
 export const HSI = { cx: 280, cy: 346, r: 68 } as const;

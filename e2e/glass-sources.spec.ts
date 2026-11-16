@@ -64,27 +64,27 @@ test('CDI switch: active NAV drops to ROL; armed NAV is cancelled and HDG kept',
   await turn(page, 'knob-hdg', 'ArrowUp', 3);
   await expect(page.getByTestId('pfd-hdg-box-value')).toHaveText('293°');
   await page.getByTestId('btn-NAV').click();
-  await expect(page.getByTestId('ann-lateral-armed')).toHaveText('LOC');
+  await expect(page.getByTestId('pfd-ann-lateral-armed')).toHaveText('LOC');
   await page.getByTestId('speed-4').click();
-  await expect(page.getByTestId('ann-lateral')).toHaveText('LOC', { timeout: 150_000 });
+  await expect(page.getByTestId('pfd-ann-lateral')).toHaveText('LOC', { timeout: 150_000 });
   await page.getByTestId('speed-1').click();
 
   // CDI back to VLOC1: NAV drops to ROL.
   await page.getByTestId('btn-cdi').click();
   await expect(page.getByTestId('btn-cdi')).toContainText('VLOC1');
-  await expect(page.getByTestId('ann-lateral')).toHaveText('ROL');
-  await expect(page.getByTestId('ann-lateral-armed')).toHaveText('');
+  await expect(page.getByTestId('pfd-ann-lateral')).toHaveText('ROL');
+  await expect(page.getByTestId('pfd-ann-lateral-armed')).toHaveCount(0);
 
   // HDG, arm NAV on VLOC1 (FQF, CRS 360: far from capture), then switch the CDI.
   // Back on VLOC1 the course is CRS1 (360), not CRS2.
   await expect(page.getByTestId('pfd-crs-box-value')).toHaveText('360°');
   await page.getByTestId('btn-HDG').click();
   await page.getByTestId('btn-NAV').click();
-  await expect(page.getByTestId('ann-lateral')).toHaveText('HDG');
-  await expect(page.getByTestId('ann-lateral-armed')).toHaveText('VOR');
+  await expect(page.getByTestId('pfd-ann-lateral')).toHaveText('HDG');
+  await expect(page.getByTestId('pfd-ann-lateral-armed')).toHaveText('VOR');
   await page.getByTestId('btn-cdi').click();
-  await expect(page.getByTestId('ann-lateral')).toHaveText('HDG');
-  await expect(page.getByTestId('ann-lateral-armed')).toHaveText('');
+  await expect(page.getByTestId('pfd-ann-lateral')).toHaveText('HDG');
+  await expect(page.getByTestId('pfd-ann-lateral-armed')).toHaveCount(0);
 });
 
 test('BRG1 on NAV1 points at FQF; BRG2 on a localizer shows NO BRG', async ({ page }) => {

@@ -80,7 +80,7 @@ export function Gallery() {
       <section className="gallery-grid gallery-glass">
         {GLASS_CASES.map((c) => (
           <div key={c.title} className="gallery-cell">
-            <Pfd data={c.data} />
+            <Pfd data={c.data} modes={c.modes ?? null} minimumsAlert={c.minimumsAlert ?? false} />
             <p>{c.title}</p>
           </div>
         ))}

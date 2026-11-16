@@ -407,6 +407,8 @@ adds a short "How to fly" guide to the home screen and tidies the briefing scree
        BARO;
      - **minimums alert**: "MINIMUMS" shown on the PFD, and an aural alert, when the existing
        "Minimums." callout fires (from `progress.ts`, not duplicated).
+     - **minimums box** below BARO showing DA or MDA and its value, always visible (the tape's
+       minimums bug sits under the altitude readout at minimums).
    - It fits the same desktop (1366×860) and tablet-landscape (1024×768) viewports as V1 with no
      page scroll or panel overflow, and keeps 60 fps (Chromium and Firefox perf tests).
    - Its name in the UI, code and docs is **Glass PFD**. No manufacturer names, logos or
