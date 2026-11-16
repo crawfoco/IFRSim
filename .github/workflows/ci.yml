@@ -27,18 +27,49 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
 
+  # Skips the browser tests when every changed file is documentation. The job
+  # still runs and reports success, so it can be a required check without
+  # blocking docs-only pull requests. Anything not on the skip-list runs the tests.
   e2e:
     name: End-to-end (Chromium)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Decide whether the app changed
+        id: changes
+        shell: bash
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if ! git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
+            echo "No usable base commit; running the tests."
+            echo "app=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          app=false
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              *.md | docs/* | tasks/* | LICENSE | .github/ISSUE_TEMPLATE/* | .github/CODEOWNERS) ;;
+              *) app=true; echo "App file changed: $f" ;;
+            esac
+          done < <(git diff --name-only "${BASE}...${HEAD}")
+          if [ "$app" = false ]; then echo "Documentation-only change; skipping browser tests."; fi
+          echo "app=$app" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v4
+        if: steps.changes.outputs.app == 'true'
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test --project=chromium --trace off
+      - if: steps.changes.outputs.app == 'true'
+        run: npm ci
+      - if: steps.changes.outputs.app == 'true'
+        run: npx playwright install --with-deps chromium
+      - if: steps.changes.outputs.app == 'true'
+        run: npx playwright test --project=chromium --trace off
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
