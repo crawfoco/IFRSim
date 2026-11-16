@@ -82,7 +82,9 @@ const BAR_HALF = Math.round(R * 0.42);
 const COURSE_HEAD_D = `M ${CX} ${CY - R + 6} l 7 12 h -4 v ${R - 18 - BAR_HALF - 10} h -6 v ${-(R - 18 - BAR_HALF - 10)} h -4 Z`;
 const COURSE_TAIL_D = `M ${CX - 3} ${CY + BAR_HALF + 4} h 6 V ${CY + R - 6} h -6 Z`;
 
-function summary(p: GlassHsiProps, source: string): string {
+/** Text summary of the HSI (heading, course, source, needle, TO/FROM, GS), for screen readers. */
+export function hsiSummary(p: GlassHsiProps): string {
+  const source = `VLOC${radioOf(p.cdiSource)}`;
   const parts = [`heading ${pad3(p.headingMagDeg)}`, `course ${pad3(p.courseDeg)}`, source];
   if (p.deviation.flag) parts.push('NAV flag');
   else {
@@ -114,7 +116,7 @@ export function GlassHsi(p: GlassHsiProps) {
   const [srcX, srcY] = [CX - R - 8, CY - R * 0.45];
   return (
     <g data-testid="pfd-hsi">
-      <title>{summary(p, source)}</title>
+      <title>{hsiSummary(p)}</title>
       <circle className="g-hsi-disc" cx={CX} cy={CY} r={R + 4} />
 
       <g data-testid="pfd-hsi-rose" transform={rot(hsiCardDeg(hdg))}>

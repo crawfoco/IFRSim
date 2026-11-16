@@ -3,6 +3,7 @@
  * scoring rules, and produce the score table, a timeline and the data for the debrief.
  */
 import { annunciation } from '../autopilot/modes';
+import { applyCommand } from '../commands';
 import { DT, step } from '../loop';
 import type { LoggedCommand, TrackSample } from '../recorder';
 import { initialProgress, updateProgress, type Outcome } from '../scenario/progress';
@@ -152,8 +153,12 @@ export function analyzeFlight(
     const mode = modeText(state);
     if (mode !== lastMode) timeline.push({ tick: state.tick, kind: 'mode', text: mode });
     lastMode = mode;
+    // Each command's text comes from the state just after that command (two presses in one
+    // step log both values, not the last one twice).
+    let after = prev;
     for (const c of commands) {
-      const t = commandText(c, state);
+      after = applyCommand(after, c, sc.world);
+      const t = commandText(c, after);
       if (t) timeline.push({ tick: state.tick, kind: 'radio', text: t });
     }
     for (const e of progress.events.slice(progressEvents))

@@ -21,10 +21,13 @@ function Field({
   id,
   text,
   cls,
+  flashKey = text,
 }: {
   id: keyof typeof SLOTS;
   text: string;
   cls: 'g-ann-active' | 'g-ann-armed';
+  /** What a change must touch to replay the flash; default the text. */
+  flashKey?: string;
 }) {
   if (!text) return null;
   const testId = {
@@ -36,7 +39,7 @@ function Field({
   }[id];
   return (
     <text
-      key={text}
+      key={flashKey}
       className={`${cls} g-flash`}
       x={SLOTS[id]}
       y={MID}
@@ -51,7 +54,7 @@ function Field({
 
 export function ModeBar({ fields }: { fields: ModeBarFields }) {
   return (
-    <g data-testid="pfd-modes" role="status" aria-label="Autopilot modes">
+    <g data-testid="pfd-modes" aria-hidden="true">
       <rect className="g-modebar" x={x} y={y} width={w} height={h} />
       {[w / 2 - 40, w / 2 + 40].map((sx) => (
         <line
@@ -66,7 +69,13 @@ export function ModeBar({ fields }: { fields: ModeBarFields }) {
       <Field id="lateral" text={fields.lateral} cls="g-ann-active" />
       <Field id="lateralArmed" text={fields.lateralArmed} cls="g-ann-armed" />
       <Field id="ap" text={fields.ap ? 'AP' : ''} cls="g-ann-active" />
-      <Field id="vertical" text={fields.vertical} cls="g-ann-active" />
+      {/* Keyed on the mode, so turning the VS wheel ("VS −500FPM" → "VS −600FPM") doesn't flash. */}
+      <Field
+        id="vertical"
+        text={fields.vertical}
+        cls="g-ann-active"
+        flashKey={fields.vertical.split(' ')[0] ?? ''}
+      />
       <Field id="verticalArmed" text={fields.verticalArmed} cls="g-ann-armed" />
     </g>
   );

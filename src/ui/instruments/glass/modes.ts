@@ -29,6 +29,17 @@ export function modeBarFields(ap: ApModes): ModeBarFields {
   };
 }
 
+/** The mode bar as a sentence, for the screen-reader status line. */
+export function modeBarText(f: ModeBarFields): string {
+  if (!f.ap) return 'Autopilot off';
+  const part = (active: string, armed: string) =>
+    [active, armed && `armed ${armed}`].filter(Boolean).join(', ');
+  return `Autopilot on. Lateral ${part(f.lateral, f.lateralArmed)}. Vertical ${part(
+    f.vertical,
+    f.verticalArmed,
+  )}.`;
+}
+
 /** How long the MINIMUMS alert stays on after the "Minimums." callout, in sim time. */
 export const MINIMUMS_ALERT_S = 5;
 

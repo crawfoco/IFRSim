@@ -63,7 +63,7 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
     case 'map':
       return { ...s, panel: { ...s.panel, mapOn: c.on } };
     case 'cdi': {
-      // As on the real unit, a new nav source drops NAV/APR (active or armed) to ROL.
+      // A new nav source: active NAV/APR drops to ROL; armed NAV/APR is cancelled (HDG kept).
       const ap = cdiSourceChanged(s.ap, modeContext(s, sense(s, world)));
       return { ...s, ap, panel: { ...s.panel, cdiSource: nextCdiSource(s.panel.cdiSource) } };
     }

@@ -3,7 +3,9 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { AP_OFF, type ApModes } from '../../src/sim/autopilot/modes';
 import type { ScenarioProgress } from '../../src/sim/scenario/progress';
-import { minimumsAlertOn, modeBarFields } from '../../src/ui/instruments/glass/modes';
+import { minimumsAlertOn, modeBarFields, modeBarText } from '../../src/ui/instruments/glass/modes';
+import { Pfd } from '../../src/ui/instruments/glass/Pfd';
+import { GLASS_CASES } from '../../src/ui/dev/glass-cases';
 import { MinimumsAlert, MinimumsBox } from '../../src/ui/instruments/glass/MinimumsAlert';
 import { ModeBar } from '../../src/ui/instruments/glass/ModeBar';
 
@@ -123,5 +125,36 @@ describe('rendering', () => {
         </svg>,
       ),
     ).not.toContain('pfd-minimums');
+  });
+});
+
+describe('screen readers', () => {
+  it('modes as a sentence', () => {
+    expect(modeBarText(modeBarFields(AP_OFF))).toBe('Autopilot off');
+    expect(
+      modeBarText(
+        modeBarFields(on({ lateral: 'HDG', lateralArmed: 'APR', navKind: 'LOC', gsArmed: true })),
+      ),
+    ).toBe('Autopilot on. Lateral HDG, armed LOC. Vertical PIT, armed GS.');
+  });
+
+  it('the live mode and MINIMUMS text sit outside the svg role="img" (which hides its children)', () => {
+    const data = GLASS_CASES[0]!.data;
+    const f = modeBarFields(on({ lateral: 'HDG', lateralArmed: 'APR', navKind: 'LOC' }));
+    const html = renderToStaticMarkup(<Pfd data={data} modes={f} minimumsAlert />);
+    const outside = html.slice(html.indexOf('</svg>'));
+    expect(outside).toMatch(/role="status"[^>]*>Autopilot on\. Lateral HDG, armed LOC\./);
+    expect(outside).toMatch(/role="alert"[^>]*>Minimums</);
+    const inside = html.slice(0, html.indexOf('</svg>'));
+    expect(inside).not.toMatch(/role="(status|alert)"/);
+    // The svg's label carries the HSI summary too.
+    expect(html).toMatch(
+      /aria-label="Glass PFD: 100 knots, 8000 feet, HSI: heading 263, course 263, VLOC1/,
+    );
+  });
+
+  it('no MINIMUMS text when the alert is off', () => {
+    const html = renderToStaticMarkup(<Pfd data={GLASS_CASES[0]!.data} modes={null} />);
+    expect(html).toMatch(/role="alert"[^>]*><\/p>/);
   });
 });

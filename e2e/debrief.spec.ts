@@ -22,6 +22,7 @@ test('a short flight ends in a debrief with score, plan, profile, timeline and r
   await page.getByTestId('end-flight').click();
 
   await expect(page.getByTestId('score')).toContainText('%');
+  await expect(page.getByTestId('debrief-panel')).toHaveText('Panel: Steam gauges');
   await expect(page.getByTestId('item-ident:I-FTG')).toContainText('tuned and identified');
   await expect(page.getByTestId('plan-view')).toBeVisible();
   await expect(page.getByTestId('profile-view')).toBeVisible();

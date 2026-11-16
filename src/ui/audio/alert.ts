@@ -15,6 +15,8 @@ const CHIME: readonly [number, number, number][] = [
 export function playMinimumsChime(): void {
   try {
     const ctx = audioContext();
+    // A context first made outside a click may start suspended; resuming is harmless otherwise.
+    void ctx.resume().catch(() => {});
     const t0 = ctx.currentTime + 0.03;
     const gain = ctx.createGain();
     gain.gain.value = 0;

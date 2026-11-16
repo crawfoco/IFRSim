@@ -74,4 +74,11 @@ test('glass: vectors to the KCFO ILS 26, coupled down to DA, MINIMUMS alert', as
     // Landing: the alert goes out 5 s (sim time) after DA, or when the flight ends.
     await expect(page.getByTestId('pfd-minimums')).toHaveCount(0, { timeout: 30_000 });
   }
+
+  // Restart keeps the glass panel (new hidden weather), and the debrief names the panel.
+  await page.getByTestId('restart').click();
+  await expect(page.getByTestId('pfd')).toBeVisible();
+  await expect(page.getByTestId('hsi')).toHaveCount(0);
+  await page.getByTestId('end-flight').click();
+  await expect(page.getByTestId('debrief-panel')).toHaveText('Panel: Glass PFD');
 });

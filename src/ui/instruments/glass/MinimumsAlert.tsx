@@ -34,7 +34,7 @@ const ALERT = { w: 92, h: 20, x: ALT.x - 100, y: ATT.cy + 34 } as const;
 export function MinimumsAlert({ on }: { on: boolean }) {
   if (!on) return null;
   return (
-    <g data-testid="pfd-minimums" role="alert">
+    <g data-testid="pfd-minimums" aria-hidden="true">
       <rect
         className="g-mins-alert"
         x={ALERT.x}
