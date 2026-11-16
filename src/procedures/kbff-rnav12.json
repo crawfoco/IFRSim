@@ -1,0 +1,251 @@
+{
+  "id": "kbff-rnav12",
+  "airport": "KBFF",
+  "runway": "12",
+  "name": "RNAV (GPS) RWY 12",
+  "chart": {
+    "number": "AL-383",
+    "amendment": "Amdt 1B",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kbff-rnav12.png"
+  },
+  "rnav": {
+    "cifp": "KBFF R12",
+    "waas": { "channel": "73005", "id": "W12A" },
+    "equipment": "RNP APCH - GPS."
+  },
+  "navaids": [],
+  "fixes": {
+    "ALBIN": {
+      "def": { "kind": "waypoint", "id": "ALBIN" },
+      "faaId": "ALBIN",
+      "note": "Feeder fix"
+    },
+    "SPONS": {
+      "def": { "kind": "waypoint", "id": "SPONS" },
+      "faaId": "SPONS",
+      "note": "Feeder fix"
+    },
+    "SACOP": { "def": { "kind": "waypoint", "id": "SACOP" }, "faaId": "SACOP", "note": "IAF" },
+    "AYAYI": { "def": { "kind": "waypoint", "id": "AYAYI" }, "faaId": "AYAYI", "note": "IAF" },
+    "LEDSE": {
+      "def": { "kind": "waypoint", "id": "LEDSE" },
+      "faaId": "LEDSE",
+      "note": "IF/IAF, hold-in-lieu of procedure turn"
+    },
+    "CAPGA": { "def": { "kind": "waypoint", "id": "CAPGA" }, "faaId": "CAPGA", "note": "FAF" },
+    "RW12": { "def": { "kind": "waypoint", "id": "RW12" }, "note": "Missed approach point" },
+    "HAKAB": {
+      "def": { "kind": "waypoint", "id": "HAKAB" },
+      "faaId": "HAKAB",
+      "note": "Missed approach holding fix"
+    }
+  },
+  "transitions": [
+    {
+      "id": "albin",
+      "name": "ALBIN via SACOP (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "SACOP",
+          "course": { "rnavFrom": "ALBIN", "rnavTo": "SACOP" },
+          "minAltFt": 7800
+        },
+        {
+          "type": "track",
+          "to": "LEDSE",
+          "course": { "rnavFrom": "SACOP", "rnavTo": "LEDSE" },
+          "minAltFt": 6900
+        }
+      ]
+    },
+    {
+      "id": "spons",
+      "name": "SPONS via AYAYI (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "AYAYI",
+          "course": { "rnavFrom": "SPONS", "rnavTo": "AYAYI" },
+          "minAltFt": 7000
+        },
+        {
+          "type": "track",
+          "to": "LEDSE",
+          "course": { "rnavFrom": "AYAYI", "rnavTo": "LEDSE" },
+          "minAltFt": 6900
+        }
+      ]
+    },
+    {
+      "id": "ledse",
+      "name": "LEDSE (IF/IAF), hold-in-lieu",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "hold",
+          "fix": "LEDSE",
+          "inboundCourseMag": 125,
+          "course": { "rnavFix": "LEDSE", "courseMag": 125.5 },
+          "turn": "R",
+          "legNm": 7,
+          "minAltFt": 6900
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "CAPGA",
+      "course": { "rnavFrom": "LEDSE", "rnavTo": "CAPGA" },
+      "minAltFt": 5700
+    },
+    {
+      "type": "final",
+      "faf": "CAPGA",
+      "course": { "rnavFrom": "CAPGA", "rnavTo": "RW12" },
+      "fafAltFt": 5700,
+      "gp": { "angleDeg": 3, "tchFt": 57 },
+      "stepDowns": [],
+      "map": { "fix": "RW12" }
+    }
+  ],
+  "missed": [
+    { "type": "climb", "toAltFt": 4213 },
+    { "type": "direct", "to": "HAKAB", "climbToFt": 6700, "flyOver": true },
+    {
+      "type": "hold",
+      "fix": "HAKAB",
+      "inboundCourseMag": 306,
+      "course": { "rnavFix": "HAKAB", "courseMag": 305.7 },
+      "turn": "R",
+      "legNm": 7,
+      "minAltFt": 6700
+    }
+  ],
+  "missedText": "Climb to 6700 direct HAKAB and hold.",
+  "minimums": [
+    {
+      "kind": "LPV",
+      "label": "LPV",
+      "A": { "altFt": 4213, "visibilitySm": 0.5 },
+      "B": { "altFt": 4213, "visibilitySm": 0.5 }
+    },
+    {
+      "kind": "LNAV/VNAV",
+      "label": "LNAV/VNAV",
+      "A": { "altFt": 4340, "visibilitySm": 0.75 },
+      "B": { "altFt": 4340, "visibilitySm": 0.75 }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": { "altFt": 4700, "visibilitySm": 0.5 },
+      "B": { "altFt": 4700, "visibilitySm": 0.5 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "direct-albin",
+      "name": "Direct ALBIN from the southeast",
+      "clearance": "Descend and maintain 7800, proceed direct ALBIN, cleared RNAV runway 12 approach via the ALBIN transition.",
+      "position": { "kind": "waypoint", "id": "ALBIN" },
+      "offset": { "bearingMag": 120, "distanceNm": 10 },
+      "altitudeFt": 9500,
+      "assigned": { "altFt": 7800, "until": "ALBIN" },
+      "headingMag": 260,
+      "iasKt": 100,
+      "transition": "albin",
+      "nav1MHz": 116.1,
+      "nav2MHz": 116.1
+    },
+    {
+      "id": "direct-spons",
+      "name": "Direct SPONS from the north",
+      "clearance": "Descend and maintain 7000, proceed direct SPONS, cleared RNAV runway 12 approach via the SPONS transition.",
+      "position": { "kind": "waypoint", "id": "SPONS" },
+      "offset": { "bearingMag": 340, "distanceNm": 10 },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "SPONS" },
+      "headingMag": 120,
+      "iasKt": 100,
+      "transition": "spons",
+      "nav1MHz": 116.1,
+      "nav2MHz": 116.1
+    },
+    {
+      "id": "direct-ledse",
+      "name": "Direct LEDSE from the north",
+      "clearance": "Descend and maintain 7000, proceed direct LEDSE, cleared RNAV runway 12 approach.",
+      "position": { "kind": "waypoint", "id": "LEDSE" },
+      "offset": { "bearingMag": 345, "distanceNm": 10 },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "LEDSE" },
+      "headingMag": 120,
+      "iasKt": 100,
+      "transition": "ledse",
+      "joinAt": "LEDSE",
+      "nav1MHz": 116.1,
+      "nav2MHz": 116.1
+    },
+    {
+      "id": "direct-ledse-east",
+      "name": "Direct LEDSE from the east",
+      "clearance": "Descend and maintain 7000, proceed direct LEDSE, cleared RNAV runway 12 approach.",
+      "position": { "kind": "waypoint", "id": "LEDSE" },
+      "offset": { "bearingMag": 80, "distanceNm": 12 },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "LEDSE" },
+      "headingMag": 310,
+      "iasKt": 100,
+      "transition": "ledse",
+      "joinAt": "LEDSE",
+      "nav1MHz": 116.1,
+      "nav2MHz": 116.1
+    },
+    {
+      "id": "direct-ledse-south",
+      "name": "Direct LEDSE from the south",
+      "clearance": "Descend and maintain 7000, proceed direct LEDSE, cleared RNAV runway 12 approach.",
+      "position": { "kind": "waypoint", "id": "LEDSE" },
+      "offset": { "bearingMag": 170, "distanceNm": 12 },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "LEDSE" },
+      "headingMag": 300,
+      "iasKt": 100,
+      "transition": "ledse",
+      "joinAt": "LEDSE",
+      "nav1MHz": 116.1,
+      "nav2MHz": 116.1
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 095, maintain 6900 until established on the final approach course, cleared RNAV runway 12 approach.",
+      "position": { "kind": "waypoint", "id": "LEDSE" },
+      "leadInNm": 3,
+      "altitudeFt": 6900,
+      "assigned": { "altFt": 6900 },
+      "headingMag": 95,
+      "iasKt": 100,
+      "nav1MHz": 116.1,
+      "nav2MHz": 116.1
+    }
+  ],
+  "notes": [
+    "RNP APCH - GPS.",
+    "WAAS channel 73005, W12A. GP 3.00°, TCH 57.",
+    "When local altimeter setting not received, use AIA altimeter setting: increase LPV DA to 4304 feet and all visibilities 1/8 SM; increase LNAV/VNAV DA to 4431 feet and all visibilities 1/4 SM; increase all MDAs 100 feet and LNAV visibility Cats B/C 1/4 SM, LNAV visibility Cat D 1/8 SM and Circling all Cats visibilities 1/2 SM. Baro-VNAV and VDP NA when using AIA altimeter setting. (The sim always gives you the local altimeter setting.)",
+    "For inop ALS, increase LNAV/VNAV all Cats visibility to 1 SM and LNAV Cats C/D visibility to 2 SM.",
+    "For uncompensated Baro-VNAV systems, LNAV/VNAV NA below -22°C or above 54°C. (This aircraft's WAAS GPS flies LNAV/VNAV on WAAS vertical guidance, so the limits do not apply to it.)",
+    "VDP 2.1 NM to RW12.",
+    "Procedure NA for arrivals at ALBIN on V81 southwest bound and arrivals at SPONS on V81-V169 northbound.",
+    "Circling: Cat A and B 4700-1.",
+    "MSA RW12 25 NM: 6800."
+  ]
+}

@@ -21,6 +21,14 @@ const failed = (a: FlightAnalysis) => a.items.filter((x) => x.status === 'fail')
 const summary = (a: FlightAnalysis) =>
   a.items.map((x) => `${x.status.padEnd(4)} ${x.id}: ${x.measured}`).join('\n');
 
+/**
+ * The over-fqf start is at 10000, cleared to descend and maintain 8000 (the feeder minimum):
+ * VS down, ALT captures 8000. Guarded: a VS descent started at the target would not capture.
+ */
+function descendTo8000(f: Flight) {
+  if (f.alt > 8050) f.descendOrClimb(8000, -1000);
+}
+
 export interface FeederOptions {
   identify?: boolean;
   /** Entry flown at SKIPI. */
@@ -36,6 +44,7 @@ export function flyFeederAndHold(f: Flight, o: FeederOptions = {}) {
   f.send({ type: 'headingBug', deg: 360 }, { type: 'altPreselect', ft: 8000 });
   f.wait(0.1);
   f.send({ type: 'button', button: 'ALT' });
+  descendTo8000(f);
   // NAV1 stays on FQF (already tuned): identify it and set the radial. NAV2 → I-FTG for DME.
   f.send({ type: 'course', radio: 1, deg: 45 });
   if (identify) f.send({ type: 'ident', radio: 1 });
@@ -44,7 +53,7 @@ export function flyFeederAndHold(f: Flight, o: FeederOptions = {}) {
   f.wait(0.1);
   if (identify) f.send({ type: 'ident', radio: 2 });
   f.send({ type: 'standby', radio: 1, mhz: 109.3 });
-  // The start is 5 NM south of FQF: cross it, then a 30° cut onto R-045.
+  // The start is 8 NM south of FQF: cross it, then a 30° cut onto R-045.
   f.crossFix('FQF', 1.0, 600);
   f.send({ type: 'headingBug', deg: 75 });
   f.wait(20);
@@ -84,6 +93,7 @@ describe('KCFO ILS 26 scoring', () => {
       'ident:FQF',
       'ident:I-FTG',
       'fix-order',
+      'assigned-altitude',
       'segment-minimums',
       'hold-entry:SKIPI:1',
       'hold-timing:SKIPI:1',
@@ -189,6 +199,7 @@ describe('KCFO bad runs on the final and the missed approach', () => {
       'ident:I-FTG',
       'ident:FQF',
       'fix-order',
+      'assigned-altitude',
       'segment-minimums',
       'hold-entry:SKIPI:4',
       'hold-timing:SKIPI:4',
@@ -282,6 +293,7 @@ describe('KCFO regressions from the M5 review', () => {
     f.send({ type: 'headingBug', deg: 360 }, { type: 'altPreselect', ft: 8000 });
     f.wait(0.1);
     f.send({ type: 'button', button: 'ALT' }, { type: 'course', radio: 1, deg: 45 });
+    descendTo8000(f);
     f.send({ type: 'ident', radio: 1 });
     f.send({ type: 'standby', radio: 2, mhz: 109.3 }, { type: 'swap', radio: 2 });
     f.send({ type: 'dmeSource', radio: 2 }, { type: 'standby', radio: 1, mhz: 109.3 });
@@ -320,9 +332,13 @@ describe('KCFO regressions from the M5 review', () => {
     f.send({ type: 'headingBug', deg: 90 }, { type: 'altPreselect', ft: 8000 });
     f.wait(0.1);
     f.send({ type: 'button', button: 'ALT' }, { type: 'ident', radio: 1 });
-    f.wait(720); // east, well south of SKIPI
+    descendTo8000(f);
+    f.wait(900); // east, well south of SKIPI (the start is 8 NM south of FQF)
     f.tune(1, 109.3, 263);
-    f.turn(320); // join the localizer about 5 NM east of SKIPI
+    f.turn(320); // join the localizer east of SKIPI
+    // Identify it once it is received.
+    expect(f.until(() => f.sensors.nav1.ident !== null, 600)).toBe(true);
+    f.send({ type: 'ident', radio: 1 });
     f.send({ type: 'button', button: 'APR' });
     f.crossFix('SKIPI', 1.0, 900); // inbound, straight in: no course reversal
     f.descendOrClimb(5900, -1000); // from 8000: steeper, to reach the MDA before the MAP

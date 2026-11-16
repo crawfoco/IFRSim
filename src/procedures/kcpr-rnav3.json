@@ -1,0 +1,372 @@
+{
+  "id": "kcpr-rnav3",
+  "airport": "KCPR",
+  "runway": "03",
+  "name": "RNAV (GPS) RWY 3",
+  "chart": {
+    "number": "AL-72",
+    "amendment": "Amdt 1C",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kcpr-rnav3.png"
+  },
+  "rnav": {
+    "cifp": "KCPR R03",
+    "waas": {
+      "channel": "73006",
+      "id": "W03A"
+    },
+    "equipment": "RNP APCH - GPS."
+  },
+  "navaids": [],
+  "fixes": {
+    "CHOMP": {
+      "def": {
+        "kind": "waypoint",
+        "id": "CHOMP"
+      },
+      "faaId": "CHOMP",
+      "note": "IAF"
+    },
+    "HIKOX": {
+      "def": {
+        "kind": "waypoint",
+        "id": "HIKOX"
+      },
+      "faaId": "HIKOX",
+      "note": "Feeder fix (CEYFI transition)"
+    },
+    "CEYFI": {
+      "def": {
+        "kind": "waypoint",
+        "id": "CEYFI"
+      },
+      "faaId": "CEYFI",
+      "note": "IAF"
+    },
+    "HEITY": {
+      "def": {
+        "kind": "waypoint",
+        "id": "HEITY"
+      },
+      "faaId": "HEITY",
+      "note": "Feeder fix (AXIBY transition)"
+    },
+    "AXIBY": {
+      "def": {
+        "kind": "waypoint",
+        "id": "AXIBY"
+      },
+      "faaId": "AXIBY",
+      "note": "IAF"
+    },
+    "IPEYE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "IPEYE"
+      },
+      "faaId": "IPEYE",
+      "note": "IF"
+    },
+    "YIWZE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "YIWZE"
+      },
+      "faaId": "YIWZE",
+      "note": "FAF"
+    },
+    "NOPTE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "NOPTE"
+      },
+      "faaId": "NOPTE",
+      "note": "Step-down fix (LNAV only), 2.7 NM to RW03"
+    },
+    "RW03": {
+      "def": {
+        "kind": "waypoint",
+        "id": "RW03"
+      },
+      "note": "Missed approach point"
+    },
+    "KIVSE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "KIVSE"
+      },
+      "faaId": "KIVSE"
+    },
+    "DDY": {
+      "def": {
+        "kind": "waypoint",
+        "id": "DDY"
+      },
+      "note": "Muddy Mountain VOR/DME, missed approach holding fix"
+    }
+  },
+  "transitions": [
+    {
+      "id": "chomp",
+      "name": "CHOMP (IAF)",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "IPEYE",
+          "course": {
+            "rnavFrom": "CHOMP",
+            "rnavTo": "IPEYE"
+          },
+          "minAltFt": 8100
+        }
+      ]
+    },
+    {
+      "id": "heity",
+      "name": "HEITY via AXIBY (IAF)",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "AXIBY",
+          "course": {
+            "rnavFrom": "HEITY",
+            "rnavTo": "AXIBY"
+          },
+          "minAltFt": 10800
+        },
+        {
+          "type": "track",
+          "to": "IPEYE",
+          "course": {
+            "rnavFrom": "AXIBY",
+            "rnavTo": "IPEYE"
+          },
+          "minAltFt": 8100
+        }
+      ]
+    },
+    {
+      "id": "hikox",
+      "name": "HIKOX via CEYFI (IAF)",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "CEYFI",
+          "course": {
+            "rnavFrom": "HIKOX",
+            "rnavTo": "CEYFI"
+          },
+          "minAltFt": 9000
+        },
+        {
+          "type": "track",
+          "to": "IPEYE",
+          "course": {
+            "rnavFrom": "CEYFI",
+            "rnavTo": "IPEYE"
+          },
+          "minAltFt": 8100
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "YIWZE",
+      "course": {
+        "rnavFrom": "IPEYE",
+        "rnavTo": "YIWZE"
+      },
+      "minAltFt": 7000
+    },
+    {
+      "type": "final",
+      "faf": "YIWZE",
+      "course": {
+        "rnavFrom": "YIWZE",
+        "rnavTo": "RW03"
+      },
+      "fafAltFt": 7000,
+      "gp": {
+        "angleDeg": 3,
+        "tchFt": 52
+      },
+      "stepDowns": [
+        {
+          "fix": "NOPTE",
+          "minAltFt": 6240,
+          "lnavOnly": true
+        }
+      ],
+      "map": {
+        "fix": "RW03"
+      }
+    }
+  ],
+  "missed": [
+    {
+      "type": "climb",
+      "toAltFt": 5643
+    },
+    {
+      "type": "direct",
+      "to": "KIVSE",
+      "climbToFt": 7500
+    },
+    {
+      "type": "track",
+      "to": "DDY",
+      "course": {
+        "rnavFrom": "KIVSE",
+        "rnavTo": "DDY"
+      },
+      "minAltFt": 7500,
+      "flyOver": true
+    },
+    {
+      "type": "hold",
+      "fix": "DDY",
+      "inboundCourseMag": 205,
+      "course": {
+        "rnavFix": "DDY",
+        "courseMag": 204.7
+      },
+      "turn": "R",
+      "legNm": 7,
+      "minAltFt": 7500
+    }
+  ],
+  "missedText": "Climb to 7500 direct KIVSE and via track 022° to DDY VOR/DME and hold.",
+  "minimums": [
+    {
+      "kind": "LPV",
+      "label": "LPV",
+      "A": {
+        "altFt": 5643,
+        "visibilitySm": 0.5
+      },
+      "B": {
+        "altFt": 5643,
+        "visibilitySm": 0.5
+      }
+    },
+    {
+      "kind": "LNAV/VNAV",
+      "label": "LNAV/VNAV",
+      "A": {
+        "altFt": 5691,
+        "visibilitySm": 0.75
+      },
+      "B": {
+        "altFt": 5691,
+        "visibilitySm": 0.75
+      }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": {
+        "altFt": 5780,
+        "visibilitySm": 0.5
+      },
+      "B": {
+        "altFt": 5780,
+        "visibilitySm": 0.5
+      }
+    }
+  ],
+  "starts": [
+    {
+      "id": "direct-chomp",
+      "name": "Direct CHOMP from the west",
+      "clearance": "Descend and maintain 10000, proceed direct CHOMP, cleared RNAV runway 3 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "CHOMP"
+      },
+      "offset": {
+        "bearingMag": 270,
+        "distanceNm": 10
+      },
+      "altitudeFt": 12000,
+      "assigned": { "altFt": 10000, "until": "CHOMP" },
+      "headingMag": 40,
+      "iasKt": 100,
+      "transition": "chomp",
+      "nav1MHz": 116.2,
+      "nav2MHz": 116.2
+    },
+    {
+      "id": "direct-heity",
+      "name": "Direct HEITY from the north, via AXIBY",
+      "clearance": "Descend and maintain 10800, proceed direct HEITY, cleared RNAV runway 3 approach via the HEITY transition.",
+      "position": {
+        "kind": "waypoint",
+        "id": "HEITY"
+      },
+      "offset": {
+        "bearingMag": 0,
+        "distanceNm": 10
+      },
+      "altitudeFt": 13000,
+      "assigned": { "altFt": 10800, "until": "HEITY" },
+      "headingMag": 220,
+      "iasKt": 100,
+      "transition": "heity",
+      "nav1MHz": 116.2,
+      "nav2MHz": 116.2
+    },
+    {
+      "id": "direct-hikox",
+      "name": "Direct HIKOX from the west, via CEYFI",
+      "clearance": "Descend and maintain 9000, proceed direct HIKOX, cleared RNAV runway 3 approach via the HIKOX transition.",
+      "position": {
+        "kind": "waypoint",
+        "id": "HIKOX"
+      },
+      "offset": {
+        "bearingMag": 270,
+        "distanceNm": 10
+      },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9000, "until": "HIKOX" },
+      "headingMag": 40,
+      "iasKt": 100,
+      "transition": "hikox",
+      "nav1MHz": 116.2,
+      "nav2MHz": 116.2
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 060, maintain 8100 until established on the final approach course, cleared RNAV runway 3 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "IPEYE"
+      },
+      "leadInNm": 3,
+      "altitudeFt": 8100,
+      "assigned": { "altFt": 8100 },
+      "headingMag": 60,
+      "iasKt": 100,
+      "nav1MHz": 116.2,
+      "nav2MHz": 116.2
+    }
+  ],
+  "notes": [
+    "RNP APCH - GPS.",
+    "For inoperative ALS, increase LPV all Cats visibility to RVR 4500, LNAV/VNAV all Cats visibility to RVR 5500, and LNAV Cat D visibility to 1⅜ SM.",
+    "For uncompensated Baro-VNAV systems, LNAV/VNAV NA below -25°C or above 54°C. (This aircraft's WAAS GPS flies LNAV/VNAV on WAAS vertical guidance, so the limits do not apply to it.)",
+    "WAAS channel 73006, W03A. GP 3.00°, TCH 52.",
+    "Procedure turn NA.",
+    "NOPTE (2.7 NM to RW03) minimum 6240 applies to LNAV only.",
+    "VDP 1.3 NM to RW03.",
+    "Procedure NA for arrivals at CHOMP via V26 south Westbound.",
+    "MSA RW03 25 NM: 10000."
+  ]
+}

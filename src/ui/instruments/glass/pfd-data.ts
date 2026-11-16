@@ -9,7 +9,7 @@ import type { BearingSource, NavSourceId } from '../../../sim/nav/source';
 import type { ActiveMinimums } from '../../../sim/scenario/scenario';
 import type { Sensors, SimState } from '../../../sim/state';
 import type { World } from '../../../sim/world';
-import { courseDeviation, glideslopeDeviation } from '../geometry';
+import { courseDeviation, glideslopeDeviation, gpsDeviation, gpsGlidepath } from '../geometry';
 import type {
   AltTapeProps,
   AttitudeProps,
@@ -56,7 +56,15 @@ export function pfdData(
   const brg = (src: BearingSource): BearingInfo | null =>
     src === null
       ? null
-      : bearingInfo(src, src === 'NAV1' ? sensors.nav1 : sensors.nav2, fix, world);
+      : src === 'GPS'
+        ? {
+            source: 'GPS',
+            freqMHz: 0,
+            ident: sensors.gps.activeWaypoint,
+            bearingMagDeg: sensors.gps.flag ? null : sensors.gps.bearingMagDeg,
+            dmeNm: sensors.gps.distanceNm,
+          }
+        : bearingInfo(src, src === 'NAV1' ? sensors.nav1 : sensors.nav2, fix, world);
   const dmeReading = state.radios.dmeSource === 1 ? sensors.nav1 : sensors.nav2;
   const brg1 = brg(state.panel.brg1);
   const brg2 = brg(state.panel.brg2);
@@ -80,8 +88,14 @@ export function pfdData(
       headingBugDeg: state.panel.headingBugDeg,
       courseDeg: cdi.obsDeg,
       cdiSource: state.panel.cdiSource,
-      deviation: courseDeviation(cdi.reading),
-      glideslope: glideslopeDeviation(cdi.reading),
+      deviation: cdi.kind === 'GPS' ? gpsDeviation(cdi.gps) : courseDeviation(cdi.reading),
+      glideslope: cdi.kind === 'GPS' ? gpsGlidepath(cdi.gps) : glideslopeDeviation(cdi.reading),
+      gpsMode:
+        cdi.kind === 'GPS' && !cdi.gps.flag
+          ? [cdi.gps.annunciation ?? cdi.gps.phase, cdi.gps.suspended ? 'SUSP' : null]
+              .filter(Boolean)
+              .join(' ')
+          : null,
       bearing1Deg: brg1?.bearingMagDeg ?? null,
       bearing2Deg: brg2?.bearingMagDeg ?? null,
     },

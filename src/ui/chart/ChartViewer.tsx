@@ -60,9 +60,12 @@ export interface ChartOverlay {
 export function ChartViewer({
   procedure,
   overlay,
+  corner,
 }: {
   procedure: Procedure;
   overlay?: ChartOverlay | undefined;
+  /** Shown over the plate's upper-right corner (e.g. the flight screen's Map/Plate switch). */
+  corner?: ReactNode;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<View>({ x: 0, y: 0, zoom: 1 });
@@ -123,40 +126,43 @@ export function ChartViewer({
       <div className="chart-banner" role="note">
         {TRAINING_DISCLAIMER} · <span data-testid="chart-cycle">{chartCycleText(procedure)}</span>
       </div>
-      <div
-        ref={boxRef}
-        className="chart-box"
-        tabIndex={0}
-        role="img"
-        aria-label={`${procedure.airport} ${procedure.name} approach plate. Drag or use arrow keys to pan, plus and minus to zoom, 0 to fit.`}
-        data-testid="chart"
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={() => (drag.current = null)}
-        onPointerCancel={() => (drag.current = null)}
-        onKeyDown={onKeyDown}
-      >
+      <div className="chart-stage">
         <div
-          className="chart-layer"
-          style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})` }}
+          ref={boxRef}
+          className="chart-box"
+          tabIndex={0}
+          role="img"
+          aria-label={`${procedure.airport} ${procedure.name} approach plate. Drag or use arrow keys to pan, plus and minus to zoom, 0 to fit.`}
+          data-testid="chart"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={() => (drag.current = null)}
+          onPointerCancel={() => (drag.current = null)}
+          onKeyDown={onKeyDown}
         >
-          <img
-            src={`${import.meta.env.BASE_URL}${procedure.chart.image}`}
-            alt=""
-            draggable={false}
-          />
-          {overlay && (
-            <svg
-              className="chart-overlay"
-              viewBox={`0 0 ${overlay.width} ${overlay.height}`}
-              preserveAspectRatio="none"
-              aria-hidden="true"
-              data-testid="chart-overlay"
-            >
-              {overlay.content}
-            </svg>
-          )}
+          <div
+            className="chart-layer"
+            style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})` }}
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}${procedure.chart.image}`}
+              alt=""
+              draggable={false}
+            />
+            {overlay && (
+              <svg
+                className="chart-overlay"
+                viewBox={`0 0 ${overlay.width} ${overlay.height}`}
+                preserveAspectRatio="none"
+                aria-hidden="true"
+                data-testid="chart-overlay"
+              >
+                {overlay.content}
+              </svg>
+            )}
+          </div>
         </div>
+        {corner && <div className="chart-corner">{corner}</div>}
       </div>
       <div className="chart-tools">
         <button type="button" onClick={() => zoomCentre(ZOOM_STEP)} aria-label="Zoom in">

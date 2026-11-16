@@ -1,0 +1,369 @@
+{
+  "id": "kpub-rnav26l",
+  "airport": "KPUB",
+  "runway": "26L",
+  "name": "RNAV (GPS) RWY 26L",
+  "chart": {
+    "number": "AL-334",
+    "amendment": "Amdt 1B",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kpub-rnav26l.png"
+  },
+  "rnav": {
+    "cifp": "KPUB R26L",
+    "waas": { "channel": "53531", "id": "W26A" },
+    "equipment": "RNP APCH-GPS."
+  },
+  "navaids": [],
+  "fixes": {
+    "DRAKE": {
+      "def": { "kind": "waypoint", "id": "DRAKE" },
+      "faaId": "DRAKE",
+      "note": "Feeder fix"
+    },
+    "VIGIL": {
+      "def": { "kind": "waypoint", "id": "VIGIL" },
+      "faaId": "VIGIL",
+      "note": "Feeder fix"
+    },
+    "STAXX": {
+      "def": { "kind": "waypoint", "id": "STAXX" },
+      "faaId": "STAXX",
+      "note": "Feeder fix"
+    },
+    "PUB": {
+      "def": { "kind": "waypoint", "id": "PUB" },
+      "faaId": "PUB",
+      "note": "Pueblo VORTAC, feeder"
+    },
+    "BONUH": { "def": { "kind": "waypoint", "id": "BONUH" }, "faaId": "BONUH", "note": "IAF" },
+    "REDHI": { "def": { "kind": "waypoint", "id": "REDHI" }, "faaId": "REDHI", "note": "IAF" },
+    "ORWAY": { "def": { "kind": "waypoint", "id": "ORWAY" }, "faaId": "ORWAY", "note": "IAF" },
+    "HELER": {
+      "def": { "kind": "waypoint", "id": "HELER" },
+      "faaId": "HELER",
+      "note": "IF/IAF, hold-in-lieu of procedure turn, 210K"
+    },
+    "JIKTA": { "def": { "kind": "waypoint", "id": "JIKTA" }, "faaId": "JIKTA", "note": "FAF" },
+    "RW26L": { "def": { "kind": "waypoint", "id": "RW26L" }, "note": "Missed approach point" },
+    "MERTZ": {
+      "def": { "kind": "waypoint", "id": "MERTZ" },
+      "faaId": "MERTZ",
+      "note": "Missed approach holding fix"
+    }
+  },
+  "transitions": [
+    {
+      "id": "bonuh",
+      "name": "BONUH (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "HELER",
+          "course": { "rnavFrom": "BONUH", "rnavTo": "HELER" },
+          "minAltFt": 7000
+        }
+      ]
+    },
+    {
+      "id": "drake",
+      "name": "DRAKE via BONUH, NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "BONUH",
+          "course": { "rnavFrom": "DRAKE", "rnavTo": "BONUH" },
+          "minAltFt": 7700
+        },
+        {
+          "type": "track",
+          "to": "HELER",
+          "course": { "rnavFrom": "BONUH", "rnavTo": "HELER" },
+          "minAltFt": 7000
+        }
+      ]
+    },
+    {
+      "id": "orway",
+      "name": "ORWAY (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "HELER",
+          "course": { "rnavFrom": "ORWAY", "rnavTo": "HELER" },
+          "minAltFt": 7000
+        }
+      ]
+    },
+    {
+      "id": "redhi",
+      "name": "REDHI (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "HELER",
+          "course": { "rnavFrom": "REDHI", "rnavTo": "HELER" },
+          "minAltFt": 7000
+        }
+      ]
+    },
+    {
+      "id": "staxx",
+      "name": "STAXX via REDHI, NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "REDHI",
+          "course": { "rnavFrom": "STAXX", "rnavTo": "REDHI" },
+          "minAltFt": 7000
+        },
+        {
+          "type": "track",
+          "to": "HELER",
+          "course": { "rnavFrom": "REDHI", "rnavTo": "HELER" },
+          "minAltFt": 7000
+        }
+      ]
+    },
+    {
+      "id": "vigil",
+      "name": "VIGIL via REDHI, NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "REDHI",
+          "course": { "rnavFrom": "VIGIL", "rnavTo": "REDHI" },
+          "minAltFt": 7900
+        },
+        {
+          "type": "track",
+          "to": "HELER",
+          "course": { "rnavFrom": "REDHI", "rnavTo": "HELER" },
+          "minAltFt": 7000
+        }
+      ]
+    },
+    {
+      "id": "pub",
+      "name": "PUB VORTAC 082° to HELER, hold-in-lieu",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "HELER",
+          "course": { "rnavFrom": "PUB", "rnavTo": "HELER" },
+          "flyOver": true,
+          "minAltFt": 7200
+        },
+        {
+          "type": "hold",
+          "fix": "HELER",
+          "inboundCourseMag": 260,
+          "course": { "rnavFix": "HELER", "courseMag": 260.5 },
+          "turn": "R",
+          "legNm": 6,
+          "minAltFt": 7000
+        }
+      ]
+    },
+    {
+      "id": "heler",
+      "name": "HELER (IF/IAF), hold-in-lieu",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "hold",
+          "fix": "HELER",
+          "inboundCourseMag": 260,
+          "course": { "rnavFix": "HELER", "courseMag": 260.5 },
+          "turn": "R",
+          "legNm": 6,
+          "minAltFt": 7000
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "JIKTA",
+      "course": { "rnavFrom": "HELER", "rnavTo": "JIKTA" },
+      "minAltFt": 6600
+    },
+    {
+      "type": "final",
+      "faf": "JIKTA",
+      "course": { "rnavFrom": "JIKTA", "rnavTo": "RW26L" },
+      "fafAltFt": 6600,
+      "gp": { "angleDeg": 3, "tchFt": 60 },
+      "stepDowns": [],
+      "map": { "fix": "RW26L" }
+    }
+  ],
+  "missed": [
+    { "type": "climb", "toAltFt": 4859 },
+    { "type": "direct", "to": "MERTZ", "climbToFt": 7000, "flyOver": true },
+    {
+      "type": "hold",
+      "fix": "MERTZ",
+      "inboundCourseMag": 290,
+      "course": { "rnavFix": "MERTZ", "courseMag": 290 },
+      "turn": "L",
+      "legNm": 7,
+      "minAltFt": 7000
+    }
+  ],
+  "missedText": "Climb to 7000 direct MERTZ and hold.",
+  "minimums": [
+    {
+      "kind": "LPV",
+      "label": "LPV",
+      "A": { "altFt": 4859, "visibilitySm": 0.75 },
+      "B": { "altFt": 4859, "visibilitySm": 0.75 }
+    },
+    {
+      "kind": "LNAV/VNAV",
+      "label": "LNAV/VNAV",
+      "A": { "altFt": 4979, "visibilitySm": 1 },
+      "B": { "altFt": 4979, "visibilitySm": 1 }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": { "altFt": 5100, "visibilitySm": 1 },
+      "B": { "altFt": 5100, "visibilitySm": 1 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "direct-bonuh",
+      "name": "Direct BONUH from the west",
+      "clearance": "Descend and maintain 9300, proceed direct BONUH, cleared RNAV runway 26L approach.",
+      "position": { "kind": "waypoint", "id": "BONUH" },
+      "offset": { "bearingMag": 275, "distanceNm": 10 },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9300, "until": "BONUH" },
+      "headingMag": 50,
+      "iasKt": 100,
+      "transition": "bonuh",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "direct-redhi",
+      "name": "Direct REDHI from the east",
+      "clearance": "Descend and maintain 9300, proceed direct REDHI, cleared RNAV runway 26L approach.",
+      "position": { "kind": "waypoint", "id": "REDHI" },
+      "offset": { "bearingMag": 95, "distanceNm": 10 },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9300, "until": "REDHI" },
+      "headingMag": 230,
+      "iasKt": 100,
+      "transition": "redhi",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "direct-orway",
+      "name": "Direct ORWAY from the north",
+      "clearance": "Descend and maintain 9300, proceed direct ORWAY, cleared RNAV runway 26L approach.",
+      "position": { "kind": "waypoint", "id": "ORWAY" },
+      "offset": { "bearingMag": 10, "distanceNm": 10 },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9300, "until": "ORWAY" },
+      "headingMag": 140,
+      "iasKt": 100,
+      "transition": "orway",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "direct-heler",
+      "name": "Direct HELER from the southeast",
+      "clearance": "Descend and maintain 9300, proceed direct HELER, cleared RNAV runway 26L approach.",
+      "position": { "kind": "waypoint", "id": "HELER" },
+      "offset": { "bearingMag": 120, "distanceNm": 10 },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9300, "until": "HELER" },
+      "headingMag": 260,
+      "iasKt": 100,
+      "transition": "heler",
+      "joinAt": "HELER",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "direct-heler-southwest",
+      "name": "Direct HELER from the southwest",
+      "clearance": "Descend and maintain 9300, proceed direct HELER, cleared RNAV runway 26L approach.",
+      "position": { "kind": "waypoint", "id": "HELER" },
+      "offset": { "bearingMag": 215, "distanceNm": 10 },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9300, "until": "HELER" },
+      "headingMag": 80,
+      "iasKt": 100,
+      "transition": "heler",
+      "joinAt": "HELER",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "direct-heler-northwest",
+      "name": "Direct HELER from the northwest",
+      "clearance": "Descend and maintain 9300, proceed direct HELER, cleared RNAV runway 26L approach.",
+      "position": { "kind": "waypoint", "id": "HELER" },
+      "offset": { "bearingMag": 305, "distanceNm": 10 },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9300, "until": "HELER" },
+      "headingMag": 80,
+      "iasKt": 100,
+      "transition": "heler",
+      "joinAt": "HELER",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "direct-pub",
+      "name": "Direct Pueblo VORTAC from the north",
+      "clearance": "Descend and maintain 9300, proceed direct Pueblo VORTAC, cleared RNAV runway 26L approach via the Pueblo transition.",
+      "position": { "kind": "waypoint", "id": "PUB" },
+      "offset": { "bearingMag": 340, "distanceNm": 10 },
+      "altitudeFt": 11000,
+      "assigned": { "altFt": 9300, "until": "PUB" },
+      "headingMag": 200,
+      "iasKt": 100,
+      "transition": "pub",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 230, maintain 7000 until established on the final approach course, cleared RNAV runway 26L approach.",
+      "position": { "kind": "waypoint", "id": "HELER" },
+      "leadInNm": 3,
+      "altitudeFt": 7000,
+      "assigned": { "altFt": 7000 },
+      "headingMag": 230,
+      "iasKt": 100,
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    }
+  ],
+  "notes": [
+    "RNP APCH-GPS.",
+    "For uncompensated Baro-VNAV systems, LNAV/VNAV NA below -22°C or above 54°C. (This aircraft's WAAS GPS flies LNAV/VNAV on WAAS vertical guidance, so the limits do not apply to it.)",
+    "WAAS channel 53531, W26A. GP 3.00°, TCH 60.",
+    "HELER: maximum 210 KIAS.",
+    "VDP 1.4 NM to RW26L, LNAV only.",
+    "Feeder routes: DRAKE 136° (15.7) to BONUH at or above 7700; VIGIL 036° (21.6) to REDHI at or above 7900; STAXX 346° (12.9) to REDHI at or above 7000; PUB VORTAC 082° (10) to HELER at or above 7200.",
+    "MSA RW26L 25 NM: 9300."
+  ]
+}

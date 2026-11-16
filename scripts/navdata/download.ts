@@ -1,23 +1,31 @@
 /**
- * Download one NASR CSV cycle from the FAA into data/raw/nasr-<cycle>/ (git-ignored) and unzip it.
+ * Download one NASR CSV cycle and the matching CIFP from the FAA into data/raw/nasr-<cycle>/ and
+ * data/raw/cifp-<cycle>/ (git-ignored), and unzip them.
  * Dev-time only; the app never touches the network.
  * Usage: npm run navdata:download -- [--cycle YYYY-MM-DD]
  */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { cycleEffectiveOn, isoDate, nasrCsvUrl, parseIsoDate } from './cycle';
+import { cifpUrl, cycleEffectiveOn, isoDate, nasrCsvUrl, parseIsoDate } from './cycle';
 
 async function main() {
   const i = process.argv.indexOf('--cycle');
   const cycle = i > 0 ? parseIsoDate(process.argv[i + 1] ?? '') : cycleEffectiveOn(new Date());
-  const dir = join('data', 'raw', `nasr-${isoDate(cycle)}`);
-  if (existsSync(join(dir, 'NAV_BASE.csv'))) {
+  await fetchAndUnzip(
+    join('data', 'raw', `nasr-${isoDate(cycle)}`),
+    nasrCsvUrl(cycle),
+    'NAV_BASE.csv',
+  );
+  await fetchAndUnzip(join('data', 'raw', `cifp-${isoDate(cycle)}`), cifpUrl(cycle), 'FAACIFP18');
+}
+
+async function fetchAndUnzip(dir: string, url: string, expected: string) {
+  if (existsSync(join(dir, expected))) {
     console.log(`${dir} already has this cycle; nothing to do.`);
     return;
   }
   mkdirSync(dir, { recursive: true });
-  const url = nasrCsvUrl(cycle);
   console.log(`Downloading ${url}`);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Download failed: HTTP ${res.status} for ${url}`);
@@ -30,8 +38,8 @@ async function main() {
   } catch {
     execFileSync('unzip', ['-o', '-q', zipPath, '-d', dir], { stdio: 'inherit' });
   }
-  if (!existsSync(join(dir, 'NAV_BASE.csv')))
-    throw new Error(`NAV_BASE.csv not found after extracting ${zipPath}`);
+  if (!existsSync(join(dir, expected)))
+    throw new Error(`${expected} not found after extracting ${zipPath}`);
   console.log(`Done: ${dir}`);
 }
 

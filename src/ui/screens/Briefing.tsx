@@ -11,8 +11,10 @@ import {
   buildScenario,
   type PanelKind,
   type WeatherPick,
+  type WaasPick,
   panelOf,
   pickCeiling,
+  pickWaas,
   type Scenario,
   type ScenarioOptions,
 } from '../../sim/scenario/scenario';
@@ -22,6 +24,12 @@ const WEATHER_PICKS: { id: WeatherPick; name: string }[] = [
   { id: 'random', name: 'Surprise me' },
   { id: 'above', name: 'In sight' },
   { id: 'below', name: 'Not in sight' },
+];
+
+const WAAS_PICKS: { id: WaasPick; name: string }[] = [
+  { id: 'random', name: 'Surprise me' },
+  { id: 'available', name: 'Available' },
+  { id: 'unavailable', name: 'Not available (LNAV)' },
 ];
 
 const PANELS: { id: PanelKind; name: string }[] = [
@@ -45,8 +53,14 @@ export function BriefingCard({ scenario, compact }: { scenario: Scenario; compac
       <dl>
         <dt>Weather</dt>
         <dd data-testid="brief-weather">{b.weather}</dd>
-        <dt>Glideslope</dt>
-        <dd data-testid="brief-gs">{b.glideslope}</dd>
+        {/* RNAV equipment is a planning item (which minimums line to expect); in flight the GPS
+            annunciation says which line it is flying, so the flight screen leaves it out. */}
+        {!(compact && scenario.procedure.rnav) && (
+          <>
+            <dt>{scenario.procedure.rnav ? 'Equipment' : 'Glideslope'}</dt>
+            <dd data-testid="brief-gs">{b.glideslope}</dd>
+          </>
+        )}
         {/* On the flight screen these come from the plate. */}
         {!compact && (
           <>
@@ -88,6 +102,11 @@ export function Briefing({
   onFly: (s: Scenario) => void;
 }) {
   const hasGs = procedure.approach.some((l) => l.type === 'final' && !!l.glideslope);
+  // RNAV: a WAAS choice when the plate has a line that needs WAAS (LPV, LNAV/VNAV, LP).
+  const angularLine = procedure.minimums.find((m) =>
+    ['LPV', 'LNAV/VNAV', 'LP'].includes(m.kind),
+  )?.kind;
+  const waasChoice = !!procedure.rnav?.waas && angularLine !== undefined;
   const [opts, setOpts] = useState<ScenarioOptions>({
     startId: procedure.starts[0]!.id,
     ceiling: 'above',
@@ -166,6 +185,24 @@ export function Briefing({
             </label>
           ))}
         </fieldset>
+        {waasChoice && (
+          <fieldset className="choice choice-inline">
+            <legend>WAAS ({angularLine})</legend>
+            {WAAS_PICKS.map((w) => (
+              <label key={w.id}>
+                <input
+                  type="radio"
+                  name="waas"
+                  value={w.id}
+                  checked={(opts.waasPick ?? 'random') === w.id}
+                  onChange={() => set({ waasPick: w.id })}
+                  data-testid={`waas-${w.id}`}
+                />
+                {w.name}
+              </label>
+            ))}
+          </fieldset>
+        )}
         {hasGs && (
           <fieldset className="choice">
             <legend>Glideslope</legend>
@@ -192,6 +229,9 @@ export function Briefing({
                 buildScenario(procedure, NAVDATA, {
                   ...opts,
                   ceiling: pickCeiling(opts.weatherPick, Math.random()),
+                  ...(procedure.rnav
+                    ? { waasAvailable: pickWaas(opts.waasPick, Math.random()) }
+                    : {}),
                 }),
               )
             }

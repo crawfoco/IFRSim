@@ -1,7 +1,10 @@
 /** Resolve chart-style fix definitions to lat/lon using the navdata, and cross-check them. */
 import { magToTrue, normalize360 } from '../sim/geo/angles';
 import { destination, distanceNm, type LatLon } from '../sim/geo/geodesy';
+import { rnavCourseTrueDeg } from '../sim/gps/geometry';
+import { navdataForProcedure, rnavWaypoint } from '../sim/navdata/rnav';
 import type { Localizer, NavData, Navaid, RunwayEnd } from '../sim/navdata/types';
+import { initialBearingTrueDeg } from '../sim/geo/geodesy';
 import type { CourseRef, FixDef, Leg, Procedure } from './schema';
 
 export interface ProcedureContext {
@@ -61,7 +64,7 @@ function onLocAtDme(loc: Localizer, antenna: LatLon, dmeNm: number): LatLon {
 }
 
 export function resolveFixDef(def: FixDef, ctx: ProcedureContext): LatLon {
-  const nav = ctx.navdata;
+  const nav = navdataForProcedure(ctx.navdata, ctx.procedure);
   switch (def.kind) {
     case 'navaid':
       return (nav.navaids[def.navaid] ?? localizer(nav, def.navaid)).position;
@@ -80,6 +83,8 @@ export function resolveFixDef(def: FixDef, ctx: ProcedureContext): LatLon {
       const r = runwayEndFor(nav, ctx.procedure.airport, ctx.procedure.runway);
       return r.displacedThreshold?.position ?? r.threshold;
     }
+    case 'waypoint':
+      return rnavWaypoint(nav, def.id).position;
   }
 }
 
@@ -91,12 +96,22 @@ export function resolveFixes(p: Procedure, navdata: NavData): Record<string, Lat
   );
 }
 
-/** Course reference as a true course at its station plus the station it is flown on. */
+/**
+ * Course reference as a true course at its station (VOR, LOC) or at the fix it is flown to
+ * (RNAV).
+ */
 export function courseTrueDeg(ref: CourseRef, navdata: NavData): number {
   if ('loc' in ref) {
     const l = localizer(navdata, ref.loc);
     return magToTrue(l.courseMagDeg, l.magVarEastDeg);
   }
+  if ('rnavFrom' in ref) {
+    const to = rnavWaypoint(navdata, ref.rnavTo).position;
+    return normalize360(
+      initialBearingTrueDeg(to, rnavWaypoint(navdata, ref.rnavFrom).position) + 180,
+    );
+  }
+  if ('rnavFix' in ref) return rnavCourseTrueDeg(ref, navdata);
   return magToTrue(ref.courseMag, navaid(navdata, ref.navaid).declinationEastDeg);
 }
 
@@ -154,6 +169,7 @@ function fixDmeSource(def: FixDef): string | null {
       return def.dmeFrom ?? def.loc;
     case 'navaid':
     case 'threshold':
+    case 'waypoint':
       return null;
   }
 }

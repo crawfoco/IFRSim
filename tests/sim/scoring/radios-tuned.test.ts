@@ -100,6 +100,7 @@ describe('ident rule: navaid stays tuned while its leg is flown', () => {
     f.send({ type: 'altPreselect', ft: 7000 });
     f.wait(0.1);
     f.send({ type: 'button', button: 'ALT' });
+    f.descendOrClimb(7000, -1000); // from 9000: descend and maintain 7000
     f.tune(1, 114.2, 136); // GLL, outbound on R-136
     f.tune(2, 110.3, 350); // I-DCI, ready for the final
     f.send({ type: 'button', button: 'NAV' });

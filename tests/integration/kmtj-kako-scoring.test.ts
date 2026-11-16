@@ -6,6 +6,8 @@ import { describe, expect, it } from 'vitest';
 import { NAVDATA, procedureById } from '../../src/procedures';
 import { buildScenario } from '../../src/sim/scenario/scenario';
 import type { FlightAnalysis } from '../../src/sim/scoring/analyze';
+import { trueToMag } from '../../src/sim/geo/angles';
+import { initialBearingTrueDeg } from '../../src/sim/geo/geodesy';
 import { Flight } from '../sim/scripted';
 
 const failed = (a: FlightAnalysis) => a.items.filter((x) => x.status === 'fail').map((x) => x.id);
@@ -61,13 +63,22 @@ describe('KMTJ ILS 17: procedure turn at BRUUK (over MTJ start)', () => {
         gsOutOfService: false,
       }),
     );
+    // Vectored north, west of MTJ: turn for the VOR, track to it, then outbound on R-349.
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
-    f.send({ type: 'altPreselect', ft: 12500 });
+    f.send({ type: 'headingBug', deg: 20 }, { type: 'altPreselect', ft: 14500 });
     f.wait(0.1);
-    f.send({ type: 'button', button: 'ALT' }, { type: 'course', radio: 1, deg: 349 });
+    f.send({ type: 'button', button: 'ALT' });
+    f.descendOrClimb(12500, -1000); // the assigned altitude, from 14500
     f.send({ type: 'ident', radio: 1 }, { type: 'dmeSource', radio: 1 }); // MTJ on NAV1
     f.tune(2, 111.3, 168); // I-MTJ on NAV2 for now
-    f.send({ type: 'button', button: 'NAV' }); // already on heading 349 over MTJ
+    const toMtj = () => Math.round((f.radialFrom('MTJ').radial + 180) % 360);
+    f.turn(toMtj());
+    f.send({ type: 'course', radio: 1, deg: toMtj() }, { type: 'button', button: 'NAV' });
+    f.crossFix('MTJ', 1.0, 900);
+    // Over MTJ heading ~070: left turn onto R-349, intercepting it from the right (east).
+    f.send({ type: 'course', radio: 1, deg: 349 });
+    f.turn(319);
+    f.send({ type: 'button', button: 'NAV' });
     f.crossFix('BRUUK', 1.0, 900);
     // PT: a minute outbound on 348, left to the 303 barb for a minute, right turn to 123.
     f.turn(348);
@@ -107,8 +118,9 @@ describe('KAKO VOR 29: barbed procedure turn at AKO', () => {
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
     f.tune(1, 114.4, 135);
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(6000, -500);
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
     f.crossFix('AKO', 1.0, 600);
+    f.descendOrClimb(6000, -500); // over the IAF: down to the 6000 PT altitude
     // Outbound on R-110: heading 110, then NAV (pressing NAV while in NAV would cancel it).
     f.send({ type: 'course', radio: 1, deg: 110 });
     f.turn(110);
@@ -186,6 +198,126 @@ describe('KAKO VOR 29: barbed procedure turn at AKO', () => {
   });
 });
 
+/** Steer in HDG mode straight for a fix (radar vectors / own navigation) until within `nm`. */
+function steerTo(f: Flight, fix: string, nm: number, maxS = 1200) {
+  const mv = f.sc.world.magVarEastDeg;
+  if (f.r.state.ap.lateral !== 'HDG') f.send({ type: 'button', button: 'HDG' });
+  for (let i = 0; i < maxS / 5; i++) {
+    if (f.distTo(fix) <= nm) return;
+    const brg = initialBearingTrueDeg(f.r.state.aircraft.position, f.sc.fixes[fix]!);
+    f.send({ type: 'headingBug', deg: Math.round(trueToMag(brg, mv)) });
+    f.wait(5);
+  }
+  expect.fail(`did not reach ${fix}`);
+}
+
+describe('Offset starts nearly straight in: the course reversal is still required', () => {
+  it('KMTJ direct-bruuk, bad run: straight in over BRUUK without the procedure turn', () => {
+    const f = new Flight(
+      buildScenario(procedureById('kmtj-ils17')!, NAVDATA, {
+        startId: 'direct-bruuk',
+        ceiling: 'above',
+        gsOutOfService: false,
+      }),
+    );
+    f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
+    f.send({ type: 'headingBug', deg: 200 }, { type: 'altPreselect', ft: 14500 });
+    f.wait(0.1);
+    f.send({ type: 'button', button: 'ALT' });
+    f.descendOrClimb(12500, -1000); // the assigned altitude, from 14500
+    f.tune(1, 111.3, 168);
+    f.send({ type: 'dmeSource', radio: 2 }, { type: 'ident', radio: 2 });
+    steerTo(f, 'BRUUK', 3);
+    // Arriving heading ~150, 18° off the localizer: joins it and carries straight on.
+    f.send({ type: 'button', button: 'APR' });
+    const dev = () => Math.abs(f.sensors.nav1.indication?.deviationDeg ?? 10);
+    expect(f.until(() => f.r.state.ap.lateral === 'APR' && dev() < 0.5, 600)).toBe(true);
+    f.descendOrClimb(8100, -1500); // high: down to the GS intercept altitude
+    expect(f.until(() => f.progress.phase === 'ended', 900)).toBe(true);
+    const a = f.analyze();
+    expect(failed(a), summary(a)).toEqual(['fix-order']);
+    expect(a.items.find((x) => x.id === 'fix-order')!.measured).toMatch(/Skipped: .*BRUUK/);
+  });
+
+  it('KAKO direct-ako-east, bad run: the shorter (left) turn outbound puts the PT on the wrong side', () => {
+    const f = new Flight(
+      buildScenario(procedureById('kako-vor29')!, NAVDATA, {
+        startId: 'direct-ako-east',
+        ceiling: 'above',
+        gsOutOfService: false,
+      }),
+    );
+    f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
+    f.send({ type: 'headingBug', deg: 210 }, { type: 'altPreselect', ft: 9000 });
+    f.wait(0.1);
+    f.send({ type: 'button', button: 'ALT' });
+    f.tune(1, 114.4);
+    const toAko = () => Math.round((f.radialFrom('AKO').radial + 180) % 360);
+    f.turn(toAko());
+    f.send({ type: 'course', radio: 1, deg: toAko() }, { type: 'button', button: 'NAV' });
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
+    f.crossFix('AKO', 1.0, 600);
+    f.descendOrClimb(6000, -500); // over the IAF: down to the 6000 PT altitude
+    // Over AKO heading ~255: the shorter, left turn round to R-110 outbound ends south of
+    // it, and the PT is flown on that (wrong) side: barb 155, left turn back to 335.
+    f.send({ type: 'course', radio: 1, deg: 110 });
+    f.turn(180, 80);
+    f.send({ type: 'button', button: 'NAV' });
+    const dev = () => Math.abs(f.sensors.nav1.indication?.deviationDeg ?? 10);
+    expect(f.until(() => f.r.state.ap.lateral === 'NAV' && dev() < 1, 300)).toBe(true);
+    f.wait(60);
+    f.turn(155);
+    f.wait(60);
+    f.turn(65, 335);
+    f.send({ type: 'course', radio: 1, deg: 290 }, { type: 'button', button: 'NAV' });
+    expect(f.until(() => f.r.state.ap.lateral === 'NAV' && dev() < 1, 300)).toBe(true);
+    f.descendOrClimb(5300, -500);
+    f.crossFix('AKO', 1.0, 600);
+    f.send({ type: 'course', radio: 1, deg: 289 });
+    f.descendOrClimb(5100, -700);
+    expect(f.until(() => f.progress.phase === 'ended', 600)).toBe(true);
+    const a = f.analyze();
+    expect(failed(a), summary(a)).toEqual(['procedure-turn:AKO:0']);
+    expect(a.items.find((x) => x.id === 'procedure-turn:AKO:0')!.measured).toMatch(/wrong side/);
+  });
+
+  // AKO is both the PT fix and the FAF, with the MAP 1.7 NM beyond: the skipped PT must be
+  // caught within the final segment (the sequencer decides 1 NM past the fix).
+  it('KAKO direct-ako-east, bad run: straight in over AKO without the procedure turn', () => {
+    const f = new Flight(
+      buildScenario(procedureById('kako-vor29')!, NAVDATA, {
+        startId: 'direct-ako-east',
+        ceiling: 'above',
+        gsOutOfService: false,
+      }),
+    );
+    f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
+    f.send({ type: 'headingBug', deg: 210 }, { type: 'altPreselect', ft: 9000 });
+    f.wait(0.1);
+    f.send({ type: 'button', button: 'ALT' });
+    f.tune(1, 114.4);
+    const toAko = () => Math.round((f.radialFrom('AKO').radial + 180) % 360);
+    f.turn(toAko());
+    f.send({ type: 'course', radio: 1, deg: toAko() }, { type: 'button', button: 'NAV' });
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
+    // Planning a straight-in, the pilot is already down to the 6000 PT altitude at AKO.
+    expect(f.until(() => f.distTo('AKO') < 4, 600)).toBe(true);
+    f.descendOrClimb(6000, -1000);
+    f.crossFix('AKO', 1.0, 600);
+    // Over AKO heading ~255: straight onto the final course, R-289, and down to the MDA.
+    f.send({ type: 'course', radio: 1, deg: 289 });
+    f.turn(289);
+    f.send({ type: 'button', button: 'NAV' });
+    f.descendOrClimb(5100, -1000);
+    expect(f.until(() => f.progress.phase === 'ended', 600)).toBe(true);
+    const a = f.analyze();
+    // Crossing the FAF ~35° off R-289 and turning onto it there is also off the final course.
+    // Down to the PT altitude before AKO is also below the assigned 7000 (assigned-altitude).
+    expect(failed(a), summary(a)).toEqual(['fix-order', 'assigned-altitude', 'final-course']);
+    expect(a.items.find((x) => x.id === 'fix-order')!.measured).toMatch(/Skipped: .*AKO/);
+  });
+});
+
 describe('KGXY ILS 35: fixes flown in order', () => {
   const sc = () =>
     buildScenario(procedureById('kgxy-ils35')!, NAVDATA, {
@@ -204,7 +336,9 @@ describe('KGXY ILS 35: fixes flown in order', () => {
     f.tune(2, 110.3, 350); // I-DCI on NAV2 for now
     f.turn(177);
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(7000, -500);
+    f.descendOrClimb(9000, -1000); // from 11000: descend and maintain 9000 to GLL
+    f.crossFix('GLL', 1.0, 600);
+    f.descendOrClimb(7000, -1000); // on the feeder: down to its 7000 minimum
     // Turn back early, 12.5 NM out (BUFFS is 1.5 NM west of the feeder), instead of
     // continuing to WELDS (5 NM further) and flying the hold-in-lieu.
     expect(f.until(() => f.distTo('GLL') > 12.5, 900)).toBe(true);

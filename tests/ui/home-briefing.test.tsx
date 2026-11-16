@@ -103,3 +103,13 @@ describe('briefing choices', () => {
     expect(html).toContain('data-testid="panel-glass"');
   });
 });
+
+describe('approach list order', () => {
+  it('lists the approaches alphabetically by airport', () => {
+    const html = renderToStaticMarkup(<Select procedures={PROCEDURES} onPick={() => {}} />);
+    const airports = [...html.matchAll(/class="select-airport">([^<]*)</g)].map((m) => m[1]!);
+    expect(airports).toHaveLength(PROCEDURES.length);
+    expect(airports).toEqual([...airports].sort());
+    expect(airports[0]).toBe('KAKO');
+  });
+});

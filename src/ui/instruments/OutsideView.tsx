@@ -69,7 +69,8 @@ export function OutsideView({
         ? 0.18
         : 0;
   const rwy = view.runway ? runwayPolygon(view.runway) : null;
-  const text = `${LABEL[layer]}${view.runwayInSight ? ', runway in sight' : ''}`;
+  const inSightText = view.circling ? ', airport in sight' : ', runway in sight';
+  const text = `${LABEL[layer]}${view.runwayInSight ? inSightText : ''}`;
   return (
     <figure
       className="outside"

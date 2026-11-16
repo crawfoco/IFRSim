@@ -1,4 +1,4 @@
-/** Stopwatch for holds, procedure turns and FAF-to-MAP timing. */
+/** Stopwatch for holds, procedure turns and FAF-to-MAP timing: the time, Start/Stop and Reset below. */
 import type { SimState } from '../../sim/state';
 import type { Send } from './controls';
 
@@ -14,22 +14,24 @@ export function Timer({ state, send }: { state: SimState; send: Send }) {
       <span className="timer-value" data-testid="timer-value" aria-live="off">
         {formatTimer(elapsedS)}
       </span>
-      <button
-        type="button"
-        className="seg-btn"
-        data-testid="timer-startstop"
-        onClick={() => send({ type: 'timer', action: 'startStop' })}
-      >
-        {running ? 'Stop' : 'Start'}
-      </button>
-      <button
-        type="button"
-        className="seg-btn"
-        data-testid="timer-reset"
-        onClick={() => send({ type: 'timer', action: 'reset' })}
-      >
-        Reset
-      </button>
+      <div className="timer-btns">
+        <button
+          type="button"
+          className="seg-btn"
+          data-testid="timer-startstop"
+          onClick={() => send({ type: 'timer', action: 'startStop' })}
+        >
+          {running ? 'Stop' : 'Start'}
+        </button>
+        <button
+          type="button"
+          className="seg-btn"
+          data-testid="timer-reset"
+          onClick={() => send({ type: 'timer', action: 'reset' })}
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }

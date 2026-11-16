@@ -1,0 +1,317 @@
+{
+  "id": "kals-rnav2",
+  "airport": "KALS",
+  "runway": "02",
+  "name": "RNAV (GPS) RWY 2",
+  "chart": {
+    "number": "AL-18",
+    "amendment": "Amdt 2",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kals-rnav2.png"
+  },
+  "rnav": {
+    "cifp": "KALS R02",
+    "waas": { "channel": "90410", "id": "W02A" },
+    "equipment": "RNP APCH-GPS."
+  },
+  "navaids": [],
+  "fixes": {
+    "GEMKY": {
+      "def": { "kind": "waypoint", "id": "GEMKY" },
+      "faaId": "GEMKY",
+      "note": "IAF, 210K"
+    },
+    "WAPRE": {
+      "def": { "kind": "waypoint", "id": "WAPRE" },
+      "faaId": "WAPRE",
+      "note": "IAF, 210K"
+    },
+    "ZOTOS": {
+      "def": { "kind": "waypoint", "id": "ZOTOS" },
+      "faaId": "ZOTOS",
+      "note": "Feeder fix"
+    },
+    "VEPUY": {
+      "def": { "kind": "waypoint", "id": "VEPUY" },
+      "faaId": "VEPUY",
+      "note": "IAF, 210K"
+    },
+    "ALS": {
+      "def": { "kind": "waypoint", "id": "ALS" },
+      "faaId": "ALS",
+      "note": "Alamosa VORTAC, feeder"
+    },
+    "RODDS": {
+      "def": { "kind": "waypoint", "id": "RODDS" },
+      "faaId": "RODDS",
+      "note": "IF/IAF, hold-in-lieu of procedure turn"
+    },
+    "KROWZ": { "def": { "kind": "waypoint", "id": "KROWZ" }, "faaId": "KROWZ" },
+    "BREZE": { "def": { "kind": "waypoint", "id": "BREZE" }, "faaId": "BREZE", "note": "FAF" },
+    "XOGSY": {
+      "def": { "kind": "waypoint", "id": "XOGSY" },
+      "faaId": "XOGSY",
+      "note": "Step-down fix, 1.7 NM to RW02"
+    },
+    "RW02": { "def": { "kind": "waypoint", "id": "RW02" }, "note": "Missed approach point" },
+    "APKOW": { "def": { "kind": "waypoint", "id": "APKOW" }, "faaId": "APKOW" },
+    "ICORY": {
+      "def": { "kind": "waypoint", "id": "ICORY" },
+      "faaId": "ICORY",
+      "note": "Missed approach holding fix"
+    }
+  },
+  "transitions": [
+    {
+      "id": "gemky",
+      "name": "GEMKY (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "RODDS",
+          "course": { "rnavFrom": "GEMKY", "rnavTo": "RODDS" },
+          "minAltFt": 12200
+        }
+      ]
+    },
+    {
+      "id": "wapre",
+      "name": "WAPRE (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "RODDS",
+          "course": { "rnavFrom": "WAPRE", "rnavTo": "RODDS" },
+          "minAltFt": 12200
+        }
+      ]
+    },
+    {
+      "id": "vepuy",
+      "name": "VEPUY (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "RODDS",
+          "course": { "rnavFrom": "VEPUY", "rnavTo": "RODDS" },
+          "minAltFt": 12200
+        }
+      ]
+    },
+    {
+      "id": "zotos",
+      "name": "ZOTOS via VEPUY (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "VEPUY",
+          "course": { "rnavFrom": "ZOTOS", "rnavTo": "VEPUY" },
+          "minAltFt": 12200
+        },
+        {
+          "type": "track",
+          "to": "RODDS",
+          "course": { "rnavFrom": "VEPUY", "rnavTo": "RODDS" },
+          "minAltFt": 12200
+        }
+      ]
+    },
+    {
+      "id": "als",
+      "name": "ALS VORTAC 223° to RODDS, hold-in-lieu",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "RODDS",
+          "course": { "rnavFrom": "ALS", "rnavTo": "RODDS" },
+          "flyOver": true,
+          "minAltFt": 12200
+        },
+        {
+          "type": "hold",
+          "fix": "RODDS",
+          "inboundCourseMag": 32,
+          "course": { "rnavFix": "RODDS", "courseMag": 31.7 },
+          "turn": "R",
+          "legNm": 7,
+          "minAltFt": 12200,
+          "maxAltFt": 14000
+        }
+      ]
+    },
+    {
+      "id": "rodds",
+      "name": "RODDS (IF/IAF), hold-in-lieu",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "hold",
+          "fix": "RODDS",
+          "inboundCourseMag": 32,
+          "course": { "rnavFix": "RODDS", "courseMag": 31.7 },
+          "turn": "R",
+          "legNm": 7,
+          "minAltFt": 12200,
+          "maxAltFt": 14000
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "KROWZ",
+      "course": { "rnavFrom": "RODDS", "rnavTo": "KROWZ" },
+      "minAltFt": 9900
+    },
+    {
+      "type": "track",
+      "to": "BREZE",
+      "course": { "rnavFrom": "KROWZ", "rnavTo": "BREZE" },
+      "minAltFt": 9300
+    },
+    {
+      "type": "final",
+      "faf": "BREZE",
+      "course": { "rnavFrom": "BREZE", "rnavTo": "RW02" },
+      "fafAltFt": 9300,
+      "gp": { "angleDeg": 3, "tchFt": 48 },
+      "stepDowns": [{ "fix": "XOGSY", "minAltFt": 8140, "lnavOnly": true }],
+      "map": { "fix": "RW02" }
+    }
+  ],
+  "missed": [
+    { "type": "climb", "toAltFt": 7740 },
+    { "type": "direct", "to": "APKOW", "climbToFt": 14600 },
+    {
+      "type": "track",
+      "to": "ICORY",
+      "course": { "rnavFrom": "APKOW", "rnavTo": "ICORY" },
+      "minAltFt": 14600,
+      "flyOver": true
+    },
+    {
+      "type": "hold",
+      "fix": "ICORY",
+      "inboundCourseMag": 317,
+      "course": { "rnavFix": "ICORY", "courseMag": 317.1 },
+      "turn": "R",
+      "legNm": 9,
+      "climbInHold": true,
+      "minAltFt": 14600
+    }
+  ],
+  "missedText": "Climb to 14600 direct APKOW and on track 317° to ICORY and hold, continue climb-in-hold to 14600.",
+  "minimums": [
+    {
+      "kind": "LPV",
+      "label": "LPV",
+      "A": { "altFt": 7740, "visibilitySm": 0.5 },
+      "B": { "altFt": 7740, "visibilitySm": 0.5 }
+    },
+    {
+      "kind": "LNAV/VNAV",
+      "label": "LNAV/VNAV",
+      "A": { "altFt": 7790, "visibilitySm": 0.5 },
+      "B": { "altFt": 7790, "visibilitySm": 0.5 }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": { "altFt": 7880, "visibilitySm": 0.5 },
+      "B": { "altFt": 7880, "visibilitySm": 0.5 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "direct-gemky",
+      "name": "Direct GEMKY from the north",
+      "clearance": "Descend and maintain 15600, proceed direct GEMKY, cleared RNAV runway 2 approach.",
+      "position": { "kind": "waypoint", "id": "GEMKY" },
+      "offset": { "bearingMag": 350, "distanceNm": 10 },
+      "altitudeFt": 17600,
+      "assigned": { "altFt": 15600, "until": "GEMKY" },
+      "headingMag": 120,
+      "iasKt": 100,
+      "transition": "gemky",
+      "nav1MHz": 113.9,
+      "nav2MHz": 113.9
+    },
+    {
+      "id": "direct-vepuy",
+      "name": "Direct VEPUY from the west",
+      "clearance": "Descend and maintain 15600, proceed direct VEPUY, cleared RNAV runway 2 approach.",
+      "position": { "kind": "waypoint", "id": "VEPUY" },
+      "offset": { "bearingMag": 265, "distanceNm": 10 },
+      "altitudeFt": 17600,
+      "assigned": { "altFt": 15600, "until": "VEPUY" },
+      "headingMag": 30,
+      "iasKt": 100,
+      "transition": "vepuy",
+      "nav1MHz": 113.9,
+      "nav2MHz": 113.9
+    },
+    {
+      "id": "direct-als",
+      "name": "Direct Alamosa VORTAC from the east",
+      "clearance": "Descend and maintain 15600, proceed direct Alamosa VORTAC, cleared RNAV runway 2 approach via the Alamosa transition.",
+      "position": { "kind": "waypoint", "id": "ALS" },
+      "offset": { "bearingMag": 80, "distanceNm": 10 },
+      "altitudeFt": 17600,
+      "assigned": { "altFt": 15600, "until": "ALS" },
+      "headingMag": 210,
+      "iasKt": 100,
+      "transition": "als",
+      "nav1MHz": 113.9,
+      "nav2MHz": 113.9
+    },
+    {
+      "id": "direct-rodds",
+      "name": "Direct RODDS from the north",
+      "clearance": "Descend and maintain 14000, proceed direct RODDS, cleared RNAV runway 2 approach.",
+      "position": { "kind": "waypoint", "id": "RODDS" },
+      "offset": { "bearingMag": 350, "distanceNm": 10 },
+      "altitudeFt": 16000,
+      "assigned": { "altFt": 14000, "until": "RODDS" },
+      "headingMag": 110,
+      "iasKt": 100,
+      "transition": "rodds",
+      "joinAt": "RODDS",
+      "nav1MHz": 113.9,
+      "nav2MHz": 113.9
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 060, maintain 12200 until established on the final approach course, cleared RNAV runway 2 approach.",
+      "position": { "kind": "waypoint", "id": "RODDS" },
+      "leadInNm": 3,
+      "altitudeFt": 12200,
+      "assigned": { "altFt": 12200 },
+      "headingMag": 60,
+      "iasKt": 100,
+      "nav1MHz": 113.9,
+      "nav2MHz": 113.9
+    }
+  ],
+  "notes": [
+    "RNP APCH-GPS.",
+    "Cold temperature restricted airport: -25°C.",
+    "For uncompensated Baro-VNAV systems, LNAV/VNAV NA below -31°C or above 54°C. (This aircraft's WAAS GPS flies LNAV/VNAV on WAAS vertical guidance, so the limits do not apply to it.)",
+    "For inop ALS, increase LNAV/VNAV all Cats visibility to ¾ SM.",
+    "WAAS channel 90410, W02A. GP 3.00°, TCH 48.",
+    "GEMKY, WAPRE and VEPUY: maximum 210 KIAS.",
+    "Feeder routes: ZOTOS 295° (8.4) to VEPUY at or above 12200; Alamosa VORTAC (ALS) 223° (14) to RODDS at or above 12200 (not NoPT: the hold-in-lieu at RODDS is required).",
+    "XOGSY (1.7 NM to RW02) minimum 8140 applies to LNAV only (CIFP).",
+    "VDP 0.9 NM to RW02.",
+    "Procedure NA for arrivals at WAPRE on V368 southwest bound.",
+    "Circling: Cat A and B 8040-1.",
+    "MSA RW02 25 NM: 15600."
+  ]
+}

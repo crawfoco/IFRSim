@@ -27,7 +27,12 @@ describe('KAKO VOR RWY 29 encoding', () => {
       maxDistanceNm: 10,
       minAltFt: 6000,
     });
-    expect(p.starts.map((s) => s.id)).toEqual(['direct-ako', 'north-arc', 'south-arc']);
+    expect(p.starts.map((s) => s.id)).toEqual([
+      'direct-ako',
+      'direct-ako-east',
+      'north-arc',
+      'south-arc',
+    ]);
   });
 
   it('has no navdata issues', () => {

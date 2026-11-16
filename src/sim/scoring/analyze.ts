@@ -2,6 +2,7 @@
  * Flight analysis: replay the recorded flight step by step, feed the leg sequencer and the
  * scoring rules, and produce the score table, a timeline and the data for the debrief.
  */
+import { sourceLabel } from '../nav/source';
 import { annunciation } from '../autopilot/modes';
 import { applyCommand } from '../commands';
 import { DT, step } from '../loop';
@@ -11,6 +12,7 @@ import type { Scenario } from '../scenario/scenario';
 import { sense } from '../sensors';
 import type { Command, SimState } from '../state';
 import { decision, segmentMinimum, segmentMinimums } from './rules/altitude';
+import { assignedAltitude } from './rules/assigned';
 import { finalCourse, glideslope } from './rules/course';
 import { locCourseSetting } from './rules/loc-crs';
 import { movingMap } from './rules/map';
@@ -18,6 +20,14 @@ import { dmeSource, tuneAndIdentify } from './rules/radios';
 import { climbInHold, holdMaxAltitude, holdTiming } from './rules/hold';
 import { holdEntry, noPtReversal, procedureTurn } from './rules/reversal';
 import { fixOrder, missedApproach } from './rules/sequence';
+import {
+  glidepath,
+  gpsApproachActive,
+  gpsApproachMode,
+  missedHold,
+  missedSequencing,
+} from './rules/gps';
+import { taaRules } from './rules/taa';
 import type { Rule, ScoreItem, StepContext } from './rules/types';
 import { clock } from './rules/types';
 import { initialSequencer, stepSequencer, type SequencerState } from './sequencer';
@@ -26,17 +36,24 @@ import { initialSequencer, stepSequencer, type SequencerState } from './sequence
 const RULES: Rule<unknown>[] = [
   tuneAndIdentify,
   dmeSource,
+  gpsApproachActive,
   fixOrder,
+  assignedAltitude,
   segmentMinimums,
+  taaRules,
   holdEntry,
   holdTiming,
   holdMaxAltitude,
   climbInHold,
   procedureTurn,
+  gpsApproachMode,
   finalCourse,
   glideslope,
+  glidepath,
   decision,
   missedApproach,
+  missedSequencing,
+  missedHold,
   noPtReversal,
   locCourseSetting,
   movingMap,
@@ -73,15 +90,23 @@ function modeText(s: SimState): string {
   return `AP ${a.lateral} / ${a.vertical}${armed ? ` (armed ${armed})` : ''}`;
 }
 
-const VLOC = { NAV1: 'VLOC1', NAV2: 'VLOC2' } as const;
-
 /** Timeline text for a command, given the state after it was applied. */
 function commandText(c: Command, after: SimState): string | null {
   switch (c.type) {
     case 'syncHeadingBug':
       return `HDG bug synced to ${String(after.panel.headingBugDeg || 360).padStart(3, '0')}`;
     case 'cdi':
-      return `CDI ${VLOC[after.panel.cdiSource]}`;
+      return `CDI ${sourceLabel(after.panel.cdiSource)}`;
+    case 'cdiSet':
+      return `CDI ${sourceLabel(after.panel.cdiSource)}`;
+    case 'gpsLoad':
+      return `GPS: approach loaded via ${c.transition === 'VTF' ? 'vectors to final' : c.transition}${c.hold === undefined ? '' : c.hold ? ' (with hold)' : ' (no hold)'}`;
+    case 'gpsActivate':
+      return 'GPS: approach activated';
+    case 'gpsDirect':
+      return `GPS: direct ${c.fix}`;
+    case 'gpsSusp':
+      return after.gps.missedArmed ? 'GPS: SUSP (missed approach armed)' : 'GPS: SUSP';
     case 'bearing': {
       const src = c.pointer === 1 ? after.panel.brg1 : after.panel.brg2;
       return `BRG${c.pointer} ${src ?? 'off'}`;

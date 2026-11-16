@@ -1,0 +1,155 @@
+{
+  "id": "kcez-vor21",
+  "airport": "KCEZ",
+  "runway": "21",
+  "name": "VOR RWY 21",
+  "chart": {
+    "number": "AL-112",
+    "amendment": "Amdt 5C",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kcez-vor21.png"
+  },
+  "navaids": ["CEZ"],
+  "fixes": {
+    "CEZ": {
+      "def": { "kind": "navaid", "navaid": "CEZ" },
+      "faaId": "CEZ",
+      "note": "IAF and FAF (final flown FROM the station on R-196)"
+    },
+    "CEZ 5.5": {
+      "def": { "kind": "radialDme", "navaid": "CEZ", "radialMag": 196, "dmeNm": 5.5 },
+      "note": "Missed approach point, CEZ R-196 at 5.5 DME (runway 21 threshold)"
+    },
+    "RW21": { "def": { "kind": "threshold" } }
+  },
+  "transitions": [
+    {
+      "id": "cez-pt",
+      "name": "From CEZ, procedure turn on R-350",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "procedureTurn",
+          "fix": "CEZ",
+          "course": { "navaid": "CEZ", "courseMag": 170, "toFrom": "TO" },
+          "outboundCourseMag": 350,
+          "barbHeadingMag": 305,
+          "inboundCourseMag": 170,
+          "side": "L",
+          "maxDistanceNm": 10,
+          "minAltFt": 9800,
+          "inboundMinAltFt": 8000
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "final",
+      "faf": "CEZ",
+      "course": { "navaid": "CEZ", "courseMag": 196, "toFrom": "FROM" },
+      "fafAltFt": 8000,
+      "stepDowns": [],
+      "map": {
+        "fix": "CEZ 5.5",
+        "timing": [
+          { "groundspeedKt": 60, "seconds": 330 },
+          { "groundspeedKt": 90, "seconds": 220 },
+          { "groundspeedKt": 120, "seconds": 165 },
+          { "groundspeedKt": 150, "seconds": 132 },
+          { "groundspeedKt": 180, "seconds": 110 }
+        ]
+      },
+      "descentAngle": { "angleDeg": 3.49, "tchFt": 50 }
+    }
+  ],
+  "missed": [
+    { "type": "direct", "to": "CEZ", "turn": "R", "climbToFt": 9800 },
+    {
+      "type": "hold",
+      "fix": "CEZ",
+      "inboundCourseMag": 170,
+      "course": { "navaid": "CEZ", "courseMag": 170, "toFrom": "TO" },
+      "turn": "R",
+      "legMinutes": 1,
+      "minAltFt": 9800
+    }
+  ],
+  "missedText": "Climbing right turn to 9800 direct CEZ VOR/DME and hold.",
+  "minimums": [
+    {
+      "kind": "VOR",
+      "label": "S-21",
+      "A": { "altFt": 6660, "visibilitySm": 1 },
+      "B": { "altFt": 6660, "visibilitySm": 1.25 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to the CEZ R-350 inbound",
+      "clearance": "Fly heading 140, maintain 8000 until established on the Cortez 350 radial, cleared VOR runway 21 approach.",
+      "position": { "kind": "radialDme", "navaid": "CEZ", "radialMag": 340, "dmeNm": 12 },
+      "altitudeFt": 8000,
+      "assigned": { "altFt": 8000, "until": "CEZ" },
+      "headingMag": 140,
+      "iasKt": 100,
+      "nav1MHz": 114.35,
+      "nav2MHz": 114.35
+    },
+    {
+      "id": "direct-cez-south",
+      "name": "Direct CEZ from the south-southeast",
+      "clearance": "Descend and maintain 10000, proceed direct Cortez, cleared VOR runway 21 approach.",
+      "position": { "kind": "navaid", "navaid": "CEZ" },
+      "offset": { "bearingMag": 160, "distanceNm": 12 },
+      "altitudeFt": 12000,
+      "assigned": { "altFt": 10000, "until": "CEZ" },
+      "headingMag": 20,
+      "iasKt": 100,
+      "transition": "cez-pt",
+      "nav1MHz": 117.1,
+      "nav2MHz": 117.1
+    },
+    {
+      "id": "direct-cez-north",
+      "name": "Direct CEZ from the north",
+      "clearance": "Descend and maintain 11000, proceed direct Cortez, cleared VOR runway 21 approach.",
+      "position": { "kind": "navaid", "navaid": "CEZ" },
+      "offset": { "bearingMag": 10, "distanceNm": 12 },
+      "altitudeFt": 13000,
+      "assigned": { "altFt": 11000, "until": "CEZ" },
+      "headingMag": 230,
+      "iasKt": 100,
+      "transition": "cez-pt",
+      "nav1MHz": 117.1,
+      "nav2MHz": 117.1
+    },
+    {
+      "id": "direct-cez-west",
+      "name": "Direct CEZ from the west",
+      "clearance": "Descend and maintain 11000, proceed direct Cortez, cleared VOR runway 21 approach.",
+      "position": { "kind": "navaid", "navaid": "CEZ" },
+      "offset": { "bearingMag": 270, "distanceNm": 12 },
+      "altitudeFt": 13000,
+      "assigned": { "altFt": 11000, "until": "CEZ" },
+      "headingMag": 60,
+      "iasKt": 100,
+      "transition": "cez-pt",
+      "nav1MHz": 114.35,
+      "nav2MHz": 117.1
+    }
+  ],
+  "notes": [
+    "Final approach course 196° is flown FROM CEZ VOR/DME; the FAF is the VOR.",
+    "MAP at CEZ 5.5 DME, or by timing from CEZ (FAF to MAP 5.5 NM).",
+    "Procedure turn: outbound on CEZ R-350, remain within 10 NM, 9800; 8000 at CEZ once established inbound on 170°.",
+    "Descent angle 3.49°/TCH 50.",
+    "Caution: highway lights located between facility and runway are aligned with approach area.",
+    "Rwy 21 helicopter visibility reduction below ¾ SM NA. Circling NA southeast of Rwy 3-21.",
+    "MSA CEZ 25 NM: 11000 west (bearings to CEZ 020°–200°), 14300 northeast (200°–290°), 10000 south (290°–020°).",
+    "REIL Rwy 3 and 21. MIRL Rwy 3-21.",
+    "Non-standard takeoff minimums and alternate minimums published."
+  ]
+}

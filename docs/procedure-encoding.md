@@ -125,6 +125,48 @@ options chosen on the briefing screen, not part of the start condition.
    receiver tests at every fix (`tests/procedures/<id>.test.ts`).
 8. Calibrate the plate for the debrief's track overlay (next section).
 
+## RNAV (GPS) procedures (V3)
+
+RNAV approaches use the same file shape, plus:
+
+- **`rnav`**: `{ "cifp": "KLAA R18", "waas": { "channel": "86613", "id": "W18A" } | null,
+  "equipment": "RNP APCH." }`. `cifp` names the CIFP approach the file is cross-checked against
+  (airport + CIFP ident, as in `WANTED_RNAV` in `scripts/navdata/wanted.ts`).
+- **`navaids`** may be empty.
+- **Fixes**: `{ "kind": "waypoint", "id": "LOLME" }` (an RNAV waypoint, a VOR used as a waypoint,
+  or the runway waypoint `RW18`), resolved from the CIFP coordinates. Give `faaId` for named
+  waypoints (checked against NASR) but not for the runway waypoint.
+- **Course references**: `{ "rnavFrom": "OBOZU", "rnavTo": "LOLME" }` for a TF leg (the great
+  circle between the waypoints), `{ "rnavFix": "OBOZU", "courseMag": 182.7 }` for a course through
+  a fix (holds: use the CIFP course to the tenth).
+- **Legs**:
+  - each transition is the IAF's legs to the IF: `track` legs with `rnavFrom`/`rnavTo` (the first
+    leg's `rnavFrom` is the IAF), or a single `hold` for a hold-in-lieu transition (CIFP `HF`);
+  - `approach` holds the IF → FAF `track` legs, then the `final` with
+    `course: { rnavFrom: FAF, rnavTo: MAP }`, `gp` (`angleDeg`, `tchFt`) when the plate has LPV or
+    LNAV/VNAV, `descentAngle` for an advisory-only angle, and `stepDowns` (`lnavOnly` for an
+    LNAV-only step-down, CIFP altitude description "V");
+  - `missed`: `climb` (CIFP `CA`, the CIFP altitude), `direct` (`DF`, with `climbToFt`, `turn` and
+    `flyOver` as coded), `track` (`TF`), and the `hold` (`HM`, `legNm`).
+- **Minimums**: kinds `LPV` and `LNAV/VNAV` (DA), `LP` and `LNAV` (MDA), categories A and B.
+- **Starts**: `position` is usually `{ "kind": "waypoint", "id": IAF }` with a lead-in; vectors
+  starts have no `transition`. `nav1MHz`/`nav2MHz` are still required (the radios exist).
+- **TAA** (optional): `taa: { iaf, areas: [{ name, fromCourseMag, toCourseMag, noPT, rings:
+  [{ withinNm, minAltFt }] }] }`, courses TO the IAF, clockwise from → to, rings inside out.
+
+Register the file in `RNAV_PROCEDURES` (`src/procedures/index.ts`). Tests:
+
+- `tests/procedures/cifp-check.test.ts` runs `checkAgainstCifp()` on every RNAV procedure: fix
+  order, leg types, altitudes, holds, the glidepath and the minimums lines must match the CIFP.
+- Golden GPS readings at every fix (`tests/procedures/klaa-rnav18.test.ts` is the model): desired
+  track within 1° of the charted course, cross-track ~0, charted distances, GP at the TCH.
+- Headless runs (`tests/integration/klaa-rnav18.test.ts`): load, activate, CDI on GPS, NAV/APR;
+  LPV to a landing; LNAV with WAAS unavailable, GA, SUSP and the missed hold; perfect runs score
+  100%.
+
+Plate images for RNAV plates are kept at their native size (655 × 1010); the calibration stores
+`imageW`/`imageH`, so expect about 17.8 px per NM instead of 19.4.
+
 ## Plate overlay calibration
 
 The debrief's **Plate** tab draws the flown track on the plate's plan view. The plan view of an

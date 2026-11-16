@@ -26,7 +26,13 @@ describe('KGXY ILS or LOC RWY 35: encoding', () => {
       ['wavdi', true],
       ['gll', false],
     ]);
-    expect(p.starts.map((s) => s.id)).toEqual(['wavdi-arc', 'over-gll', 'vectors-final']);
+    expect(p.starts.map((s) => s.id)).toEqual([
+      'wavdi-arc',
+      'over-gll',
+      'direct-welds-northwest',
+      'direct-welds-southeast',
+      'vectors-final',
+    ]);
   });
 
   it('has no navdata issues', () => {

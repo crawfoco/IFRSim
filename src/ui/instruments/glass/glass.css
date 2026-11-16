@@ -13,6 +13,7 @@
   --g-symbol: #ffcc33; /* own-aircraft symbol, bank pointer */
   --g-bug: #3fd0e8; /* heading/altitude/VS bugs and selected values */
   --g-vloc: #3ee07a; /* CDI and course pointer from a VLOC source */
+  --g-gps: #e46cf2; /* CDI and course pointer from the GPS */
   --g-brg: #9cc2ff; /* bearing pointers and their boxes */
   --g-active: #3ee07a; /* active AP modes */
   --g-armed: #f2f4f7; /* armed AP modes */

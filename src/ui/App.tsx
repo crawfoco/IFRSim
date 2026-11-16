@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NAVDATA, PROCEDURES } from '../procedures';
+import { NAVDATA, PROCEDURES, RNAV_PROCEDURES } from '../procedures';
 import type { Procedure } from '../procedures/schema';
 import type { LoggedCommand } from '../sim/recorder';
 import { rerollWeather, type Scenario } from '../sim/scenario/scenario';
@@ -21,7 +21,8 @@ export function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'select' });
   // Load every plate up front, so the app keeps working with no network after loading.
   useEffect(() => {
-    for (const p of PROCEDURES) new Image().src = `${import.meta.env.BASE_URL}${p.chart.image}`;
+    for (const p of [...PROCEDURES, ...RNAV_PROCEDURES])
+      new Image().src = `${import.meta.env.BASE_URL}${p.chart.image}`;
   }, []);
   useEffect(() => {
     const onHash = () => setHash(window.location.hash);
@@ -43,6 +44,7 @@ export function App() {
       return (
         <Select
           procedures={PROCEDURES}
+          rnavProcedures={RNAV_PROCEDURES}
           onPick={(procedure) => setScreen({ name: 'briefing', procedure })}
         />
       );

@@ -8,6 +8,7 @@ import { clamp, normalize360 } from '../../sim/geo/angles';
 import { GS_FULL_SCALE_DEG } from '../../sim/nav/gs';
 import { LOC_FULL_SCALE_DEG } from '../../sim/nav/loc';
 import type { NavReading } from '../../sim/nav/radios';
+import type { GpsReading } from '../../sim/gps/receiver';
 import { VOR_FULL_SCALE_DEG } from '../../sim/nav/vor';
 
 /** The HSI and CDI have two dots each side of centre; full scale is 2 dots. */
@@ -46,6 +47,26 @@ export function glideslopeDeviation(r: NavReading): GlideslopeDeviation | null {
   if (!r.gs || r.gs.flag) return { dots: 0, flag: true };
   return {
     dots: clamp((r.gs.deviationDeg / GS_FULL_SCALE_DEG) * FULL_SCALE_DOTS, -2, 2),
+    flag: false,
+  };
+}
+
+/** GPS needle: linear (or angular) full scale from the receiver, two dots each side. */
+export function gpsDeviation(g: GpsReading): CourseDeviation {
+  if (g.flag) return { dots: 0, flag: true, toFrom: null };
+  return {
+    dots: clamp(g.deviation * FULL_SCALE_DOTS, -2, 2),
+    flag: false,
+    toFrom: g.toFrom === 'OFF' ? null : g.toFrom,
+  };
+}
+
+/** GPS glidepath pointer (LPV, LNAV/VNAV, or the advisory +V); null when there is none. */
+export function gpsGlidepath(g: GpsReading): GlideslopeDeviation | null {
+  if (!g.gp) return null;
+  if (g.gp.flag) return { dots: 0, flag: true };
+  return {
+    dots: clamp((g.gp.deviationDeg / GS_FULL_SCALE_DEG) * FULL_SCALE_DOTS, -2, 2),
     flag: false,
   };
 }

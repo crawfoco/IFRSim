@@ -51,9 +51,9 @@ export function drawRoute(route: RouteLeg[], sc: Scenario): DrawnLeg[] {
   const fix = (name: string) => sc.fixes[name]!;
   const out: DrawnLeg[] = [];
   let prev: LatLon = sc.initial.aircraft.position;
-  // A start with a lead-in begins short of its fix: the route itself starts at that fix (e.g.
-  // FQF, then the R-045 feeder), and the lead-in is drawn on its own.
-  if (sc.start.leadInNm) {
+  // A start with a lead-in or offset begins away from its fix: the route itself starts at that
+  // fix (e.g. FQF, then the R-045 feeder), and the way in is drawn on its own.
+  if (sc.start.leadInNm || sc.start.offset) {
     const startFix = resolveFixDef(sc.start.position, { navdata: nav, procedure: sc.procedure });
     out.push({ index: -1, phase: 'transition', points: [prev, startFix], leadIn: true });
     prev = startFix;

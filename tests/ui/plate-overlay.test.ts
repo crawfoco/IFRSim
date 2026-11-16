@@ -4,7 +4,7 @@
  * is drawn to scale (holds and course reversals are schematic).
  */
 import { describe, expect, it } from 'vitest';
-import { NAVDATA, PROCEDURES, procedureById } from '../../src/procedures';
+import { NAVDATA, PROCEDURES, RNAV_PROCEDURES, procedureById } from '../../src/procedures';
 import { buildScenario } from '../../src/sim/scenario/scenario';
 import { fitPlate, PLATE_CALIBRATION } from '../../src/ui/chart/overlay';
 
@@ -68,7 +68,7 @@ describe('calibrations', () => {
   it('only name procedures that exist, with at least four anchors', () => {
     for (const [id, cal] of Object.entries(PLATE_CALIBRATION)) {
       expect(
-        PROCEDURES.some((p) => p.id === id),
+        [...PROCEDURES, ...RNAV_PROCEDURES].some((p) => p.id === id),
         id,
       ).toBe(true);
       expect(cal.anchors.length).toBeGreaterThanOrEqual(4);

@@ -314,15 +314,36 @@
   "starts": [
     {
       "id": "direct-lar",
-      "name": "Direct LAR, R-112 outbound and procedure turn at ECECU",
-      "clearance": "Proceed direct Laramie, cross Laramie at or above 11300, cleared VOR/DME runway 30 approach.",
+      "name": "Direct LAR from the north",
+      "clearance": "Descend and maintain 11300, proceed direct Laramie, cleared VOR/DME runway 30 approach.",
       "position": {
         "kind": "radialDme",
         "navaid": "LAR",
         "radialMag": 20,
         "dmeNm": 12
       },
-      "altitudeFt": 11300,
+      "altitudeFt": 13000,
+      "assigned": { "altFt": 11300, "until": "LAR" },
+      "headingMag": 200,
+      "iasKt": 100,
+      "transition": "lar-pt",
+      "nav1MHz": 113.1,
+      "nav2MHz": 113.1
+    },
+    {
+      "id": "direct-lar-east",
+      "name": "Direct LAR from the east",
+      "clearance": "Descend and maintain 11300, proceed direct Laramie, cleared VOR/DME runway 30 approach.",
+      "position": {
+        "kind": "navaid",
+        "navaid": "LAR"
+      },
+      "offset": {
+        "bearingMag": 65,
+        "distanceNm": 13
+      },
+      "altitudeFt": 13000,
+      "assigned": { "altFt": 11300, "until": "LAR" },
       "headingMag": 200,
       "iasKt": 100,
       "transition": "lar-pt",
@@ -331,15 +352,16 @@
     },
     {
       "id": "povoh-arc",
-      "name": "Inbound on LAR R-055, 18 DME arc from POVOH",
-      "clearance": "Proceed inbound on the Laramie 055 radial, cross POVOH at or above 10600, cleared VOR/DME runway 30 approach.",
+      "name": "Inbound on LAR R-055 to POVOH",
+      "clearance": "Descend and maintain 10600, proceed inbound on the Laramie 055 radial, cleared VOR/DME runway 30 approach via the 18 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "LAR",
         "radialMag": 55,
         "dmeNm": 24
       },
-      "altitudeFt": 11000,
+      "altitudeFt": 12500,
+      "assigned": { "altFt": 10600 },
       "headingMag": 235,
       "iasKt": 100,
       "transition": "povoh-arc",
@@ -348,16 +370,17 @@
     },
     {
       "id": "flems",
-      "name": "Inbound to FLEMS on heading 337°, to join R-112",
-      "clearance": "Cross FLEMS at or above 10600, cleared VOR/DME runway 30 approach.",
+      "name": "Inbound to FLEMS from the south-southeast",
+      "clearance": "Descend and maintain 10600, proceed direct FLEMS, cleared VOR/DME runway 30 approach.",
       "position": {
         "kind": "radialDme",
         "navaid": "LAR",
         "radialMag": 118.9,
         "dmeNm": 28.8
       },
-      "leadInNm": 5,
-      "altitudeFt": 10600,
+      "leadInNm": 8,
+      "altitudeFt": 12500,
+      "assigned": { "altFt": 10600, "until": "FLEMS" },
       "headingMag": 337,
       "iasKt": 100,
       "transition": "flems",

@@ -87,13 +87,17 @@ export function finalProfile(
     if (d !== null) fixes.push({ name, role, distNm: d, minAltFt });
   };
   add(f.faf, 'FAF', f.fafAltFt);
-  for (const s of f.stepDowns) if (!(precision && s.locOnly)) add(s.fix, 'step', s.minAltFt);
+  for (const s of f.stepDowns)
+    if (!(precision && (s.locOnly || s.lnavOnly))) add(s.fix, 'step', s.minAltFt);
   if (!precision) {
     if (f.vdp) add(f.vdp, 'VDP', null);
     add(f.map.fix, 'MAP', null);
   }
 
-  const gp = f.glideslope && precision ? f.glideslope : (f.descentAngle ?? null);
+  // RNAV: the GPS glidepath (LPV, LNAV/VNAV), or drawn as the advisory angle on the LNAV/LP lines.
+  const gp = precision
+    ? (f.glideslope ?? f.gp ?? f.descentAngle ?? null)
+    : (f.descentAngle ?? f.gp ?? null);
   const path = gp
     ? { angleDeg: gp.angleDeg, tchFt: gp.tchFt, kind: (precision ? 'GS' : 'VDA') as 'GS' | 'VDA' }
     : null;

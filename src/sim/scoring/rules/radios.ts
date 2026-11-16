@@ -4,7 +4,7 @@
  *   after the leg that needs it starts, and stays tuned while a leg that needs it is flown;
  * - where the chart names the DME source (KMTJ: MTJ), the DME is read from it.
  */
-import type { Leg } from '../../../procedures/schema';
+import type { CourseRef, Leg } from '../../../procedures/schema';
 import { panelOf, type Scenario } from '../../scenario/scenario';
 import { clock, type Rule, type ScoreItem } from './types';
 
@@ -18,16 +18,20 @@ const WRONG_DME_S = 30;
 /** Navaids a leg is flown on (course station, arc station, direct-to station, named DME). */
 export function legNavaids(leg: Leg, sc: Scenario): string[] {
   const out = new Set<string>();
-  const ref = (r: { navaid: string } | { loc: string }) => ('loc' in r ? r.loc : r.navaid);
+  // RNAV courses are flown on the GPS: no radio to tune.
+  const add = (r: CourseRef) => {
+    if ('loc' in r) out.add(r.loc);
+    else if ('navaid' in r) out.add(r.navaid);
+  };
   switch (leg.type) {
     case 'track':
     case 'hold':
     case 'procedureTurn':
     case 'final':
-      out.add(ref(leg.course));
+      add(leg.course);
       break;
     case 'heading':
-      if (leg.intercept) out.add(ref(leg.intercept));
+      if (leg.intercept) add(leg.intercept);
       break;
     case 'arc':
       out.add(leg.navaid);
@@ -92,11 +96,19 @@ const span = (ticks: number) => {
  */
 export const tuneAndIdentify: Rule<IdentState> = {
   init: () => ({ firstUse: {}, identified: {}, lastRadio: {}, offTune: {}, lapse: {} }),
-  step(s, { seq, prevSeq, scenario, commands, sensors, state }) {
+  step(s, { seq, scenario, commands, sensors, state }) {
     let next = s;
     const cur = seq.route[seq.index]!;
     const needed = legNavaids(cur.leg, scenario);
-    if (seq.index !== prevSeq.index || state.tick === 1) {
+    // A route that starts with a heading leg (KCYS EGBER: heading 220 to the localizer) starts
+    // at the cleared fix: its navaid is needed from there, not while flying to that fix.
+    const until = scenario.start.assigned.until;
+    const beforeHeadingLeg =
+      seq.index === 0 &&
+      cur.leg.type === 'heading' &&
+      until !== undefined &&
+      !seq.passages.some((p) => p.fix === until);
+    if (!beforeHeadingLeg) {
       for (const id of needed)
         if (!(id in next.firstUse))
           next = { ...next, firstUse: { ...next.firstUse, [id]: state.tick } };

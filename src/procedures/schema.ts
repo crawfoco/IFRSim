@@ -35,8 +35,16 @@ const LocDme = z
   .strict();
 /** The landing threshold of the procedure's runway. */
 const Threshold = z.object({ kind: z.literal('threshold') }).strict();
+/** An RNAV waypoint (or VOR, or runway "RW18") at its FAA CIFP coordinates. */
+const Waypoint = z.object({ kind: z.literal('waypoint'), id: Id }).strict();
 
-export const FixDefSchema = z.discriminatedUnion('kind', [AtNavaid, RadialDme, LocDme, Threshold]);
+export const FixDefSchema = z.discriminatedUnion('kind', [
+  AtNavaid,
+  RadialDme,
+  LocDme,
+  Threshold,
+  Waypoint,
+]);
 export type FixDef = z.infer<typeof FixDefSchema>;
 
 export const FixSchema = z
@@ -54,8 +62,17 @@ export const FixSchema = z
 const VorCourse = z.object({ navaid: Id, courseMag: Deg, toFrom: z.enum(['TO', 'FROM']) }).strict();
 /** The localizer front course. */
 const LocCourse = z.object({ loc: Id }).strict();
-export const CourseRefSchema = z.union([VorCourse, LocCourse]);
+/** RNAV track (ARINC TF leg): the great circle from one waypoint to the next. */
+const RnavTrack = z.object({ rnavFrom: Id, rnavTo: Id }).strict();
+/**
+ * RNAV course through a waypoint (holds, course-to-fix): magnetic course at the fix, using
+ * the waypoint's CIFP magnetic variation.
+ */
+const RnavCourse = z.object({ rnavFix: Id, courseMag: Deg }).strict();
+export const CourseRefSchema = z.union([VorCourse, LocCourse, RnavTrack, RnavCourse]);
 export type CourseRef = z.infer<typeof CourseRefSchema>;
+export type RnavCourseRef = z.infer<typeof RnavTrack> | z.infer<typeof RnavCourse>;
+export const isRnavRef = (r: CourseRef): r is RnavCourseRef => 'rnavFrom' in r || 'rnavFix' in r;
 
 /**
  * DME the learner should read on a leg, when the chart names one (KMTJ: MTJ VOR/DME, not
@@ -78,6 +95,8 @@ const TrackLeg = z
     type: z.literal('track'),
     to: Id,
     course: CourseRefSchema,
+    /** RNAV: sequence the waypoint only once over it (no turn anticipation). */
+    flyOver: z.boolean().optional(),
     ...DmeSource,
     ...Altitude,
   })
@@ -121,6 +140,7 @@ const DirectLeg = z
   .object({
     type: z.literal('direct'),
     to: Id,
+    flyOver: z.boolean().optional(),
     /** Turn direction when charted ("climbing right turn … direct AKO"). */
     turn: z.enum(['L', 'R']).optional(),
     /** Climb (missed approach) to this altitude while proceeding direct. */
@@ -176,6 +196,8 @@ const StepDown = z
     minAltFt: Ft,
     /** Applies only to the LOC/VOR (non-precision) final. */
     locOnly: z.boolean().optional(),
+    /** RNAV: applies only to the LNAV (and LP) lines, not to lines with a glidepath. */
+    lnavOnly: z.boolean().optional(),
   })
   .strict();
 
@@ -211,6 +233,14 @@ const FinalLeg = z
       .object({ angleDeg: z.number().min(2).max(4.5), tchFt: z.number().positive() })
       .strict()
       .optional(),
+    /**
+     * RNAV glidepath (FAS data) flown on the LPV and LNAV/VNAV lines: angle and TCH as
+     * charted (checked against the CIFP path point).
+     */
+    gp: z
+      .object({ angleDeg: z.number().min(2).max(4), tchFt: z.number().positive() })
+      .strict()
+      .optional(),
     stepDowns: z.array(StepDown).default([]),
     vdp: Id.optional(),
     map: Map,
@@ -235,14 +265,50 @@ export type Leg = z.infer<typeof LegSchema>;
 const CatMin = z.object({ altFt: Ft, visibilitySm: z.number().positive() }).strict();
 export const MinimumsSchema = z
   .object({
-    /** ILS → DA; LOC / VOR → MDA. */
-    kind: z.enum(['ILS', 'LOC', 'VOR']),
+    /** ILS, LPV, LNAV/VNAV → DA; LOC, VOR, LP, LNAV → MDA. */
+    kind: z.enum(['ILS', 'LOC', 'VOR', 'LPV', 'LNAV/VNAV', 'LP', 'LNAV', 'CIRCLING']),
     label: z.string(),
+    /** Shown in the briefing with the line (e.g. a remote-altimeter or climb-gradient note). */
+    note: z.string().optional(),
     A: CatMin,
     B: CatMin,
   })
   .strict();
 export type Minimums = z.infer<typeof MinimumsSchema>;
+export type MinimumsKind = Minimums['kind'];
+/** Minimums lines flown to a decision altitude (the others are an MDA). */
+export const isDaLine = (k: MinimumsKind) => k === 'ILS' || k === 'LPV' || k === 'LNAV/VNAV';
+
+// ---- RNAV and TAA ----
+
+export const RnavSchema = z
+  .object({
+    /** "KLAA R18": the CIFP approach the encoding is cross-checked against. */
+    cifp: z.string(),
+    /** WAAS channel and approach id from the plate, or null for a GPS-only approach. */
+    waas: z.object({ channel: z.string(), id: z.string() }).strict().nullable(),
+    /** Chart equipment note, e.g. "RNP APCH - GPS". */
+    equipment: z.string(),
+  })
+  .strict();
+
+const TaaRing = z.object({ withinNm: Nm, minAltFt: Ft }).strict();
+/**
+ * A TAA area: the courses TO the IAF that bound it (clockwise from `fromCourseMag` to
+ * `toCourseMag`), whether it is NoPT (straight-in) or needs the course reversal, and its rings
+ * from the inside out.
+ */
+const TaaArea = z
+  .object({
+    name: z.string(),
+    fromCourseMag: Deg,
+    toCourseMag: Deg,
+    noPT: z.boolean(),
+    rings: z.array(TaaRing).min(1),
+  })
+  .strict();
+export const TaaSchema = z.object({ iaf: Id, areas: z.array(TaaArea).min(1) }).strict();
+export type Taa = z.infer<typeof TaaSchema>;
 
 // ---- Start conditions ----
 
@@ -260,20 +326,45 @@ export const StartSchema = z
      */
     leadInNm: z.number().positive().max(30).optional(),
     /**
+     * Start off to one side instead (as after ATC vectors): `distanceNm` from `position` on
+     * the magnetic bearing `bearingMag` from it, flying `headingMag`, which need not point at
+     * the fix. The learner turns toward the fix and works out the arrival and any course
+     * reversal. Not with `leadInNm`.
+     */
+    offset: z
+      .object({ bearingMag: Deg, distanceNm: z.number().positive().max(40) })
+      .strict()
+      .optional(),
+    /**
      * The aircraft joins the transition at this fix (e.g. cleared direct to the holding fix):
      * the route starts at the course reversal there, or at the leg after the one ending there.
      */
     joinAt: Id.optional(),
     altitudeFt: Ft,
+    /**
+     * The altitude ATC assigns in the clearance ("descend and maintain N", "maintain N until
+     * established"): kept until `until` is passed, or without it until established on the
+     * route's first leg (the arc, the feeder course, the final for vectors). Scored by
+     * `assigned-altitude`: not below it before then, and down to it by then.
+     */
+    assigned: z.object({ altFt: Ft, until: Id.optional() }).strict(),
     headingMag: Deg,
     iasKt: z.number().min(80).max(110).default(100),
     /** Entry route flown from here; omit for radar vectors to final. */
     transition: Id.optional(),
+    /**
+     * TAA straight-in arrival (V3): the transition's course reversal is not part of the route
+     * (the GPS asks "Hold at <IAF>?" and the answer is No).
+     */
+    noReversal: z.boolean().optional(),
     /** Radios as the learner finds them (usually still on the previous station). */
     nav1MHz: z.number().min(108).max(117.95),
     nav2MHz: z.number().min(108).max(117.95),
   })
-  .strict();
+  .strict()
+  .refine((s) => !(s.leadInNm && s.offset), {
+    message: 'a start has leadInNm or offset, not both',
+  });
 export type Start = z.infer<typeof StartSchema>;
 
 // ---- Procedure ----
@@ -304,8 +395,8 @@ export const ProcedureSchema = z
         image: z.string(),
       })
       .strict(),
-    /** Navaids the procedure is flown on (used for tuning/ident checks). */
-    navaids: z.array(Id).min(1),
+    /** Navaids the procedure is flown on (used for tuning/ident checks); empty for RNAV. */
+    navaids: z.array(Id),
     /**
      * Expanded service volume: a charted route uses a VOR or localizer beyond its standard
      * service volume (KMTJ: the HAQHY feeder on JNC R-098 out to 46 NM, and the procedure
@@ -321,6 +412,10 @@ export const ProcedureSchema = z
     /** Missed approach instructions as printed. */
     missedText: z.string(),
     minimums: z.array(MinimumsSchema).min(1),
+    /** RNAV (GPS) approach data (V3). */
+    rnav: RnavSchema.optional(),
+    /** Terminal arrival area (V3, KOGA). */
+    taa: TaaSchema.optional(),
     starts: z.array(StartSchema).min(1),
     notes: z.array(z.string()).default([]),
   })
@@ -355,6 +450,12 @@ export const ProcedureSchema = z
     p.transitions.forEach((t, i) => checkLegs(t.legs, ['transitions', i, 'legs']));
     checkLegs(p.approach, ['approach']);
     checkLegs(p.missed, ['missed']);
+    if (p.navaids.length === 0 && !p.rnav)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'a non-RNAV procedure needs navaids',
+        path: ['navaids'],
+      });
     if (!p.approach.some((l) => l.type === 'final'))
       ctx.addIssue({ code: 'custom', message: 'approach has no final leg', path: ['approach'] });
     const transitionIds = new Set(p.transitions.map((t) => t.id));

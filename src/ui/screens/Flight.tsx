@@ -5,8 +5,8 @@ import { TIME_SCALES, type LoggedCommand } from '../../sim/recorder';
 import { buildRoute } from '../../sim/scoring/sequencer';
 import { PlanView } from '../map/PlanView';
 import '../map/map.css';
-import { activeMinimums, panelOf, type Scenario } from '../../sim/scenario/scenario';
-import { radioOf } from '../../sim/nav/source';
+import { activeMinimums, panelOf, type Scenario, waasOf } from '../../sim/scenario/scenario';
+import { isVloc, radioOf } from '../../sim/nav/source';
 import { Pfd } from '../instruments/glass/Pfd';
 import { pfdData } from '../instruments/glass/pfd-data';
 import { minimumsAlertOn, minimumsEventTick, modeBarFields } from '../instruments/glass/modes';
@@ -15,7 +15,13 @@ import { ChartViewer } from '../chart/ChartViewer';
 import { Altimeter } from '../instruments/Altimeter';
 import { Asi } from '../instruments/Asi';
 import { Cdi } from '../instruments/Cdi';
-import { courseDeviation, glideslopeDeviation } from '../instruments/geometry';
+import {
+  courseDeviation,
+  glideslopeDeviation,
+  gpsDeviation,
+  gpsGlidepath,
+} from '../instruments/geometry';
+import { GpsPanel } from '../panel/GpsPanel';
 import { Hsi } from '../instruments/Hsi';
 import { OutsideView } from '../instruments/OutsideView';
 import { outsideView } from '../../sim/scenario/outside';
@@ -52,8 +58,24 @@ export function Flight({
 }) {
   const { sim, state, sensors, progress } = useSim(scenario);
   const send = sim.send;
-  const cdi1 = courseDeviation(sensors.nav1);
-  const gs1 = glideslopeDeviation(sensors.nav1);
+  // Steam HSI: NAV1, or the GPS when the NAV/GPS switch selects it (auto CRS).
+  const hsiOnGps = state.panel.cdiSource === 'GPS';
+  // Plate or moving map in the left pane: the switch sits in the view's upper-right corner and
+  // names the other view.
+  const viewToggle = (
+    <button
+      type="button"
+      className="view-toggle"
+      aria-pressed={state.panel.mapOn}
+      title="Switch between the plate and the moving map (a training aid; noted in the debrief)"
+      data-testid="map-toggle"
+      onClick={() => send({ type: 'map', on: !state.panel.mapOn })}
+    >
+      {state.panel.mapOn ? 'PLATE' : 'MAP'}
+    </button>
+  );
+  const cdi1 = hsiOnGps ? gpsDeviation(sensors.gps) : courseDeviation(sensors.nav1);
+  const gs1 = hsiOnGps ? gpsGlidepath(sensors.gps) : glideslopeDeviation(sensors.nav1);
   const cdi2 = courseDeviation(sensors.nav2);
   const route = useMemo(() => buildRoute(scenario), [scenario]);
   const glass = panelOf(scenario.options) === 'glass';
@@ -64,7 +86,13 @@ export function Flight({
   }, [glass, minsTick]);
   const iasCmdKt = state.panel.iasCmdKt;
   const minimums = useMemo(
-    () => activeMinimums(scenario.procedure, scenario.options.gsOutOfService, iasCmdKt),
+    () =>
+      activeMinimums(
+        scenario.procedure,
+        scenario.options.gsOutOfService,
+        iasCmdKt,
+        waasOf(scenario.options),
+      ),
     [scenario, iasCmdKt],
   );
 
@@ -122,16 +150,6 @@ export function Flight({
           </button>
           <button
             type="button"
-            className={state.panel.mapOn ? 'on' : ''}
-            aria-pressed={state.panel.mapOn}
-            title="Moving map (a training aid; noted in the debrief)"
-            data-testid="map-toggle"
-            onClick={() => send({ type: 'map', on: !state.panel.mapOn })}
-          >
-            Map
-          </button>
-          <button
-            type="button"
             data-testid="end-flight"
             onClick={() => onDebrief([...sim.log], sim.tick)}
           >
@@ -171,6 +189,7 @@ export function Flight({
         )}
         {state.panel.mapOn && (
           <div className="moving-map">
+            <div className="moving-map-corner">{viewToggle}</div>
             <PlanView
               scenario={scenario}
               route={route}
@@ -191,7 +210,10 @@ export function Flight({
         {/* The map takes the plate's place while it is on; the plate is only hidden, so its
             zoom and pan are kept for when the map is switched off. */}
         <div className="plate-slot" hidden={state.panel.mapOn}>
-          <ChartViewer procedure={scenario.procedure} />
+          <ChartViewer
+            procedure={scenario.procedure}
+            corner={state.panel.mapOn ? undefined : viewToggle}
+          />
         </div>
       </aside>
 
@@ -206,6 +228,11 @@ export function Flight({
           send={send}
           idents={{ 1: sensors.nav1.ident, 2: sensors.nav2.ident }}
           autoId={glass}
+          gps={
+            scenario.world.gps && (
+              <GpsPanel world={scenario.world.gps} state={state} gps={sensors.gps} send={send} />
+            )
+          }
         />
         {glass ? (
           <div className="glass-row">
@@ -218,13 +245,16 @@ export function Flight({
               <GlassControls state={state} send={send} />
               {/* One CRS knob, for the CDI's source (VLOC1 or VLOC2), as on a glass panel. */}
               <div className="glass-knobs">
-                <CourseKnob
-                  radio={radioOf(state.panel.cdiSource)}
-                  state={state}
-                  send={send}
-                  label="CRS"
-                  testId="knob-crs"
-                />
+                {/* On the GPS the course follows the flight plan (auto CRS): no knob. */}
+                {isVloc(state.panel.cdiSource) && (
+                  <CourseKnob
+                    radio={radioOf(state.panel.cdiSource)}
+                    state={state}
+                    send={send}
+                    label="CRS"
+                    testId="knob-crs"
+                  />
+                )}
               </div>
               <DmeUnit nm={sensors.dmeNm} state={state} send={send} readout={false} />
               <Timer state={state} send={send} />
@@ -237,11 +267,25 @@ export function Flight({
               <Hsi
                 headingMagDeg={sensors.headingMagDeg}
                 headingBugDeg={state.panel.headingBugDeg}
-                courseDeg={state.radios.nav1.obsDeg}
+                courseDeg={hsiOnGps ? Math.round(sensors.gps.dtkMagDeg) : state.radios.nav1.obsDeg}
                 deviation={cdi1}
                 glideslope={gs1}
+                gps={hsiOnGps}
               />
               <CourseKnob radio={1} state={state} send={send} />
+              {/* RNAV flights: the HSI's source switch, VLOC (NAV1) or GPS (a press toggles it). */}
+              {scenario.world.gps && (
+                <button
+                  type="button"
+                  className={`hsi-src${hsiOnGps ? ' on' : ''}`}
+                  data-testid="gps-cdi"
+                  aria-pressed={hsiOnGps}
+                  title="HSI and autopilot source: VLOC (NAV1) or GPS (press to switch)"
+                  onClick={() => send({ type: 'cdiSet', source: hsiOnGps ? 'NAV1' : 'GPS' })}
+                >
+                  {hsiOnGps ? 'GPS' : 'VLOC'}
+                </button>
+              )}
             </div>
             <Altimeter altitudeFt={state.aircraft.altitudeFt} />
             <div className="dme-timer">
