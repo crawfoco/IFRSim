@@ -53,7 +53,7 @@ jobs:
           while IFS= read -r f; do
             [ -z "$f" ] && continue
             case "$f" in
-              *.md | docs/* | tasks/* | LICENSE | .github/ISSUE_TEMPLATE/* | .github/CODEOWNERS) ;;
+              *.md | docs/* | tasks/* | LICENSE | .gitignore | .github/ISSUE_TEMPLATE/* | .github/CODEOWNERS) ;;
               *) app=true; echo "App file changed: $f" ;;
             esac
           done < <(git diff --name-only "${BASE}...${HEAD}")
