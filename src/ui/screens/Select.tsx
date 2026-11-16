@@ -1,5 +1,5 @@
 /** Approach select: every procedure by airport, name and chart cycle. */
-import { APP_NAME, TRAINING_DISCLAIMER } from '../../app-info';
+import { APP_NAME, BUILD_STAMP, TRAINING_DISCLAIMER } from '../../app-info';
 import type { Procedure } from '../../procedures/schema';
 import { chartCycleText } from '../chart/ChartViewer';
 
@@ -39,6 +39,9 @@ export function Select({
           </li>
         ))}
       </ul>
+      <footer className="build-stamp" data-testid="build-stamp">
+        {APP_NAME} {BUILD_STAMP}
+      </footer>
     </main>
   );
 }
