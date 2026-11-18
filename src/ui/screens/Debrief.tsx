@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BUILD_STAMP } from '../../app-info';
 import type { LoggedCommand } from '../../sim/recorder';
-import { activeMinimums, panelOf, type Scenario } from '../../sim/scenario/scenario';
+import { activeMinimums, panelOf, type Scenario, waasOf } from '../../sim/scenario/scenario';
 import { analyzeFlight } from '../../sim/scoring/analyze';
 import { clock } from '../../sim/scoring/rules/types';
 import { ChartViewer } from '../chart/ChartViewer';
@@ -83,7 +83,13 @@ export function Debrief({
   const t0 = a.samples[0]?.tick ?? 0;
   const seekTick = (tick: number) => replay.seek(Math.round((tick - t0) / 20));
   const mins = useMemo(
-    () => activeMinimums(scenario.procedure, scenario.options.gsOutOfService, scenario.start.iasKt),
+    () =>
+      activeMinimums(
+        scenario.procedure,
+        scenario.options.gsOutOfService,
+        scenario.start.iasKt,
+        waasOf(scenario.options),
+      ),
     [scenario],
   );
   const plateOverlay = useMemo(() => {

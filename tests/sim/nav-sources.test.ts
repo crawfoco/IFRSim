@@ -80,7 +80,7 @@ describe('the autopilot follows the CDI source', () => {
     const s1 = run(s0, { type: 'cdi' });
     const src = apNavSource(s1, sense(s1, W));
     expect(src.obsDeg).toBe(263);
-    expect(src.reading.station?.kind).toBe('LOC');
+    expect(src.kind === 'VLOC' && src.reading.station?.kind).toBe('LOC');
   });
 
   it('APR arms only on the radio the CDI selects', () => {

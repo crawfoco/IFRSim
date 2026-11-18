@@ -1,0 +1,346 @@
+{
+  "id": "klaa-rnav18",
+  "airport": "KLAA",
+  "runway": "18",
+  "name": "RNAV (GPS) RWY 18",
+  "chart": {
+    "number": "AL-5290",
+    "amendment": "Amdt 1E",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/klaa-rnav18.png"
+  },
+  "rnav": {
+    "cifp": "KLAA R18",
+    "waas": {
+      "channel": "86613",
+      "id": "W18A"
+    },
+    "equipment": "RNP APCH."
+  },
+  "navaids": [],
+  "fixes": {
+    "WEYYI": {
+      "def": {
+        "kind": "waypoint",
+        "id": "WEYYI"
+      },
+      "faaId": "WEYYI",
+      "note": "IAF"
+    },
+    "WIZGE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "WIZGE"
+      },
+      "faaId": "WIZGE",
+      "note": "IAF"
+    },
+    "OBOZU": {
+      "def": {
+        "kind": "waypoint",
+        "id": "OBOZU"
+      },
+      "faaId": "OBOZU",
+      "note": "IF/IAF, hold-in-lieu of procedure turn"
+    },
+    "LOLME": {
+      "def": {
+        "kind": "waypoint",
+        "id": "LOLME"
+      },
+      "faaId": "LOLME",
+      "note": "FAF"
+    },
+    "RW18": {
+      "def": {
+        "kind": "waypoint",
+        "id": "RW18"
+      },
+      "note": "Missed approach point"
+    },
+    "IHIYO": {
+      "def": {
+        "kind": "waypoint",
+        "id": "IHIYO"
+      },
+      "faaId": "IHIYO",
+      "note": "Missed approach holding fix"
+    }
+  },
+  "transitions": [
+    {
+      "id": "weyyi",
+      "name": "WEYYI (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "OBOZU",
+          "course": {
+            "rnavFrom": "WEYYI",
+            "rnavTo": "OBOZU"
+          },
+          "minAltFt": 6000
+        }
+      ]
+    },
+    {
+      "id": "wizge",
+      "name": "WIZGE (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "OBOZU",
+          "course": {
+            "rnavFrom": "WIZGE",
+            "rnavTo": "OBOZU"
+          },
+          "minAltFt": 6000
+        }
+      ]
+    },
+    {
+      "id": "obozu",
+      "name": "OBOZU (IF/IAF), hold-in-lieu",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "hold",
+          "fix": "OBOZU",
+          "inboundCourseMag": 183,
+          "course": {
+            "rnavFix": "OBOZU",
+            "courseMag": 182.7
+          },
+          "turn": "R",
+          "legNm": 6,
+          "minAltFt": 6000,
+          "maxAltFt": 14000
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "LOLME",
+      "course": {
+        "rnavFrom": "OBOZU",
+        "rnavTo": "LOLME"
+      },
+      "minAltFt": 5500
+    },
+    {
+      "type": "final",
+      "faf": "LOLME",
+      "course": {
+        "rnavFrom": "LOLME",
+        "rnavTo": "RW18"
+      },
+      "fafAltFt": 5500,
+      "gp": {
+        "angleDeg": 3.05,
+        "tchFt": 41
+      },
+      "stepDowns": [],
+      "map": {
+        "fix": "RW18"
+      }
+    }
+  ],
+  "missed": [
+    {
+      "type": "climb",
+      "toAltFt": 3945
+    },
+    {
+      "type": "direct",
+      "to": "IHIYO",
+      "climbToFt": 6200,
+      "flyOver": true
+    },
+    {
+      "type": "hold",
+      "fix": "IHIYO",
+      "inboundCourseMag": 3,
+      "course": {
+        "rnavFix": "IHIYO",
+        "courseMag": 2.6
+      },
+      "turn": "R",
+      "legNm": 7,
+      "minAltFt": 6200
+    }
+  ],
+  "missedText": "Climb to 6200 direct IHIYO and hold.",
+  "minimums": [
+    {
+      "kind": "LPV",
+      "label": "LPV",
+      "A": {
+        "altFt": 3945,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 3945,
+        "visibilitySm": 1
+      }
+    },
+    {
+      "kind": "LNAV/VNAV",
+      "label": "LNAV/VNAV",
+      "A": {
+        "altFt": 4014,
+        "visibilitySm": 1.25
+      },
+      "B": {
+        "altFt": 4014,
+        "visibilitySm": 1.25
+      }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": {
+        "altFt": 4260,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 4260,
+        "visibilitySm": 1
+      }
+    }
+  ],
+  "starts": [
+    {
+      "id": "direct-weyyi",
+      "name": "Direct WEYYI from the north",
+      "clearance": "Descend and maintain 7000, proceed direct WEYYI, cleared RNAV runway 18 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "WEYYI"
+      },
+      "offset": {
+        "bearingMag": 355,
+        "distanceNm": 10
+      },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "WEYYI" },
+      "headingMag": 230,
+      "iasKt": 100,
+      "transition": "weyyi",
+      "nav1MHz": 116.9,
+      "nav2MHz": 116.9
+    },
+    {
+      "id": "direct-wizge",
+      "name": "Direct WIZGE from the south",
+      "clearance": "Descend and maintain 7000, proceed direct WIZGE, cleared RNAV runway 18 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "WIZGE"
+      },
+      "offset": {
+        "bearingMag": 170,
+        "distanceNm": 11
+      },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "WIZGE" },
+      "headingMag": 40,
+      "iasKt": 100,
+      "transition": "wizge",
+      "nav1MHz": 116.9,
+      "nav2MHz": 116.9
+    },
+    {
+      "id": "direct-obozu",
+      "name": "Direct OBOZU from the southeast",
+      "clearance": "Descend and maintain 7000, proceed direct OBOZU, cleared RNAV runway 18 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "OBOZU"
+      },
+      "offset": {
+        "bearingMag": 140,
+        "distanceNm": 12
+      },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "OBOZU" },
+      "headingMag": 270,
+      "iasKt": 100,
+      "transition": "obozu",
+      "joinAt": "OBOZU",
+      "nav1MHz": 116.9,
+      "nav2MHz": 116.9
+    },
+    {
+      "id": "direct-obozu-west",
+      "name": "Direct OBOZU from the southwest",
+      "clearance": "Descend and maintain 7000, proceed direct OBOZU, cleared RNAV runway 18 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "OBOZU"
+      },
+      "offset": {
+        "bearingMag": 235,
+        "distanceNm": 12
+      },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "OBOZU" },
+      "headingMag": 10,
+      "iasKt": 100,
+      "transition": "obozu",
+      "joinAt": "OBOZU",
+      "nav1MHz": 116.9,
+      "nav2MHz": 116.9
+    },
+    {
+      "id": "direct-obozu-northwest",
+      "name": "Direct OBOZU from the northwest",
+      "clearance": "Descend and maintain 7000, proceed direct OBOZU, cleared RNAV runway 18 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "OBOZU"
+      },
+      "offset": {
+        "bearingMag": 325,
+        "distanceNm": 12
+      },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "OBOZU" },
+      "headingMag": 90,
+      "iasKt": 100,
+      "transition": "obozu",
+      "joinAt": "OBOZU",
+      "nav1MHz": 116.9,
+      "nav2MHz": 116.9
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 230, maintain 6000 until established on the final approach course, cleared RNAV runway 18 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "OBOZU"
+      },
+      "leadInNm": 3,
+      "altitudeFt": 6000,
+      "assigned": { "altFt": 6000 },
+      "headingMag": 230,
+      "iasKt": 100,
+      "nav1MHz": 116.9,
+      "nav2MHz": 116.9
+    }
+  ],
+  "notes": [
+    "RNP APCH.",
+    "For uncompensated Baro-VNAV systems, LNAV/VNAV NA below -22°C or above 54°C. (This aircraft's WAAS GPS flies LNAV/VNAV on WAAS vertical guidance, so the limits do not apply to it.)",
+    "WAAS channel 86613, W18A. GP 3.05°, TCH 41.",
+    "VGSI and RNAV glidepath not coincident (VGSI angle 3.00°, TCH 45).",
+    "VDP 1.7 NM to RW18, LNAV only.",
+    "Procedure NA for arrivals at WEYYI on V263 northwest bound, and at WIZGE on V244 northeast bound.",
+    "MSA RW18 25 NM: 6200."
+  ]
+}

@@ -26,7 +26,12 @@ describe('KSNY VOR/DME RWY 13 encoding', () => {
       maxDistanceNm: 10,
       minAltFt: 6200,
     });
-    expect(p.starts.map((s) => s.id)).toEqual(['riyop-arc', 'ogjun-arc', 'direct-sny']);
+    expect(p.starts.map((s) => s.id)).toEqual([
+      'riyop-arc',
+      'ogjun-arc',
+      'direct-sny',
+      'direct-sny-northeast',
+    ]);
   });
 
   it('has no navdata issues', () => {

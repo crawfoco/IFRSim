@@ -72,7 +72,11 @@
 .inst-tofrom {
   fill: #e04ef0;
 }
+/* CRS value: green on a VOR/LOC source, magenta on the GPS (like the glass HSI). */
 .inst-course-text {
+  fill: #4fd17a;
+}
+.inst-hsi-gps .inst-course-text {
   fill: #e98cf5;
 }
 .inst-tofrom-text {
@@ -176,4 +180,14 @@
     top: 3px;
     font-size: 11px;
   }
+}
+
+/* Steam HSI on the GPS (NAV/GPS switch): course pointer and bar in magenta, "GPS" lamp. */
+.inst-hsi-gps .inst-course {
+  fill: #d651e6;
+}
+.inst-gps-label {
+  fill: #d651e6;
+  font-size: 13px;
+  font-weight: 700;
 }

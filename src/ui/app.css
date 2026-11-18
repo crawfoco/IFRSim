@@ -179,6 +179,28 @@ body {
   left: -6px;
   bottom: 0;
 }
+/* Steam, RNAV flights: the HSI's NAV1/GPS source switch, upper-right of the HSI. */
+.inst-with-knob > .hsi-src {
+  position: absolute;
+  left: -6px;
+  top: 0;
+  min-width: 42px;
+  padding: 2px 5px;
+  font:
+    700 11px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  color: #4fd17a;
+  background: linear-gradient(#3a4049, #2b3037);
+  border: 1px solid #4a515b;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.hsi-src.on {
+  color: #e98bf5;
+  border-color: #d651e6;
+}
 .controls-row {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -477,10 +499,33 @@ body {
 }
 /* Flight: the moving map replaces the plate while it is on, using all of its room. */
 .moving-map {
+  position: relative;
   padding: 6px 12px;
   flex: 1;
   min-height: 0;
   display: flex;
+}
+.moving-map-corner {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  z-index: 2;
+}
+/* Plate / moving-map switch, over the view's upper-right corner. */
+.view-toggle {
+  padding: 4px 10px;
+  font:
+    700 12px system-ui,
+    sans-serif;
+  letter-spacing: 0.04em;
+  color: #e9ecef;
+  background: rgba(23, 27, 32, 0.88);
+  border: 1px solid #4a515b;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.view-toggle:hover {
+  border-color: #2ec4f0;
 }
 .moving-map .plan {
   flex: 1;
@@ -554,4 +599,203 @@ body {
   border-left: 3px solid #2ec4f0;
   background: #2ec4f014;
   border-radius: 4px;
+}
+
+/* ---- V3: approach-type tabs and the GPS panel ---- */
+.select-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
+}
+.select-tabs {
+  align-self: flex-start;
+}
+/* RNAV flights (V3): NAV1/NAV2 stack one per line, with the GPS unit beside them. */
+.radios-gps {
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 4px 8px;
+  align-items: stretch;
+}
+.radios-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 2px;
+}
+.radios-gps .radio {
+  grid-template-columns: auto auto auto auto auto auto;
+  justify-content: start;
+}
+.radios-gps .radio-ident {
+  grid-column: auto;
+  position: relative;
+  min-height: 0;
+}
+/* No room for the Morse beside the ID button: it shows in a bubble over the view above. */
+.radios-gps .radio-morse:not(:empty) {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 5;
+  white-space: nowrap;
+  background: #000;
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+.gps-unit {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3px;
+  min-width: 0;
+  padding: 4px 6px;
+  border: 1px solid #343a42;
+  border-radius: 6px;
+  background: #0b0f14;
+  color: #e9ecef;
+  font-size: 12px;
+}
+.gps-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  white-space: nowrap;
+}
+.gps-title {
+  font-size: 12px;
+  color: #aab2bb;
+}
+.gps-ann {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-weight: 700;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: #1d2026;
+  color: #c9d1db;
+  min-width: 2.4rem;
+  text-align: center;
+}
+.gps-ann-on {
+  color: #3ee07a;
+}
+.gps-ann-susp {
+  color: #ffcc33;
+}
+.gps-loaded {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #8a929c;
+  font-size: 11px;
+  text-align: right;
+}
+.gps-data {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  color: #d651e6;
+  gap: 7px;
+}
+.gps-data strong {
+  color: #f4b8fb;
+}
+.gps-keys button {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  color: #e9ecef;
+  background: linear-gradient(#3a4049, #2b3037);
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+}
+.gps-keys button:disabled {
+  opacity: 0.4;
+}
+.gps-keys button.on {
+  outline: 2px solid #d651e6;
+}
+/* PROC, D→ and FPL pages: a popover below the unit, over the instruments. */
+.gps-pop {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  max-width: 420px;
+  padding: 8px 10px;
+  background: #1d2026;
+  border: 1px solid #d651e6;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px #0009;
+  font-size: 12px;
+}
+.gps-pop button,
+.gps-pop select {
+  font-size: 12px;
+  padding: 2px 6px;
+}
+.gps-field,
+.gps-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.gps-pop-proc {
+  flex-direction: column;
+  align-items: stretch;
+}
+.gps-pop-actions {
+  display: flex;
+  gap: 6px;
+}
+.gps-pop-actions button {
+  flex: 1;
+  white-space: nowrap;
+}
+.gps-note {
+  color: #8a929c;
+  font-size: 11px;
+}
+.gps-fpl {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+.gps-fpl li {
+  padding: 0 4px;
+  border-radius: 3px;
+  border: 1px solid #4a515b;
+}
+.gps-fpl li.past {
+  opacity: 0.45;
+}
+.gps-fpl li.active {
+  background: #d651e6;
+  color: #fff;
+  border-color: #d651e6;
+}
+.gps-fpl li.missed-start {
+  margin-left: 8px;
+}
+/* More than six approaches in a tab: tighter cards, three to a row, so nine still fit 1024×768. */
+.select-list-compact {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin: 4px 0;
+}
+.select-list-compact .select-card {
+  padding: 8px 12px;
+  gap: 2px;
 }

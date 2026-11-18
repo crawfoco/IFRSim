@@ -3,7 +3,8 @@
  * automatic captures map one ApModes to the next. The control laws decide *when* a capture
  * is due (CaptureSignals); this module decides *what* the modes become.
  *
- * Lateral: ROL (wings level), HDG, NAV (VOR or LOC), APR (LOC, with GS).
+ * Lateral: ROL (wings level), HDG, NAV (VOR, LOC or GPS), APR (LOC with GS, or GPS with GP;
+ * the GPS glidepath uses the GS vertical mode and is annunciated GP).
  * Vertical: PIT (holds the VS present when entered), VS (selected VS), ALT, GS, GA (go-around
  * climb).
  * Armed: NAV/APR lateral, ALT preselect capture, GS.
@@ -29,18 +30,25 @@ export interface ApModes {
   altArmed: boolean;
   gsArmed: boolean;
   /** Kind of station NAV/APR was armed on; a retune to another kind drops the mode. */
-  navKind: 'VOR' | 'LOC' | null;
+  navKind: NavKind | null;
   /** Vertical speed held in PIT and VS. */
   vsRefFpm: number;
   /** Altitude held in ALT. */
   holdAltFt: number;
 }
 
+export type NavKind = 'VOR' | 'LOC' | 'GPS';
+/** Nav kinds APR works on (with GS / GP). */
+const approachKind = (k: NavKind | null) => k === 'LOC' || k === 'GPS';
+
 /** What the mode logic needs to know about the aircraft and radios. */
 export interface ModeContext {
-  /** Kind of station tuned on the autopilot's nav source (the CDI's radio), or null. */
-  navKind: 'VOR' | 'LOC' | null;
-  /** The tuned localizer has a usable glideslope. */
+  /**
+   * Kind of signal on the autopilot's nav source (the CDI's radio, or the GPS with an active
+   * leg), or null.
+   */
+  navKind: NavKind | null;
+  /** The tuned localizer has a usable glideslope, or the GPS approach has a glidepath. */
   hasGs: boolean;
   altitudeFt: number;
   vsFpm: number;
@@ -110,11 +118,12 @@ export function pressButton(m: ApModes, button: ApButton, ctx: ModeContext): ApM
     case 'APR': {
       if (m.lateral === 'APR') return { ...dropGs(m, ctx), lateral: 'ROL' };
       if (m.lateralArmed === 'APR') return { ...m, lateralArmed: null, gsArmed: false };
-      if (ctx.navKind !== 'LOC') return m;
+      if (!approachKind(ctx.navKind)) return m;
       const gsArmed = ctx.hasGs;
-      if (m.lateral === 'NAV' && m.navKind === 'LOC') return { ...m, lateral: 'APR', gsArmed };
+      if (m.lateral === 'NAV' && m.navKind === ctx.navKind)
+        return { ...m, lateral: 'APR', gsArmed };
       if (m.lateral === 'NAV') return m; // NAV on a VOR: select HDG first
-      return { ...m, lateralArmed: 'APR', gsArmed, navKind: 'LOC' };
+      return { ...m, lateralArmed: 'APR', gsArmed, navKind: ctx.navKind };
     }
 
     case 'ALT':
@@ -153,7 +162,7 @@ export function updateModes(m: ApModes, sig: CaptureSignals, ctx: ModeContext): 
   let n = m;
 
   // Station changes invalidate modes that depended on it.
-  if (ctx.navKind !== 'LOC' && (n.lateral === 'APR' || n.lateralArmed === 'APR')) {
+  if (!approachKind(ctx.navKind) && (n.lateral === 'APR' || n.lateralArmed === 'APR')) {
     n = dropGs(n, ctx);
     n = n.lateral === 'APR' ? { ...n, lateral: 'ROL' } : { ...n, lateralArmed: null };
   }
@@ -189,29 +198,32 @@ export function updateModes(m: ApModes, sig: CaptureSignals, ctx: ModeContext): 
 
 export interface Annunciation {
   ap: boolean;
-  lateral: 'ROL' | 'HDG' | 'VOR' | 'LOC' | null;
-  lateralArmed: 'VOR' | 'LOC' | null;
-  vertical: VerticalMode | null;
-  verticalArmed: ('ALT' | 'GS')[];
+  lateral: 'ROL' | 'HDG' | NavKind | null;
+  lateralArmed: NavKind | null;
+  /** GS is shown as GP on the GPS. */
+  vertical: VerticalMode | 'GP' | null;
+  verticalArmed: ('ALT' | 'GS' | 'GP')[];
 }
 
 /**
  * Annunciator text. NAV and APR show the kind of signal they track: APR is always LOC;
  * NAV shows VOR (a NAV capture on a localizer is shown by the caller, which knows the source).
  */
-export function annunciation(m: ApModes, navKind: 'VOR' | 'LOC' | null = 'VOR'): Annunciation {
+export function annunciation(m: ApModes, navKind: NavKind | null = 'VOR'): Annunciation {
   if (!m.engaged)
     return { ap: false, lateral: null, lateralArmed: null, vertical: null, verticalArmed: [] };
-  const navLabel = navKind === 'LOC' ? 'LOC' : 'VOR';
-  const label = (mode: 'NAV' | 'APR') => (mode === 'APR' ? 'LOC' : navLabel);
-  const verticalArmed: ('ALT' | 'GS')[] = [];
+  const gps = navKind === 'GPS';
+  const navLabel: NavKind = gps ? 'GPS' : navKind === 'LOC' ? 'LOC' : 'VOR';
+  const label = (mode: 'NAV' | 'APR'): NavKind =>
+    mode === 'APR' ? (gps ? 'GPS' : 'LOC') : navLabel;
+  const verticalArmed: ('ALT' | 'GS' | 'GP')[] = [];
   if (m.altArmed) verticalArmed.push('ALT');
-  if (m.gsArmed) verticalArmed.push('GS');
+  if (m.gsArmed) verticalArmed.push(gps ? 'GP' : 'GS');
   return {
     ap: true,
     lateral: m.lateral === 'NAV' || m.lateral === 'APR' ? label(m.lateral) : m.lateral,
     lateralArmed: m.lateralArmed ? label(m.lateralArmed) : null,
-    vertical: m.vertical,
+    vertical: m.vertical === 'GS' && gps ? 'GP' : m.vertical,
     verticalArmed,
   };
 }

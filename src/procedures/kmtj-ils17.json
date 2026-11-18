@@ -266,15 +266,16 @@
   "starts": [
     {
       "id": "haqhy",
-      "name": "Inbound to HAQHY, via the JNC R-098 feeder",
-      "clearance": "Cross HAQHY at or above 12000, cleared ILS runway 17 approach.",
+      "name": "Inbound on the JNC R-098 to HAQHY",
+      "clearance": "Descend and maintain 12000, proceed inbound on the Grand Junction 098 radial, cleared ILS runway 17 approach.",
       "position": {
         "kind": "radialDme",
         "navaid": "JNC",
         "radialMag": 98,
-        "dmeNm": 30
+        "dmeNm": 26
       },
-      "altitudeFt": 12000,
+      "altitudeFt": 14000,
+      "assigned": { "altFt": 12000, "until": "HAQHY" },
       "headingMag": 98,
       "iasKt": 100,
       "transition": "haqhy",
@@ -282,16 +283,39 @@
       "nav2MHz": 112.4
     },
     {
+      "id": "direct-haqhy",
+      "name": "Direct HAQHY from the south-west",
+      "clearance": "Descend and maintain 12000, proceed direct HAQHY, cleared ILS runway 17 approach.",
+      "position": {
+        "kind": "radialDme",
+        "navaid": "JNC",
+        "radialMag": 98,
+        "dmeNm": 36
+      },
+      "offset": {
+        "bearingMag": 210,
+        "distanceNm": 10
+      },
+      "altitudeFt": 14000,
+      "assigned": { "altFt": 12000, "until": "HAQHY" },
+      "headingMag": 350,
+      "iasKt": 100,
+      "transition": "haqhy",
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    },
+    {
       "id": "pagre-arc",
-      "name": "Inbound to PAGRE, then the MTJ 14.8 DME arc",
-      "clearance": "Cross PAGRE at or above 12000, cleared ILS runway 17 approach via the Montrose 14.8 DME arc.",
+      "name": "Inbound on the MTJ R-297 to PAGRE, via the 14.8 DME arc",
+      "clearance": "Descend and maintain 12000, proceed inbound on the Montrose 297 radial, cleared ILS runway 17 approach via the Montrose 14.8 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "MTJ",
         "radialMag": 297,
-        "dmeNm": 22
+        "dmeNm": 25
       },
-      "altitudeFt": 12000,
+      "altitudeFt": 14000,
+      "assigned": { "altFt": 12000 },
       "headingMag": 117,
       "iasKt": 100,
       "transition": "pagre",
@@ -309,6 +333,7 @@
         "dmeNm": 24
       },
       "altitudeFt": 10000,
+      "assigned": { "altFt": 10000 },
       "headingMag": 170,
       "iasKt": 100,
       "nav1MHz": 117.1,
@@ -316,17 +341,44 @@
     },
     {
       "id": "over-mtj",
-      "name": "Inbound to MTJ from the south, outbound R-349, procedure turn at BRUUK",
-      "clearance": "Cross Montrose VOR at or above 12500, cleared ILS runway 17 approach via the Montrose 349 radial and the procedure turn.",
+      "name": "Direct MTJ from the west-south-west",
+      "clearance": "Descend and maintain 12500, proceed direct Montrose VOR, cleared ILS runway 17 approach via the Montrose 349 radial and the procedure turn.",
       "position": {
         "kind": "navaid",
         "navaid": "MTJ"
       },
-      "leadInNm": 5,
-      "altitudeFt": 12500,
-      "headingMag": 349,
+      "offset": {
+        "bearingMag": 250,
+        "distanceNm": 12
+      },
+      "altitudeFt": 14500,
+      "assigned": { "altFt": 12500, "until": "MTJ" },
+      "headingMag": 20,
       "iasKt": 100,
       "transition": "mtj",
+      "nav1MHz": 117.1,
+      "nav2MHz": 117.1
+    },
+    {
+      "id": "direct-bruuk",
+      "name": "Direct BRUUK from the north-north-west",
+      "clearance": "Descend and maintain 12500, proceed direct BRUUK, cleared ILS runway 17 approach.",
+      "position": {
+        "kind": "locDme",
+        "loc": "I-MTJ",
+        "dmeNm": 14.8,
+        "dmeFrom": "MTJ"
+      },
+      "offset": {
+        "bearingMag": 330,
+        "distanceNm": 10
+      },
+      "altitudeFt": 14500,
+      "assigned": { "altFt": 12500, "until": "BRUUK" },
+      "headingMag": 200,
+      "iasKt": 100,
+      "transition": "mtj",
+      "joinAt": "BRUUK",
       "nav1MHz": 117.1,
       "nav2MHz": 117.1
     }

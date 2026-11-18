@@ -11,6 +11,8 @@ import { GS_FULL_SCALE_DEG, gsIndication } from '../../nav/gs';
 import { LOC_FULL_SCALE_DEG } from '../../nav/loc';
 import { VOR_FULL_SCALE_DEG } from '../../nav/vor';
 import { coursePosition } from '../geometry';
+import { isRnavRef } from '../../../procedures/schema';
+import { gpsFinalFullScaleNm } from './gps';
 import { clock, type Rule, type ScoreItem } from './types';
 
 interface DevState {
@@ -25,12 +27,32 @@ const NEAR_STATION_NM = 1.0;
 const inFinalSegment = (fafTick: number | null, missedTick: number | null) =>
   fafTick !== null && missedTick === null;
 
-export const finalCourse: Rule<DevState & { isLoc: boolean }> = {
-  init: (sc) => ({ maxDeg: 0, maxTick: 0, samples: 0, isLoc: 'loc' in sc.final.course }),
-  step(s, { seq, scenario, state }) {
+/**
+ * RNAV finals are judged in fractions of the GPS full scale where the aircraft is (0.3 NM for
+ * LNAV, angular for LPV/LP/LNAV-VNAV): `maxDeg` then holds the largest |xtk| ÷ full scale × 2
+ * (dots), and the half-scale limit is 1 dot.
+ */
+export const finalCourse: Rule<DevState & { isLoc: boolean; rnav: boolean }> = {
+  init: (sc) => ({
+    maxDeg: 0,
+    maxTick: 0,
+    samples: 0,
+    isLoc: 'loc' in sc.final.course,
+    rnav: isRnavRef(sc.final.course),
+  }),
+  step(s, ctx) {
+    const { seq, scenario, state } = ctx;
     if (!inFinalSegment(seq.fafTick, seq.missedTick)) return s;
     const ac = { position: state.aircraft.position, altitudeFt: state.aircraft.altitudeFt };
     const pos = coursePosition(scenario.final.course, ac, scenario.world.navdata);
+    if (s.rnav) {
+      const fs = gpsFinalFullScaleNm(ctx);
+      if (fs === null) return s;
+      const dots = (Math.abs(pos.xtkNm) / fs) * 2;
+      return dots > s.maxDeg
+        ? { ...s, maxDeg: dots, maxTick: state.tick, samples: s.samples + 1 }
+        : { ...s, samples: s.samples + 1 };
+    }
     // Near a VOR (KAKO's FAF is the station) the angle means nothing: inside 1 NM judge
     // the cross-track distance as if at 1 NM.
     const d =
@@ -43,6 +65,18 @@ export const finalCourse: Rule<DevState & { isLoc: boolean }> = {
   },
   finish(s): ScoreItem[] {
     if (s.samples === 0) return [];
+    if (s.rnav) {
+      const fail = s.maxDeg > 1;
+      return [
+        {
+          id: 'final-course',
+          title: 'GPS final course within half scale inside the FAF',
+          status: fail ? 'fail' : 'pass',
+          measured: `Largest deviation ${s.maxDeg.toFixed(1)} dots at ${clock(s.maxTick)}`,
+          ...(fail ? { tick: s.maxTick } : {}),
+        },
+      ];
+    }
     const half = (s.isLoc ? LOC_FULL_SCALE_DEG : VOR_FULL_SCALE_DEG) / 2;
     const dots = (s.maxDeg / half).toFixed(1);
     const fail = s.maxDeg > half;

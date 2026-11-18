@@ -1,0 +1,311 @@
+{
+  "id": "kcos-rnav31",
+  "airport": "KCOS",
+  "runway": "31",
+  "name": "RNAV (GPS) RWY 31",
+  "chart": {
+    "number": "AL-87",
+    "amendment": "Amdt 2A",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kcos-rnav31.png"
+  },
+  "rnav": {
+    "cifp": "KCOS R31",
+    "waas": {
+      "channel": "40040",
+      "id": "W31A"
+    },
+    "equipment": "DME/DME RNP-0.3 NA."
+  },
+  "navaids": [],
+  "fixes": {
+    "ADANE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "ADANE"
+      },
+      "faaId": "ADANE",
+      "note": "Feeder fix; missed approach holding fix"
+    },
+    "PUB": {
+      "def": {
+        "kind": "waypoint",
+        "id": "PUB"
+      },
+      "faaId": "PUB",
+      "note": "Pueblo VORTAC, feeder"
+    },
+    "ZENER": {
+      "def": {
+        "kind": "waypoint",
+        "id": "ZENER"
+      },
+      "faaId": "ZENER",
+      "note": "IAF"
+    },
+    "ONKIE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "ONKIE"
+      },
+      "faaId": "ONKIE",
+      "note": "IAF"
+    },
+    "NUTVE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "NUTVE"
+      },
+      "faaId": "NUTVE",
+      "note": "IF"
+    },
+    "JATOL": {
+      "def": {
+        "kind": "waypoint",
+        "id": "JATOL"
+      },
+      "faaId": "JATOL",
+      "note": "FAF"
+    },
+    "RW31": {
+      "def": {
+        "kind": "waypoint",
+        "id": "RW31"
+      },
+      "note": "Missed approach point"
+    }
+  },
+  "transitions": [
+    {
+      "id": "adane",
+      "name": "ADANE via ZENER",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "ZENER",
+          "course": {
+            "rnavFrom": "ADANE",
+            "rnavTo": "ZENER"
+          },
+          "minAltFt": 9400
+        },
+        {
+          "type": "track",
+          "to": "NUTVE",
+          "course": {
+            "rnavFrom": "ZENER",
+            "rnavTo": "NUTVE"
+          },
+          "minAltFt": 8600
+        }
+      ]
+    },
+    {
+      "id": "zener",
+      "name": "ZENER (IAF)",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "NUTVE",
+          "course": {
+            "rnavFrom": "ZENER",
+            "rnavTo": "NUTVE"
+          },
+          "minAltFt": 8600
+        }
+      ]
+    },
+    {
+      "id": "pub",
+      "name": "PUB VORTAC via ONKIE",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "ONKIE",
+          "course": {
+            "rnavFrom": "PUB",
+            "rnavTo": "ONKIE"
+          },
+          "minAltFt": 9400
+        },
+        {
+          "type": "track",
+          "to": "NUTVE",
+          "course": {
+            "rnavFrom": "ONKIE",
+            "rnavTo": "NUTVE"
+          },
+          "minAltFt": 8600
+        }
+      ]
+    },
+    {
+      "id": "onkie",
+      "name": "ONKIE (IAF)",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "NUTVE",
+          "course": {
+            "rnavFrom": "ONKIE",
+            "rnavTo": "NUTVE"
+          },
+          "minAltFt": 8600
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "JATOL",
+      "course": {
+        "rnavFrom": "NUTVE",
+        "rnavTo": "JATOL"
+      },
+      "minAltFt": 7800
+    },
+    {
+      "type": "final",
+      "faf": "JATOL",
+      "course": {
+        "rnavFrom": "JATOL",
+        "rnavTo": "RW31"
+      },
+      "fafAltFt": 7800,
+      "descentAngle": {
+        "angleDeg": 3.04,
+        "tchFt": 52
+      },
+      "stepDowns": [],
+      "map": {
+        "fix": "RW31"
+      }
+    }
+  ],
+  "missed": [
+    {
+      "type": "climb",
+      "toAltFt": 6700
+    },
+    {
+      "type": "direct",
+      "to": "ADANE",
+      "turn": "R",
+      "climbToFt": 9000,
+      "flyOver": true
+    },
+    {
+      "type": "hold",
+      "fix": "ADANE",
+      "inboundCourseMag": 296,
+      "course": {
+        "rnavFix": "ADANE",
+        "courseMag": 296
+      },
+      "turn": "R",
+      "legNm": 7,
+      "minAltFt": 9000
+    }
+  ],
+  "missedText": "Climb to 6700 then climbing right turn to 9000 direct ADANE and hold.",
+  "minimums": [
+    {
+      "kind": "LP",
+      "label": "LP",
+      "A": {
+        "altFt": 6440,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 6440,
+        "visibilitySm": 1
+      }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": {
+        "altFt": 6560,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 6560,
+        "visibilitySm": 1
+      }
+    }
+  ],
+  "starts": [
+    {
+      "id": "direct-zener",
+      "name": "Direct ZENER from the southeast",
+      "clearance": "Descend and maintain 9400, proceed direct ZENER, cleared RNAV runway 31 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "ZENER"
+      },
+      "offset": {
+        "bearingMag": 130,
+        "distanceNm": 10
+      },
+      "altitudeFt": 11500,
+      "assigned": { "altFt": 9400, "until": "ZENER" },
+      "headingMag": 270,
+      "iasKt": 100,
+      "transition": "zener",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "direct-onkie",
+      "name": "Direct ONKIE from the east",
+      "clearance": "Descend and maintain 9400, proceed direct ONKIE, cleared RNAV runway 31 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "ONKIE"
+      },
+      "offset": {
+        "bearingMag": 90,
+        "distanceNm": 10
+      },
+      "altitudeFt": 11500,
+      "assigned": { "altFt": 9400, "until": "ONKIE" },
+      "headingMag": 220,
+      "iasKt": 100,
+      "transition": "onkie",
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 280, maintain 8600 until established on the final approach course, cleared RNAV runway 31 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "NUTVE"
+      },
+      "leadInNm": 3,
+      "altitudeFt": 8600,
+      "assigned": { "altFt": 8600 },
+      "headingMag": 280,
+      "iasKt": 100,
+      "nav1MHz": 116.7,
+      "nav2MHz": 116.7
+    }
+  ],
+  "notes": [
+    "DME/DME RNP-0.3 NA.",
+    "WAAS channel 40040, W31A. Descent angle 3.04°, TCH 52 (advisory: LP and LNAV only, no glidepath; the GPS shows it as LP+V / LNAV+V).",
+    "VDP 0.8 NM to RW31.",
+    "Procedure NA for arrivals at ADANE on V108 eastbound.",
+    "Procedure NA for arrivals on PUB VORTAC airway radials 267 CW 354.",
+    "Feeder routes: ADANE 174° (11.9) to ZENER at or above 9400; PUB VORTAC 340° (18.4) to ONKIE at or above 9400.",
+    "Restricted area R-2601 west of the airport.",
+    "MSA RW31 25 NM: 15400."
+  ]
+}

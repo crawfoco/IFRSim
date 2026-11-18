@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  airacIdent,
+  cifpUrl,
   cycleEffectiveOn,
   isoDate,
   nasrCsvUrl,
@@ -23,6 +25,15 @@ describe('NASR cycles', () => {
       'https://nfdc.faa.gov/webContent/28DaySub/extra/29_Oct_2026_CSV.zip',
     );
     expect(nasrCsvUrl(parseIsoDate('2026-12-24'))).toMatch(/\/24_Dec_2026_CSV\.zip$/);
+  });
+
+  it('names the AIRAC cycle and the CIFP zip', () => {
+    expect(airacIdent(parseIsoDate('2026-10-29'))).toBe('2611');
+    expect(airacIdent(parseIsoDate('2026-11-26'))).toBe('2612');
+    expect(airacIdent(parseIsoDate('2026-01-22'))).toBe('2601');
+    expect(cifpUrl(parseIsoDate('2026-10-29'))).toBe(
+      'https://aeronav.faa.gov/Upload_313-d/cifp/CIFP_261029.zip',
+    );
   });
 
   it('rejects malformed dates', () => {

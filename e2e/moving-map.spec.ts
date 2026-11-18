@@ -1,6 +1,7 @@
 /**
  * The moving map takes the plate's place while it is on (issue #7: it used to squeeze the plate
- * to a sliver). The Map button switches back. Both panels, desktop and tablet.
+ * to a sliver). The MAP/PLATE switch at the view's upper right switches back. Both panels,
+ * desktop and tablet.
  */
 import { expect, test } from '@playwright/test';
 
@@ -8,7 +9,9 @@ for (const vp of [
   { name: 'desktop', width: 1366, height: 860 },
   { name: 'tablet-landscape', width: 1024, height: 768 },
 ]) {
-  test(`moving map replaces the plate and Map switches back (${vp.name})`, async ({ page }) => {
+  test(`moving map replaces the plate and the switch brings it back (${vp.name})`, async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: vp.width, height: vp.height });
     await page.goto('/');
     await page.getByTestId('pick-kcfo-ils26').click();

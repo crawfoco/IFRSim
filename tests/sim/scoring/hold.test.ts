@@ -37,12 +37,16 @@ function direct(f: Flight, fix: string, maxS = 900) {
   expect.fail(`did not reach ${fix}`);
 }
 
-/** Direct SKIPI at 8000, parallel entry with `outboundS` outbound, then the ILS. */
+/**
+ * Down from 10000 to the assigned 8000, direct SKIPI, parallel entry with `outboundS`
+ * outbound, then the ILS.
+ */
 function flySkipi(f: Flight, outboundS: number, holdAltFt = 7200) {
   f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
   f.send({ type: 'altPreselect', ft: 8000 });
   f.wait(0.1);
   f.send({ type: 'button', button: 'ALT' });
+  if (f.alt > 8050) f.descendOrClimb(8000, -1000);
   f.send({ type: 'standby', radio: 1, mhz: 109.3 });
   direct(f, 'SKIPI');
   f.send({ type: 'swap', radio: 1 }, { type: 'course', radio: 1, deg: 263 });

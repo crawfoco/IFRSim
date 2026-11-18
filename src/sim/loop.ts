@@ -8,6 +8,8 @@ import { AP_OFF } from './autopilot/modes';
 import { magToTrue } from './geo/angles';
 import type { LatLon } from './geo/geodesy';
 import { applyCommand } from './commands';
+import { GPS_OFF, stepGps } from './gps/receiver';
+import { tasKt } from './aircraft/model';
 import { sense } from './sensors';
 import type { Command, SimState } from './state';
 import type { World } from './world';
@@ -55,6 +57,7 @@ export function initialState(start: StartCondition, world: World): SimState {
     },
     timer: { running: false, elapsedS: 0 },
     goAroundTick: null,
+    gps: GPS_OFF,
   };
 }
 
@@ -63,11 +66,23 @@ export function step(state: SimState, commands: readonly Command[], world: World
   for (const c of commands) s = applyCommand(s, c, world);
   const sensors = sense(s, world);
   const { ap, controls } = runAutopilot(s, sensors, world);
+  const aircraft = stepAircraft(s.aircraft, controls, DT);
+  // Sequencing looks at where the aircraft is after this step. No wind: track = heading.
+  const gps = world.gps
+    ? stepGps(
+        s.gps,
+        world.gps,
+        { position: aircraft.position, altitudeFt: aircraft.altitudeFt },
+        aircraft.headingTrueDeg,
+        tasKt(aircraft.iasKt, aircraft.altitudeFt),
+      )
+    : s.gps;
   return {
     ...s,
     tick: s.tick + 1,
     ap,
-    aircraft: stepAircraft(s.aircraft, controls, DT),
+    gps,
+    aircraft,
     timer: s.timer.running ? { ...s.timer, elapsedS: s.timer.elapsedS + DT } : s.timer,
   };
 }

@@ -6,6 +6,7 @@
  * - "climb in hold" on the missed-approach hold: the hold altitude reached by the end of
  *   the circuit.
  */
+import { isRnavRef } from '../../../procedures/schema';
 import type { Leg } from '../../../procedures/schema';
 import { normalize360, signedAngleDiff } from '../../geo/angles';
 import { alongTrackBeforeFixNm, inboundTrueAtFix } from '../geometry';
@@ -67,7 +68,12 @@ export const holdTiming: Rule<{ watches: TimingWatch[] }> = {
     const { seq, state, scenario } = ctx;
     const cur = seq.route[seq.index]!;
     let watches = s.watches;
-    if (cur.leg.type === 'hold' && !watches.some((w) => w.legIndex === cur.index)) {
+    // GPS-flown holds (RNAV course) are flown by the GPS, entry included: not scored here.
+    if (
+      cur.leg.type === 'hold' &&
+      !isRnavRef(cur.leg.course) &&
+      !watches.some((w) => w.legIndex === cur.index)
+    ) {
       const hold = cur.leg;
       if (holdArrival(ctx, hold))
         watches = [
@@ -165,6 +171,13 @@ export const holdMaxAltitude: Rule<{ watches: MaxAltWatch[] }> = {
   step(s, { seq, state }) {
     const cur = seq.route[seq.index]!;
     if (cur.leg.type !== 'hold' || cur.leg.maxAltFt === undefined) return s;
+    // The maximum applies in the hold: from crossing the fix (a descent on the way in is fine).
+    const legStart = seq.legs.at(-1)!.startTick;
+    const atFix =
+      seq.reversal.outboundTick !== null ||
+      // The missed-approach hold has no entry tracking: from its fix passage.
+      (cur.phase === 'missed' && seq.passages.some((p) => p.fix === cur.fix && p.tick >= legStart));
+    if (!atFix) return s;
     const alt = state.aircraft.altitudeFt;
     const w = s.watches.find((x) => x.legIndex === cur.index);
     if (!w)

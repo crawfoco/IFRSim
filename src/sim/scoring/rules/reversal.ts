@@ -5,6 +5,7 @@
  *   its altitude;
  * - a course reversal flown on a NoPT route (informational).
  */
+import { isRnavRef } from '../../../procedures/schema';
 import type { Leg } from '../../../procedures/schema';
 import { normalize360, signedAngleDiff, trueToMag } from '../../geo/angles';
 import { distanceNm } from '../../geo/geodesy';
@@ -87,7 +88,12 @@ export const holdEntry: Rule<HoldState> = {
     const cur = seq.route[seq.index]!;
     let watches = s.watches;
     // A new hold: its first crossing of the fix while the hold is the current leg.
-    if (cur.leg.type === 'hold' && !watches.some((w) => w.legIndex === cur.index)) {
+    // GPS-flown holds (RNAV course) are flown by the GPS, entry included: not scored here.
+    if (
+      cur.leg.type === 'hold' &&
+      !isRnavRef(cur.leg.course) &&
+      !watches.some((w) => w.legIndex === cur.index)
+    ) {
       const hold = cur.leg;
       const legStart = seq.legs.at(-1)!.startTick;
       const p = seq.passages.find((x) => x.fix === hold.fix && x.tick >= legStart - 20 * 30);
@@ -197,7 +203,12 @@ export const procedureTurn: Rule<{ watches: PtWatch[] }> = {
   step(s, { seq, state, scenario }) {
     const cur = seq.route[seq.index]!;
     let watches = s.watches;
-    if (cur.leg.type === 'procedureTurn' && seq.reversal.outboundTick !== null) {
+    // Not while a straight-in crossing is undecided (it may be a skipped PT, not one flown).
+    if (
+      cur.leg.type === 'procedureTurn' &&
+      seq.reversal.outboundTick !== null &&
+      seq.reversal.straightInTick === null
+    ) {
       const pt: PtLeg = cur.leg;
       const ac = { position: state.aircraft.position, altitudeFt: state.aircraft.altitudeFt };
       const pos = coursePosition(pt.course, ac, scenario.world.navdata);
@@ -230,27 +241,34 @@ export const procedureTurn: Rule<{ watches: PtWatch[] }> = {
     return watches === s.watches ? s : { watches };
   },
   finish(s, last): ScoreItem[] {
-    return s.watches.map((w) => {
-      const pt = last.seq.route[w.legIndex]!.leg as PtLeg;
-      const faults: string[] = [];
-      if (w.wrongSideNm > 1.0)
-        faults.push(`turned on the wrong side (${w.wrongSideNm.toFixed(1)} NM)`);
-      if (w.maxDistNm > pt.maxDistanceNm)
-        faults.push(`went ${w.maxDistNm.toFixed(1)} NM from ${w.fix} (limit ${pt.maxDistanceNm})`);
-      if (w.minAltFt < pt.minAltFt - 100)
-        faults.push(
-          `descended to ${fmtFt(w.minAltFt)} before inbound (minimum ${fmtFt(pt.minAltFt)})`,
-        );
-      return {
-        id: `procedure-turn:${w.fix}:${w.legIndex}`,
-        title: `Procedure turn at ${w.fix}`,
-        status: faults.length ? 'fail' : 'pass',
-        measured: faults.length
-          ? faults.join('; ')
-          : `${pt.side === 'L' ? 'Left' : 'Right'} side, within ${w.maxDistNm.toFixed(1)} NM, lowest ${fmtFt(w.minAltFt)}`,
-        tick: w.startTick,
-      };
-    });
+    // A skipped PT is `fix-order`'s finding, not a procedure turn flown.
+    const skipped = (i: number) =>
+      last.seq.legs.some((l) => l.index === i && l.status === 'skipped');
+    return s.watches
+      .filter((w) => !skipped(w.legIndex))
+      .map((w) => {
+        const pt = last.seq.route[w.legIndex]!.leg as PtLeg;
+        const faults: string[] = [];
+        if (w.wrongSideNm > 1.0)
+          faults.push(`turned on the wrong side (${w.wrongSideNm.toFixed(1)} NM)`);
+        if (w.maxDistNm > pt.maxDistanceNm)
+          faults.push(
+            `went ${w.maxDistNm.toFixed(1)} NM from ${w.fix} (limit ${pt.maxDistanceNm})`,
+          );
+        if (w.minAltFt < pt.minAltFt - 100)
+          faults.push(
+            `descended to ${fmtFt(w.minAltFt)} before inbound (minimum ${fmtFt(pt.minAltFt)})`,
+          );
+        return {
+          id: `procedure-turn:${w.fix}:${w.legIndex}`,
+          title: `Procedure turn at ${w.fix}`,
+          status: faults.length ? 'fail' : 'pass',
+          measured: faults.length
+            ? faults.join('; ')
+            : `${pt.side === 'L' ? 'Left' : 'Right'} side, within ${w.maxDistNm.toFixed(1)} NM, lowest ${fmtFt(w.minAltFt)}`,
+          tick: w.startTick,
+        };
+      });
   },
 };
 
@@ -261,7 +279,8 @@ export const noPtReversal: Rule<{ turnDeg: number; maxAbs: number; tick: number 
     const t = scenario.start.transition
       ? scenario.procedure.transitions.find((x) => x.id === scenario.start.transition)
       : undefined;
-    if (!t?.noPT || seq.fafTick !== null || seq.missedTick !== null) return s;
+    const noPT = !!t?.noPT || !!scenario.start.noReversal;
+    if (!noPT || seq.fafTick !== null || seq.missedTick !== null) return s;
     const turn =
       s.turnDeg + signedAngleDiff(state.aircraft.headingTrueDeg, prev.aircraft.headingTrueDeg);
     const abs = Math.abs(turn);

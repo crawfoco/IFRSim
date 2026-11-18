@@ -1,0 +1,20 @@
+HDR01FAACIFP18      001P013203973042611  07-OCT-202615:55:03  U.S.A. DOT FAA                                                9D60747B
+SUSAP KCNYK2ACNY     0     073YHN38452747W109451247E010004579         1800018000C    MNAR    CANYONLANDS RGNL              543832201
+SUSAP KCNYK2CFATPU K20    W     N38430305W109484079                       E0096     NAR           FATPU                    543842605
+SUSAP KCNYK2CFELTA K20    W     N38423293W109493443                       E0096     NAR           FELTA                    543852605
+SUSAP KCNYK2CFOGUG K20    W     N38442620W109461257                       E0096     NAR           FOGUG                    543862605
+SUSAP KCNYK2CHANOG K20    W     N38371597W109591737                       E0097     NAR           HANOG                    543872605
+SUSAP KCNYK2CNERRI K20    W     N38403804W109525879                       E0096     NAR           NERRI                    543882605
+SUSAP KCNYK2CTHOWL K20    C     N38490423W109510035                       E0097     NAR           THOWL                    543892504
+SUSAP KCNYK2FR03   R      010HANOGK2PC0E  I    IF                                 + 08100     18000                 A JS   543971901
+SUSAP KCNYK2FR03   R      020NERRIK2PC1E  F 010TF                                 + 07200                 FOGUG K2PCA JS   543982201
+SUSAP KCNYK2FR03   R      020NERRIK2PC2WALP        N          ALNAV                                                   JS   543991901
+SUSAP KCNYK2FR03   R      021FELTAK2PC0E S  031TF                                 V 0598005980        -350          A JS   544002201
+SUSAP KCNYK2FR03   R      022FATPUK2PC0E S  031TF                                 V 0566005660        -350          A JS   544012201
+SUSAP KCNYK2FR03   R      030FOGUGK2PC0EY M 031TF                                   04775             -350          A JS   544022201
+SUSAP KCNYK2FR03   R      040         0  M     CA                     0443        + 05800                           A JS   544032201
+SUSAP KCNYK2FR03   R      050HANOGK2PC0EY  L010DF                                 + 08100                           A JS   544041901
+SUSAP KCNYK2FR03   R      060HANOGK2PC0EE  R   HM                     04570070    + 08100                           A JS   544051901
+SUSAP KCNYK2GRW03    0073600300 N38444896W109454830         +1366804553000040100R                                          544252213
+SUSAP KCNYK2PR03   RW03 001 0000W03A0N3844434585W10945417830+136680350N3845353585W10944091565106750000000400F40000016B21A22544292201
+SUSAP KCNYK2PR03   RW03 002E      +13876+13876LP        93642                                                              544302201

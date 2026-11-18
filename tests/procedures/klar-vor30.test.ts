@@ -31,7 +31,12 @@ describe('KLAR VOR/DME RWY 30 encoding', () => {
       minAltFt: 10600,
     });
     expect(p.transitions[3]!.legs[0]).toMatchObject({ type: 'heading', headingMag: 337 });
-    expect(p.starts.map((s) => s.id)).toEqual(['direct-lar', 'povoh-arc', 'flems']);
+    expect(p.starts.map((s) => s.id)).toEqual([
+      'direct-lar',
+      'direct-lar-east',
+      'povoh-arc',
+      'flems',
+    ]);
   });
 
   it('has no navdata issues', () => {

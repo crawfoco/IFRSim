@@ -3,7 +3,7 @@
  * the ident button, which plays the received station's Morse ident and shows it as
  * dots and dashes (decoding it against the chart is the learner's job).
  */
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { morse } from '../../sim/nav/morse';
 import type { RadioId, SimState } from '../../sim/state';
 import { playIdent } from '../audio/ident';
@@ -132,17 +132,32 @@ export function NavRadios({
   send,
   idents,
   autoId = false,
+  gps,
 }: {
   state: SimState;
   send: Send;
   idents: Idents;
   /** Glass panel: decoded idents shown next to the radios (auto-ID). */
   autoId?: boolean;
+  /** RNAV flights (V3): the GPS unit, beside the radios, which then stack one per line. */
+  gps?: ReactNode;
 }) {
-  return (
-    <section className="radios" aria-label="Nav radios">
+  const radios = (
+    <>
       <NavRadio id={1} state={state} send={send} ident={idents[1]} autoId={autoId} />
       <NavRadio id={2} state={state} send={send} ident={idents[2]} autoId={autoId} />
+    </>
+  );
+  if (!gps)
+    return (
+      <section className="radios" aria-label="Nav radios">
+        {radios}
+      </section>
+    );
+  return (
+    <section className="radios radios-gps" aria-label="Nav radios and GPS">
+      <div className="radios-col">{radios}</div>
+      {gps}
     </section>
   );
 }

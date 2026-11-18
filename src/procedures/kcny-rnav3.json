@@ -1,0 +1,375 @@
+{
+  "id": "kcny-rnav3",
+  "airport": "KCNY",
+  "runway": "03",
+  "name": "RNAV (GPS) RWY 3",
+  "chart": {
+    "number": "AL-5585",
+    "amendment": "Amdt 2",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kcny-rnav3.png"
+  },
+  "rnav": {
+    "cifp": "KCNY R03",
+    "waas": {
+      "channel": "93642",
+      "id": "W03A"
+    },
+    "equipment": "RNP APCH-GPS."
+  },
+  "navaids": [],
+  "fixes": {
+    "ARCHH": {
+      "def": {
+        "kind": "waypoint",
+        "id": "ARCHH"
+      },
+      "faaId": "ARCHH",
+      "note": "Feeder fix"
+    },
+    "KIDNE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "KIDNE"
+      },
+      "faaId": "KIDNE",
+      "note": "IAF"
+    },
+    "PIGSE": {
+      "def": {
+        "kind": "waypoint",
+        "id": "PIGSE"
+      },
+      "faaId": "PIGSE",
+      "note": "IAF"
+    },
+    "HANOG": {
+      "def": {
+        "kind": "waypoint",
+        "id": "HANOG"
+      },
+      "faaId": "HANOG",
+      "note": "IF/IAF, hold-in-lieu of procedure turn; missed approach holding fix"
+    },
+    "NERRI": {
+      "def": {
+        "kind": "waypoint",
+        "id": "NERRI"
+      },
+      "faaId": "NERRI",
+      "note": "FAF"
+    },
+    "FELTA": {
+      "def": {
+        "kind": "waypoint",
+        "id": "FELTA"
+      },
+      "faaId": "FELTA",
+      "note": "Step-down fix, 3.2 NM to FOGUG"
+    },
+    "FATPU": {
+      "def": {
+        "kind": "waypoint",
+        "id": "FATPU"
+      },
+      "faaId": "FATPU",
+      "note": "Step-down fix, 2.4 NM to FOGUG"
+    },
+    "FOGUG": {
+      "def": {
+        "kind": "waypoint",
+        "id": "FOGUG"
+      },
+      "faaId": "FOGUG",
+      "note": "Missed approach point (offset final: 0.5 NM before the runway 3 threshold, off the centreline)"
+    }
+  },
+  "transitions": [
+    {
+      "id": "kidne",
+      "name": "KIDNE (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "HANOG",
+          "course": {
+            "rnavFrom": "KIDNE",
+            "rnavTo": "HANOG"
+          },
+          "minAltFt": 8100
+        }
+      ]
+    },
+    {
+      "id": "pigse",
+      "name": "PIGSE (IAF), NoPT",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "HANOG",
+          "course": {
+            "rnavFrom": "PIGSE",
+            "rnavTo": "HANOG"
+          },
+          "minAltFt": 8100
+        }
+      ]
+    },
+    {
+      "id": "archh",
+      "name": "ARCHH 231° to HANOG, hold-in-lieu",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "HANOG",
+          "course": {
+            "rnavFrom": "ARCHH",
+            "rnavTo": "HANOG"
+          },
+          "flyOver": true,
+          "minAltFt": 8100
+        },
+        {
+          "type": "hold",
+          "fix": "HANOG",
+          "inboundCourseMag": 46,
+          "course": {
+            "rnavFix": "HANOG",
+            "courseMag": 45.7
+          },
+          "turn": "R",
+          "legNm": 7,
+          "minAltFt": 8100,
+          "maxAltFt": 12000
+        }
+      ]
+    },
+    {
+      "id": "hanog",
+      "name": "HANOG (IF/IAF), hold-in-lieu",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "hold",
+          "fix": "HANOG",
+          "inboundCourseMag": 46,
+          "course": {
+            "rnavFix": "HANOG",
+            "courseMag": 45.7
+          },
+          "turn": "R",
+          "legNm": 7,
+          "minAltFt": 8100,
+          "maxAltFt": 12000
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "NERRI",
+      "course": {
+        "rnavFrom": "HANOG",
+        "rnavTo": "NERRI"
+      },
+      "minAltFt": 7200
+    },
+    {
+      "type": "final",
+      "faf": "NERRI",
+      "course": {
+        "rnavFrom": "NERRI",
+        "rnavTo": "FOGUG"
+      },
+      "fafAltFt": 7200,
+      "descentAngle": {
+        "angleDeg": 3.5,
+        "tchFt": 40
+      },
+      "stepDowns": [
+        {
+          "fix": "FELTA",
+          "minAltFt": 5980,
+          "lnavOnly": true
+        },
+        {
+          "fix": "FATPU",
+          "minAltFt": 5660,
+          "lnavOnly": true
+        }
+      ],
+      "map": {
+        "fix": "FOGUG"
+      }
+    }
+  ],
+  "missed": [
+    {
+      "type": "climb",
+      "toAltFt": 5800
+    },
+    {
+      "type": "direct",
+      "to": "HANOG",
+      "turn": "L",
+      "climbToFt": 8100,
+      "flyOver": true
+    },
+    {
+      "type": "hold",
+      "fix": "HANOG",
+      "inboundCourseMag": 46,
+      "course": {
+        "rnavFix": "HANOG",
+        "courseMag": 45.7
+      },
+      "turn": "R",
+      "legNm": 7,
+      "minAltFt": 8100
+    }
+  ],
+  "missedText": "Climb to 5800 then climbing left turn to 8100 direct HANOG and hold.",
+  "minimums": [
+    {
+      "kind": "LP",
+      "label": "LP",
+      "A": {
+        "altFt": 5340,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 5340,
+        "visibilitySm": 1.25
+      }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": {
+        "altFt": 5340,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 5340,
+        "visibilitySm": 1.25
+      }
+    }
+  ],
+  "starts": [
+    {
+      "id": "direct-kidne",
+      "name": "Direct KIDNE from the northwest",
+      "clearance": "Descend and maintain 10000, proceed direct KIDNE, cleared RNAV runway 3 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "KIDNE"
+      },
+      "offset": {
+        "bearingMag": 300,
+        "distanceNm": 10
+      },
+      "altitudeFt": 12000,
+      "assigned": { "altFt": 10000, "until": "KIDNE" },
+      "headingMag": 180,
+      "iasKt": 100,
+      "transition": "kidne",
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    },
+    {
+      "id": "direct-pigse",
+      "name": "Direct PIGSE from the southwest",
+      "clearance": "Descend and maintain 10000, proceed direct PIGSE, cleared RNAV runway 3 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "PIGSE"
+      },
+      "offset": {
+        "bearingMag": 230,
+        "distanceNm": 10
+      },
+      "altitudeFt": 12000,
+      "assigned": { "altFt": 10000, "until": "PIGSE" },
+      "headingMag": 100,
+      "iasKt": 100,
+      "transition": "pigse",
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    },
+    {
+      "id": "direct-archh",
+      "name": "Direct ARCHH from the east",
+      "clearance": "Descend and maintain 10000, proceed direct ARCHH, cleared RNAV runway 3 approach via the ARCHH transition.",
+      "position": {
+        "kind": "waypoint",
+        "id": "ARCHH"
+      },
+      "offset": {
+        "bearingMag": 90,
+        "distanceNm": 10
+      },
+      "altitudeFt": 12000,
+      "assigned": { "altFt": 10000, "until": "ARCHH" },
+      "headingMag": 210,
+      "iasKt": 100,
+      "transition": "archh",
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    },
+    {
+      "id": "direct-hanog",
+      "name": "Direct HANOG from the north",
+      "clearance": "Descend and maintain 10000, proceed direct HANOG, cleared RNAV runway 3 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "HANOG"
+      },
+      "offset": {
+        "bearingMag": 340,
+        "distanceNm": 10
+      },
+      "altitudeFt": 12000,
+      "assigned": { "altFt": 10000, "until": "HANOG" },
+      "headingMag": 220,
+      "iasKt": 100,
+      "transition": "hanog",
+      "joinAt": "HANOG",
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 020, maintain 8100 until established on the final approach course, cleared RNAV runway 3 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "HANOG"
+      },
+      "leadInNm": 3,
+      "altitudeFt": 8100,
+      "assigned": { "altFt": 8100 },
+      "headingMag": 20,
+      "iasKt": 100,
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    }
+  ],
+  "notes": [
+    "RNP APCH-GPS.",
+    "WAAS channel 93642, W03A. Descent angle 3.50°, TCH 40 (advisory: LP and LNAV only, no glidepath; the GPS shows it as LP+V / LNAV+V).",
+    "Final approach course offset 14.52°: the final course (044°) leads to FOGUG, the missed approach point, 0.5 NM before the runway 3 threshold and to the right of the extended centreline (runway 030°).",
+    "VDP 1.6 NM to FOGUG.",
+    "HANOG: hold-in-lieu of procedure turn, 7 NM legs, at or above 8100, at or below 12000.",
+    "Feeder route: ARCHH 231° (22) to HANOG at or above 8100.",
+    "Circling NA to Rwys 15 and 33.",
+    "Rwy 3 helicopter visibility reduction below ¾ SM NA.",
+    "When local altimeter setting not received, procedure NA.",
+    "Procedure NA when R-6413 in operation.",
+    "MSA FOGUG 25 NM: 13500."
+  ]
+}

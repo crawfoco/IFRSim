@@ -13,6 +13,19 @@
   color: #6b4500;
   border-bottom: 1px solid #e8d48a;
 }
+.chart-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.chart-corner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
 .chart-box {
   position: relative;
   flex: 1;

@@ -223,15 +223,16 @@
   "starts": [
     {
       "id": "direct-ako",
-      "name": "Direct AKO from the northwest, procedure turn",
-      "clearance": "Proceed direct Akron, cross Akron at or above 6000, cleared VOR runway 29 approach.",
+      "name": "Direct AKO from the northwest",
+      "clearance": "Descend and maintain 7000, proceed direct Akron, cleared VOR runway 29 approach.",
       "position": {
         "kind": "radialDme",
         "navaid": "AKO",
         "radialMag": 315,
-        "dmeNm": 8
+        "dmeNm": 12
       },
-      "altitudeFt": 7000,
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "AKO" },
       "headingMag": 135,
       "iasKt": 100,
       "transition": "ako-pt",
@@ -239,16 +240,37 @@
       "nav2MHz": 116.3
     },
     {
+      "id": "direct-ako-east",
+      "name": "Direct AKO from the east",
+      "clearance": "Descend and maintain 7000, proceed direct Akron, cleared VOR runway 29 approach.",
+      "position": {
+        "kind": "navaid",
+        "navaid": "AKO"
+      },
+      "offset": {
+        "bearingMag": 75,
+        "distanceNm": 12
+      },
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000, "until": "AKO" },
+      "headingMag": 210,
+      "iasKt": 100,
+      "transition": "ako-pt",
+      "nav1MHz": 116.3,
+      "nav2MHz": 116.3
+    },
+    {
       "id": "north-arc",
-      "name": "Inbound on AKO R-050, 10 DME arc",
-      "clearance": "Proceed inbound on the Akron 050 radial, cross the Akron 10 DME arc at or above 6000, cleared VOR runway 29 approach via the 10 DME arc.",
+      "name": "Inbound on the Akron 050 radial",
+      "clearance": "Descend and maintain 7000, proceed inbound on the Akron 050 radial, cleared VOR runway 29 approach via the 10 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "AKO",
         "radialMag": 50,
-        "dmeNm": 16
+        "dmeNm": 20
       },
-      "altitudeFt": 7000,
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000 },
       "headingMag": 230,
       "iasKt": 100,
       "transition": "north-arc",
@@ -257,15 +279,16 @@
     },
     {
       "id": "south-arc",
-      "name": "Inbound on AKO R-170, 10 DME arc",
-      "clearance": "Proceed inbound on the Akron 170 radial, cross the Akron 10 DME arc at or above 6000, cleared VOR runway 29 approach via the 10 DME arc.",
+      "name": "Inbound on the Akron 170 radial",
+      "clearance": "Descend and maintain 7000, proceed inbound on the Akron 170 radial, cleared VOR runway 29 approach via the 10 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "AKO",
         "radialMag": 170,
-        "dmeNm": 16
+        "dmeNm": 20
       },
-      "altitudeFt": 7000,
+      "altitudeFt": 9000,
+      "assigned": { "altFt": 7000 },
       "headingMag": 350,
       "iasKt": 100,
       "transition": "south-arc",

@@ -88,4 +88,6 @@ export interface GlassHsiProps {
   /** Magnetic bearing to the station for BRG1 (single line) and BRG2 (double line); null hides. */
   bearing1Deg: number | null;
   bearing2Deg: number | null;
+  /** GPS source: phase or approach annunciation under the source label (TERM, LPV, …). */
+  gpsMode?: string | null;
 }

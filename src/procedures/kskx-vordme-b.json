@@ -1,0 +1,186 @@
+{
+  "id": "kskx-vordme-b",
+  "airport": "KSKX",
+  "runway": "13",
+  "name": "VOR/DME-B",
+  "chart": {
+    "number": "AL-5863",
+    "amendment": "Amdt 3B",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/kskx-vordme-b.png"
+  },
+  "navaids": ["TAS"],
+  "fixes": {
+    "TAS": {
+      "def": { "kind": "navaid", "navaid": "TAS" },
+      "faaId": "TAS",
+      "note": "IAF (hold-in-lieu of procedure turn) and missed-approach holding fix"
+    },
+    "RESOY": {
+      "def": { "kind": "radialDme", "navaid": "TAS", "radialMag": 115.5, "dmeNm": 8 },
+      "faaId": "RESOY",
+      "note": "FAF, charted TAS R-116 at 8 DME (NASR fix lies on R-115.5)"
+    },
+    "ZUTRI": {
+      "def": { "kind": "radialDme", "navaid": "TAS", "radialMag": 115.5, "dmeNm": 14.3 },
+      "faaId": "ZUTRI",
+      "note": "Missed approach point, charted TAS R-116 at 14.3 DME (NASR fix lies on R-115.5), abeam the runway 13 threshold"
+    },
+    "RW13": { "def": { "kind": "threshold" } }
+  },
+  "transitions": [
+    {
+      "id": "tas-hold",
+      "name": "From TAS, hold-in-lieu of procedure turn",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "hold",
+          "fix": "TAS",
+          "inboundCourseMag": 116,
+          "course": { "navaid": "TAS", "courseMag": 116, "toFrom": "TO" },
+          "turn": "R",
+          "legMinutes": 1,
+          "minAltFt": 12000
+        }
+      ]
+    },
+    {
+      "id": "r296",
+      "name": "TAS R-296 inbound, hold-in-lieu of procedure turn",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "track",
+          "to": "TAS",
+          "course": { "navaid": "TAS", "courseMag": 116, "toFrom": "TO" }
+        },
+        {
+          "type": "hold",
+          "fix": "TAS",
+          "inboundCourseMag": 116,
+          "course": { "navaid": "TAS", "courseMag": 116, "toFrom": "TO" },
+          "turn": "R",
+          "legMinutes": 1,
+          "minAltFt": 12000
+        }
+      ]
+    },
+    {
+      "id": "r353",
+      "name": "TAS R-353 inbound (NoPT)",
+      "noPT": true,
+      "legs": [
+        {
+          "type": "track",
+          "to": "TAS",
+          "course": { "navaid": "TAS", "courseMag": 173, "toFrom": "TO" }
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "RESOY",
+      "course": { "navaid": "TAS", "courseMag": 116, "toFrom": "FROM" },
+      "minAltFt": 10000
+    },
+    {
+      "type": "final",
+      "faf": "RESOY",
+      "course": { "navaid": "TAS", "courseMag": 116, "toFrom": "FROM" },
+      "fafAltFt": 10000,
+      "stepDowns": [],
+      "map": { "fix": "ZUTRI" }
+    }
+  ],
+  "missed": [
+    { "type": "direct", "to": "TAS", "turn": "R", "climbToFt": 12000 },
+    {
+      "type": "hold",
+      "fix": "TAS",
+      "inboundCourseMag": 116,
+      "course": { "navaid": "TAS", "courseMag": 116, "toFrom": "TO" },
+      "turn": "R",
+      "legMinutes": 1,
+      "minAltFt": 12000
+    }
+  ],
+  "missedText": "Climbing right turn to 12000 direct TAS VORTAC and hold.",
+  "minimums": [
+    {
+      "kind": "CIRCLING",
+      "label": "CIRCLING",
+      "A": { "altFt": 8000, "visibilitySm": 1.25 },
+      "B": { "altFt": 8000, "visibilitySm": 1.25 }
+    }
+  ],
+  "starts": [
+    {
+      "id": "r353",
+      "name": "Inbound on the TAS R-353 from the north",
+      "clearance": "Descend and maintain 13000, proceed inbound on the Taos 353 radial, cleared VOR/DME-B approach.",
+      "position": { "kind": "radialDme", "navaid": "TAS", "radialMag": 353, "dmeNm": 16 },
+      "altitudeFt": 15000,
+      "assigned": { "altFt": 13000, "until": "TAS" },
+      "headingMag": 177,
+      "iasKt": 100,
+      "transition": "r353",
+      "nav1MHz": 115.8,
+      "nav2MHz": 115.8
+    },
+    {
+      "id": "r296",
+      "name": "Inbound on the TAS R-296 from the northwest",
+      "clearance": "Descend and maintain 13000, proceed inbound on the Taos 296 radial, cleared VOR/DME-B approach.",
+      "position": { "kind": "radialDme", "navaid": "TAS", "radialMag": 296, "dmeNm": 16 },
+      "altitudeFt": 15000,
+      "assigned": { "altFt": 13000, "until": "TAS" },
+      "headingMag": 120,
+      "iasKt": 100,
+      "transition": "r296",
+      "nav1MHz": 115.8,
+      "nav2MHz": 115.8
+    },
+    {
+      "id": "direct-tas-southwest",
+      "name": "Direct TAS from the southwest",
+      "clearance": "Descend and maintain 13000, proceed direct Taos, cleared VOR/DME-B approach.",
+      "position": { "kind": "navaid", "navaid": "TAS" },
+      "offset": { "bearingMag": 210, "distanceNm": 12 },
+      "altitudeFt": 15000,
+      "assigned": { "altFt": 13000, "until": "TAS" },
+      "headingMag": 340,
+      "iasKt": 100,
+      "transition": "tas-hold",
+      "nav1MHz": 115.8,
+      "nav2MHz": 115.8
+    },
+    {
+      "id": "direct-tas-east",
+      "name": "Direct TAS from the east-northeast",
+      "clearance": "Descend and maintain 15000, proceed direct Taos, cleared VOR/DME-B approach.",
+      "position": { "kind": "navaid", "navaid": "TAS" },
+      "offset": { "bearingMag": 70, "distanceNm": 12 },
+      "altitudeFt": 16500,
+      "assigned": { "altFt": 15000, "until": "TAS" },
+      "headingMag": 200,
+      "iasKt": 100,
+      "transition": "tas-hold",
+      "nav1MHz": 115.8,
+      "nav2MHz": 115.8
+    }
+  ],
+  "notes": [
+    "Circling-only approach: no straight-in minimums (Rwy Ldg and TDZE N/A; airport elevation 7095).",
+    "Final approach course 116° is flown FROM TAS VORTAC; FAF RESOY (TAS 8 DME), MAP ZUTRI (TAS 14.3 DME).",
+    "Hold-in-lieu of procedure turn at TAS: 1 minute, inbound 116°, right turns, 12000.",
+    "NoPT for arrival on TAS VORTAC airway radial 353.",
+    "Circling minimums Cats C and D: 8000-2¾ and 8020-3.",
+    "MSA TAS 25 NM: 12700 for bearings 360°–180° to TAS (west), 14400 for 180°–360° (east).",
+    "REIL Rwys 4, 13 and 31; MIRL Rwys 4-22 and 13-31.",
+    "Non-standard takeoff minimums and alternate minimums published."
+  ]
+}

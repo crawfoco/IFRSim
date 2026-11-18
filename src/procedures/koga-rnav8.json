@@ -1,0 +1,287 @@
+{
+  "id": "koga-rnav8",
+  "airport": "KOGA",
+  "runway": "08",
+  "name": "RNAV (GPS) RWY 8",
+  "chart": {
+    "number": "AL-6070",
+    "amendment": "Amdt 2F",
+    "validFrom": "2026-10-29",
+    "validTo": "2026-11-26",
+    "image": "charts/koga-rnav8.png"
+  },
+  "rnav": {
+    "cifp": "KOGA R08",
+    "waas": {
+      "channel": "57903",
+      "id": "W08A"
+    },
+    "equipment": "RNP APCH - GPS."
+  },
+  "navaids": [],
+  "fixes": {
+    "AHUFU": {
+      "def": {
+        "kind": "waypoint",
+        "id": "AHUFU"
+      },
+      "faaId": "AHUFU",
+      "note": "IF/IAF, TAA, hold-in-lieu of procedure turn"
+    },
+    "EZIFU": {
+      "def": {
+        "kind": "waypoint",
+        "id": "EZIFU"
+      },
+      "faaId": "EZIFU",
+      "note": "FAF"
+    },
+    "YEYUC": {
+      "def": {
+        "kind": "waypoint",
+        "id": "YEYUC"
+      },
+      "faaId": "YEYUC",
+      "note": "Step-down, LNAV only (2.9 NM to RW08)"
+    },
+    "RW08": {
+      "def": {
+        "kind": "waypoint",
+        "id": "RW08"
+      },
+      "note": "Missed approach point"
+    },
+    "TUKWY": {
+      "def": {
+        "kind": "waypoint",
+        "id": "TUKWY"
+      },
+      "faaId": "TUKWY",
+      "note": "Missed approach holding fix"
+    }
+  },
+  "transitions": [
+    {
+      "id": "ahufu",
+      "name": "AHUFU (IF/IAF, TAA)",
+      "noPT": false,
+      "legs": [
+        {
+          "type": "hold",
+          "fix": "AHUFU",
+          "inboundCourseMag": 83,
+          "course": {
+            "rnavFix": "AHUFU",
+            "courseMag": 82.7
+          },
+          "turn": "R",
+          "legNm": 5,
+          "minAltFt": 5300,
+          "maxAltFt": 6000
+        }
+      ]
+    }
+  ],
+  "approach": [
+    {
+      "type": "track",
+      "to": "EZIFU",
+      "course": {
+        "rnavFrom": "AHUFU",
+        "rnavTo": "EZIFU"
+      },
+      "minAltFt": 5200
+    },
+    {
+      "type": "final",
+      "faf": "EZIFU",
+      "course": {
+        "rnavFrom": "EZIFU",
+        "rnavTo": "RW08"
+      },
+      "fafAltFt": 5200,
+      "gp": {
+        "angleDeg": 3,
+        "tchFt": 40
+      },
+      "stepDowns": [
+        {
+          "fix": "YEYUC",
+          "minAltFt": 4200,
+          "lnavOnly": true
+        }
+      ],
+      "map": {
+        "fix": "RW08"
+      }
+    }
+  ],
+  "missed": [
+    {
+      "type": "climb",
+      "toAltFt": 3511
+    },
+    {
+      "type": "direct",
+      "to": "TUKWY",
+      "climbToFt": 5200,
+      "flyOver": true
+    },
+    {
+      "type": "hold",
+      "fix": "TUKWY",
+      "inboundCourseMag": 263,
+      "course": {
+        "rnavFix": "TUKWY",
+        "courseMag": 263.1
+      },
+      "turn": "R",
+      "legNm": 5,
+      "minAltFt": 5200
+    }
+  ],
+  "missedText": "Climb to 5200 direct TUKWY and hold.",
+  "minimums": [
+    {
+      "kind": "LPV",
+      "label": "LPV",
+      "A": {
+        "altFt": 3511,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 3511,
+        "visibilitySm": 1
+      }
+    },
+    {
+      "kind": "LNAV/VNAV",
+      "label": "LNAV/VNAV",
+      "A": {
+        "altFt": 3866,
+        "visibilitySm": 1.75
+      },
+      "B": {
+        "altFt": 3866,
+        "visibilitySm": 1.75
+      }
+    },
+    {
+      "kind": "LNAV",
+      "label": "LNAV",
+      "A": {
+        "altFt": 3800,
+        "visibilitySm": 1
+      },
+      "B": {
+        "altFt": 3800,
+        "visibilitySm": 1
+      }
+    }
+  ],
+  "taa": {
+    "iaf": "AHUFU",
+    "areas": [
+      {
+        "name": "straight-in area (west)",
+        "fromCourseMag": 353,
+        "toCourseMag": 173,
+        "noPT": true,
+        "rings": [
+          {
+            "withinNm": 6,
+            "minAltFt": 5300
+          },
+          {
+            "withinNm": 30,
+            "minAltFt": 5700
+          }
+        ]
+      },
+      {
+        "name": "course-reversal area (east)",
+        "fromCourseMag": 173,
+        "toCourseMag": 353,
+        "noPT": false,
+        "rings": [
+          {
+            "withinNm": 5,
+            "minAltFt": 5300
+          },
+          {
+            "withinNm": 30,
+            "minAltFt": 5600
+          }
+        ]
+      }
+    ]
+  },
+  "starts": [
+    {
+      "id": "taa-west",
+      "name": "Direct AHUFU from the northwest",
+      "clearance": "Descend and maintain 6000, proceed direct AHUFU, cleared RNAV runway 8 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "AHUFU"
+      },
+      "offset": {
+        "bearingMag": 330,
+        "distanceNm": 12
+      },
+      "altitudeFt": 8000,
+      "assigned": { "altFt": 6000, "until": "AHUFU" },
+      "headingMag": 200,
+      "iasKt": 100,
+      "transition": "ahufu",
+      "noReversal": true,
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    },
+    {
+      "id": "taa-east",
+      "name": "Direct AHUFU from the southeast",
+      "clearance": "Descend and maintain 6000, proceed direct AHUFU, cleared RNAV runway 8 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "AHUFU"
+      },
+      "offset": {
+        "bearingMag": 130,
+        "distanceNm": 12
+      },
+      "altitudeFt": 8000,
+      "assigned": { "altFt": 6000, "until": "AHUFU" },
+      "headingMag": 250,
+      "iasKt": 100,
+      "transition": "ahufu",
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    },
+    {
+      "id": "vectors-final",
+      "name": "Radar vectors to final",
+      "clearance": "Fly heading 050, maintain 5200 until established on the final approach course, cleared RNAV runway 8 approach.",
+      "position": {
+        "kind": "waypoint",
+        "id": "AHUFU"
+      },
+      "leadInNm": 3,
+      "altitudeFt": 5200,
+      "assigned": { "altFt": 5200 },
+      "headingMag": 50,
+      "iasKt": 100,
+      "nav1MHz": 112.4,
+      "nav2MHz": 112.4
+    }
+  ],
+  "notes": [
+    "RNP APCH - GPS.",
+    "For uncompensated Baro-VNAV systems, LNAV/VNAV NA below -21°C or above 54°C. (This aircraft's WAAS GPS flies LNAV/VNAV on WAAS vertical guidance, so the limits do not apply to it.)",
+    "When local altimeter setting not received, use the IML altimeter setting: increase LPV DA to 3597 ft, LNAV/VNAV DA to 3952 ft and all visibilities 1/4 SM, all MDAs 100 ft. Baro-VNAV and VDP NA when using the IML altimeter setting. (This trainer assumes the local setting.)",
+    "Rwy 8 helicopter visibility reduction below 3/4 SM NA.",
+    "WAAS channel 57903, W08A. GP 3.00°, TCH 40. Categories C and D NA.",
+    "VDP 1.6 NM to RW08.",
+    "Terminal arrival area (TAA) instead of an MSA: see the briefing."
+  ]
+}

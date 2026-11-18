@@ -19,7 +19,13 @@ import type { Leg } from '../../procedures/schema';
 import { distanceNm, type LatLon } from '../geo/geodesy';
 import type { Scenario } from '../scenario/scenario';
 import type { SimState } from '../state';
-import { coursePosition, crossedInbound, established, inboundTrueAtFix } from './geometry';
+import {
+  alongTrackBeforeFixNm,
+  coursePosition,
+  crossedInbound,
+  established,
+  inboundTrueAtFix,
+} from './geometry';
 import { signedAngleDiff } from '../geo/angles';
 
 /** A fix is crossed when the closest approach was within this distance. */
@@ -75,8 +81,14 @@ function legFix(leg: Leg): string | null {
   }
 }
 
-/** Transition legs from where the start joins it (`joinAt`), or all of them. */
-function joinTransition(legs: Leg[], joinAt: string | undefined): Leg[] {
+/**
+ * Transition legs from where the start joins it (`joinAt`), or all of them; without the course
+ * reversal for a TAA straight-in arrival (`noReversal`).
+ */
+function joinTransition(all: Leg[], joinAt: string | undefined, noReversal = false): Leg[] {
+  const legs = noReversal
+    ? all.filter((l) => l.type !== 'hold' && l.type !== 'procedureTurn')
+    : all;
   if (!joinAt) return legs;
   const reversal = legs.findIndex(
     (l) => (l.type === 'hold' || l.type === 'procedureTurn') && legFix(l) === joinAt,
@@ -92,7 +104,7 @@ export function buildRoute(sc: Scenario): RouteLeg[] {
     ? sc.procedure.transitions.find((x) => x.id === sc.start.transition)
     : undefined;
   const parts: [RoutePhase, Leg[]][] = [
-    ['transition', joinTransition(t?.legs ?? [], sc.start.joinAt)],
+    ['transition', joinTransition(t?.legs ?? [], sc.start.joinAt, sc.start.noReversal)],
     ['approach', sc.procedure.approach],
     ['missed', sc.procedure.missed],
   ];
@@ -136,7 +148,30 @@ export interface ReversalState {
   outboundTick: number | null;
   /** Hold: inbound fix crossing. PT: established on the inbound course. */
   inboundTick: number | null;
+  /**
+   * Fix crossed already heading inbound (within 45° of the inbound course): a direct hold
+   * entry, or a straight-in that skips the reversal. Decided once the aircraft turns outbound
+   * (flying it) or carries on past the fix (skipped).
+   */
+  straightInTick: number | null;
+  /** Farthest out on the outbound side (before the fix along the inbound course), NM. */
+  outboundNm: number;
 }
+
+/** Past the fix along the inbound course, still heading inbound: the reversal was skipped. */
+const STRAIGHT_IN_NM = 2.0;
+/** A course reversal goes at least this far out on the outbound side before coming back. */
+const OUTBOUND_MIN_NM = 1.0;
+/** Beyond the fix along the inbound course, heading inbound: maybe skipping the reversal. */
+const BEYOND_FIX_NM = 0.3;
+/** Turned this far from the inbound course after crossing: the reversal is being flown. */
+const TURNED_OUTBOUND_DEG = 90;
+const NO_REVERSAL: ReversalState = {
+  outboundTick: null,
+  inboundTick: null,
+  straightInTick: null,
+  outboundNm: 0,
+};
 
 export interface SequencerState {
   route: RouteLeg[];
@@ -164,7 +199,7 @@ export function initialSequencer(sc: Scenario): SequencerState {
     legs: [{ index: 0, startTick: sc.initial.tick, endTick: null, status: 'active' }],
     passages: [],
     watches,
-    reversal: { outboundTick: null, inboundTick: null },
+    reversal: NO_REVERSAL,
     fafTick: null,
     missedTick: null,
     prevPosition: sc.initial.aircraft.position,
@@ -216,7 +251,7 @@ function advance(
       lastNm: watches[fix].lastNm,
       armNm: watches[fix].lastNm,
     };
-  return { ...s, index: to, legs, watches, reversal: { outboundTick: null, inboundTick: null } };
+  return { ...s, index: to, legs, watches, reversal: NO_REVERSAL };
 }
 
 export function stepSequencer(prev: SequencerState, ctx: SequencerContext): SequencerState {
@@ -281,6 +316,8 @@ export function stepSequencer(prev: SequencerState, ctx: SequencerContext): Sequ
   const legStart = s.legs.at(-1)!.startTick;
   let done = false;
   let skippedReversal = false;
+  /** Tick the reversal fix was crossed straight in (for a reversal at the FAF). */
+  let straightInAt = tick;
   switch (L.type) {
     case 'track':
     case 'direct':
@@ -305,13 +342,42 @@ export function stepSequencer(prev: SequencerState, ctx: SequencerContext): Sequ
           ? crossed.find((c) => c.fix === L.fix)
           : s.passages.findLast((x) => x.fix === L.fix && x.tick >= legStart - 20 * 30);
         if (!p) break;
-        // Arriving already inbound on the course: the course reversal was not flown.
+        // Arriving already inbound on the course: a direct entry, or the course reversal
+        // skipped; decided by what the aircraft does next.
         const inbound = inboundTrueAtFix(L.course, fixPos, nav);
-        if (Math.abs(signedAngleDiff(p.headingTrueDeg, inbound)) <= 45) {
+        const straightIn = Math.abs(signedAngleDiff(p.headingTrueDeg, inbound)) <= 45;
+        s = {
+          ...s,
+          reversal: { ...r, outboundTick: tick, straightInTick: straightIn ? p.tick : null },
+        };
+        break;
+      }
+      if (r.straightInTick !== null) {
+        const inbound = inboundTrueAtFix(L.course, fixPos, nav);
+        if (Math.abs(signedAngleDiff(state.aircraft.headingTrueDeg, inbound)) > TURNED_OUTBOUND_DEG)
+          s = { ...s, reversal: { ...r, straightInTick: null } };
+        else if (
+          -alongTrackBeforeFixNm(fixPos, inbound, ac.position) > STRAIGHT_IN_NM ||
+          // Descending below the reversal's minimum: going down the final (a PT fix may be the
+          // FAF with the MAP under 2 NM beyond).
+          (L.minAltFt !== undefined && ac.altitudeFt < L.minAltFt - 100)
+        ) {
           skippedReversal = true;
-          break;
+          straightInAt = r.straightInTick;
         }
-        s = { ...s, reversal: { ...r, outboundTick: tick } };
+        break;
+      }
+      const inbound = inboundTrueAtFix(L.course, fixPos, nav);
+      const beforeNm = alongTrackBeforeFixNm(fixPos, inbound, ac.position);
+      if (beforeNm > r.outboundNm) s = { ...s, reversal: { ...s.reversal, outboundNm: beforeNm } };
+      // Crossed from another direction, then heading inbound beyond the fix (e.g. turned
+      // straight onto the next leg): judged like a straight-in crossing from here.
+      if (
+        r.inboundTick === null &&
+        Math.abs(signedAngleDiff(state.aircraft.headingTrueDeg, inbound)) <= 45 &&
+        -beforeNm > BEYOND_FIX_NM
+      ) {
+        s = { ...s, reversal: { ...s.reversal, straightInTick: tick } };
         break;
       }
       const pos = coursePosition(L.course, ac, nav);
@@ -321,10 +387,12 @@ export function stepSequencer(prev: SequencerState, ctx: SequencerContext): Sequ
         tick - r.outboundTick > 20 * 60 &&
         established(pos, state.aircraft.headingTrueDeg, 1.0, 30)
       )
-        s = { ...s, reversal: { ...r, inboundTick: tick } };
-      // Done when the fix is crossed inbound (along-track, so a tight hold still counts).
+        s = { ...s, reversal: { ...s.reversal, inboundTick: tick } };
+      // Done when the fix is crossed inbound (along-track, so a tight hold still counts), after
+      // going out on the outbound side (not just a turn back over the fix).
       if (
         tick - r.outboundTick > 20 * 30 &&
+        s.reversal.outboundNm >= OUTBOUND_MIN_NM &&
         crossedInbound(
           L.course,
           fixPos,
@@ -349,7 +417,7 @@ export function stepSequencer(prev: SequencerState, ctx: SequencerContext): Sequ
     // Straight in over the FAF: the final approach segment starts here.
     const n = currentLeg(s).leg;
     if (n.type === 'final' && n.faf === (L as { fix: string }).fix && s.fafTick === null)
-      s = { ...s, fafTick: tick };
+      s = { ...s, fafTick: straightInAt };
   } else if (s.missedTick === null) {
     // 4. Skipping ahead: a later leg's fix crossed first (not in the missed approach,
     //    which re-crosses fixes legitimately). The current leg was not flown either.

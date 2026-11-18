@@ -63,3 +63,9 @@
   stroke-linejoin: round;
   stroke-linecap: round;
 }
+
+/* GPS source: course pointer, CDI and label in the GPS colour (magenta, the common convention). */
+.g-hsi-src-gps .g-hsi-course,
+.g-hsi-src-gps .g-hsi-source {
+  fill: var(--g-gps);
+}

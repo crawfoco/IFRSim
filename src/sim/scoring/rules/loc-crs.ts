@@ -33,6 +33,7 @@ export const locCourseSetting: Rule<S> = {
       (ap.lateral === 'NAV' || ap.lateral === 'APR' || ap.lateralArmed !== null);
     if (!onNav) return s;
     const src = apNavSource(state, sensors);
+    if (src.kind !== 'VLOC') return s;
     const st = src.reading.station;
     if (st?.kind !== 'LOC') return s;
     if (Math.abs(signedAngleDiff(src.obsDeg, st.loc.courseMagDeg)) <= OFF_DEG) return s;

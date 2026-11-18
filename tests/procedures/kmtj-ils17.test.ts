@@ -33,7 +33,14 @@ describe('KMTJ ILS or LOC RWY 17: encoding', () => {
       ['pagre', true],
       ['mtj', false],
     ]);
-    expect(p.starts.map((s) => s.id)).toEqual(['haqhy', 'pagre-arc', 'vectors-final', 'over-mtj']);
+    expect(p.starts.map((s) => s.id)).toEqual([
+      'haqhy',
+      'direct-haqhy',
+      'pagre-arc',
+      'vectors-final',
+      'over-mtj',
+      'direct-bruuk',
+    ]);
     expect(p.missed.at(-1)).toMatchObject({ type: 'hold', fix: 'PAGRE', climbInHold: true });
   });
 

@@ -3,6 +3,7 @@ import type { AircraftState } from './aircraft/model';
 import type { ApButton, ApModes } from './autopilot/modes';
 import type { NavReading } from './nav/radios';
 import type { BearingSource, CdiSource } from './nav/source';
+import type { GpsCommand, GpsReading, GpsState } from './gps/receiver';
 
 export interface NavRadio {
   activeMHz: number;
@@ -33,6 +34,8 @@ export interface SimState {
   timer: { running: boolean; elapsedS: number };
   /** Tick of the first GA (TOGA) press: the learner's go-around decision. */
   goAroundTick: number | null;
+  /** GPS flight plan and sequencing (V3). */
+  gps: GpsState;
 }
 
 export type RadioId = 1 | 2;
@@ -57,7 +60,11 @@ export type Command =
   /** Glass panel: the CDI button (next HSI nav source). */
   | { type: 'cdi' }
   /** Glass panel: a BRG button (next source for that bearing pointer). */
-  | { type: 'bearing'; pointer: 1 | 2 };
+  | { type: 'bearing'; pointer: 1 | 2 }
+  /** Steam panel NAV/GPS button: set the HSI (and autopilot) source directly. */
+  | { type: 'cdiSet'; source: CdiSource }
+  /** GPS: load an approach, activate it, Direct-To, SUSP. */
+  | GpsCommand;
 
 /** What the instruments show this step, derived from state + world. */
 export interface Sensors {
@@ -67,4 +74,6 @@ export interface Sensors {
   dmeNm: number | null;
   headingMagDeg: number;
   tasKt: number;
+  /** GPS reading (flagged when nothing is active). */
+  gps: GpsReading;
 }

@@ -14,8 +14,10 @@ export type Layer = 'clear' | 'cloud' | 'below';
 
 export interface OutsideView {
   layer: Layer;
-  /** Below the base and within the visibility of the threshold. */
+  /** Below the base and within the visibility of the threshold (the airport when circling). */
   runwayInSight: boolean;
+  /** Circling-only approach: what is in sight is the airport, not a runway ahead. */
+  circling?: boolean;
   /** Where the threshold is: bearing relative to the nose (+ right), distance, and the angle
    *  below the horizon. Null unless the runway is in sight. */
   runway: {
@@ -38,19 +40,23 @@ export function layerAt(altitudeFt: number, sc: Scenario): Layer {
 export function runwayInSight(s: SimState, sc: Scenario): boolean {
   return (
     layerAt(s.aircraft.altitudeFt, sc) === 'below' &&
-    distanceNm(s.aircraft.position, sc.runway.threshold) <= sc.weather.visibilitySm * NM_PER_SM
+    // Circling-only: the airport (any runway) is what must be in sight.
+    distanceNm(s.aircraft.position, sc.circlingTo ?? sc.runway.threshold) <=
+      sc.weather.visibilitySm * NM_PER_SM
   );
 }
 
 export function outsideView(s: SimState, sc: Scenario): OutsideView {
   const layer = layerAt(s.aircraft.altitudeFt, sc);
   const inSight = runwayInSight(s, sc);
-  if (!inSight) return { layer, runwayInSight: false, runway: null };
+  const circling = sc.circlingTo ? { circling: true } : {};
+  if (!inSight) return { layer, runwayInSight: false, runway: null, ...circling };
   const g = inverse(s.aircraft.position, sc.runway.threshold);
   const dNm = g.distanceM / METRES_PER_NM;
   const aglFt = s.aircraft.altitudeFt - sc.thresholdElevationFt;
   return {
     layer,
+    ...circling,
     runwayInSight: true,
     runway: {
       relBearingDeg: signedAngleDiff(g.initialBearingDeg, s.aircraft.headingTrueDeg),

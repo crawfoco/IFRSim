@@ -2,7 +2,8 @@
  * Geometry for scoring: where the aircraft is relative to procedure courses and fixes,
  * computed from the aircraft position (not from what the learner has tuned).
  */
-import type { CourseRef } from '../../procedures/schema';
+import { isRnavRef, type CourseRef } from '../../procedures/schema';
+import { rnavLine, rnavVariation, trackPosition } from '../gps/geometry';
 import { DEG, magToTrue, normalize360, signedAngleDiff } from '../geo/angles';
 import { distanceNm, initialBearingTrueDeg, type LatLon } from '../geo/geodesy';
 import type { NavData } from '../navdata/types';
@@ -23,6 +24,17 @@ export interface CoursePosition {
 
 /** Position relative to a procedure course (a VOR radial in its direction, or the LOC). */
 export function coursePosition(ref: CourseRef, ac: AircraftFix, nav: NavData): CoursePosition {
+  if (isRnavRef(ref)) {
+    // RNAV: the "station" is the fix the course is flown to; offset as seen from it.
+    const t = trackPosition(rnavLine(ref, nav), ac.position);
+    const d = Math.max(t.distanceToNm, 1e-6);
+    return {
+      offsetDeg: Math.asin(Math.max(-1, Math.min(1, t.xtkNm / d))) / DEG,
+      xtkNm: t.xtkNm,
+      distanceNm: t.distanceToNm,
+      courseTrueHereDeg: t.courseTrueHereDeg,
+    };
+  }
   if ('loc' in ref) {
     const loc = nav.localizers[ref.loc]!;
     const ind = locIndication(ac, loc);
@@ -63,6 +75,7 @@ export function established(
 
 /** Magnetic variation used for a course reference's bearings. */
 export function courseVariation(ref: CourseRef, nav: NavData): number {
+  if (isRnavRef(ref)) return rnavVariation(ref, nav);
   return 'loc' in ref
     ? nav.localizers[ref.loc]!.magVarEastDeg
     : nav.navaids[ref.navaid]!.declinationEastDeg;

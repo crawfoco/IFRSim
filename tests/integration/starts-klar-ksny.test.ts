@@ -59,7 +59,7 @@ describe('KLAR VOR/DME 30 starts', () => {
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
     f.tune(1, 117.6, 235); // LAR, inbound on R-055
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(10600, -500);
+    f.descendOrClimb(10600, -800); // cleared: descend and maintain 10600
     f.untilDme('LAR', 18.5, false, 600);
     f.flyArc('LAR', 18, 'R', 109); // clockwise via JESAR, lead 3° before R-112
     f.send({ type: 'course', radio: 1, deg: 292 });
@@ -85,9 +85,7 @@ describe('KLAR VOR/DME 30 starts', () => {
     const f = flight('klar-vor30', 'flems', 'below');
     f.send({ type: 'button', button: 'AP' });
     f.turn(337); // fly the charted heading
-    f.send({ type: 'altPreselect', ft: 10600 });
-    f.wait(0.1);
-    f.send({ type: 'button', button: 'ALT' });
+    f.descendOrClimb(10600, -800); // cleared: descend and maintain 10600
     f.tune(1, 117.6, 292); // LAR, the 292° inbound course (nav1 starts on 113.1)
     f.send({ type: 'button', button: 'NAV' }); // armed: 45° intercept from heading 337
     untilCentred(f, 900);
@@ -138,8 +136,9 @@ describe('KSNY VOR/DME 13 starts', () => {
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
     f.tune(1, 115.9, 22); // SNY, inbound on R-202 (nav1 starts on 114.4)
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(6200, -500);
+    f.descendOrClimb(7000, -700); // cleared: descend and maintain 7000
     f.untilDme('SNY', 11.5, false, 600);
+    f.descendOrClimb(6200, -500); // the arc minimum
     f.flyArc('SNY', 11, 'R', 305); // clockwise through west, lead 5° before R-310
     f.send({ type: 'course', radio: 1, deg: 130 });
     f.turn(100); // 30° intercept onto the 130° inbound course
@@ -161,13 +160,18 @@ describe('KSNY VOR/DME 13 starts', () => {
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
     f.tune(1, 115.9, 320); // SNY, inbound on R-140
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(6200, -500);
+    f.descendOrClimb(7000, -700); // cleared: descend and maintain 7000
     f.crossFix('SNY', 1.0, 900);
-    // Outbound on R-310 to CHAKO at 6200.
+    // Outbound on R-310 to CHAKO, descending to 6200.
     f.send({ type: 'course', radio: 1, deg: 310 });
-    f.turn(295);
+    // Out of the cone of confusion on 310, then a 15° cut toward R-310 from whichever side
+    // of it the station passage (at 7000, a wider cone than at 6200) left us.
+    f.turn(310);
+    f.untilDme('SNY', 1.5, true, 120);
+    f.turn(normalize360(f.radialFrom('SNY').radial - 310) > 180 ? 325 : 295);
     f.send({ type: 'button', button: 'NAV' });
     expect(f.until(() => f.r.state.ap.lateral === 'NAV', 600)).toBe(true);
+    f.descendOrClimb(6200, -500);
     f.crossFix('CHAKO', 1.0, 900);
     // Procedure turn: a minute outbound, left to 265 for a minute, right turn to 085.
     f.wait(60);
