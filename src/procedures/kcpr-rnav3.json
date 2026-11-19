@@ -284,7 +284,7 @@
     {
       "id": "direct-chomp",
       "name": "Direct CHOMP from the west",
-      "clearance": "Descend and maintain 10000, proceed direct CHOMP, cleared RNAV runway 3 approach.",
+      "clearance": "Cleared direct CHOMP, maintain 10000 until CHOMP, cleared RNAV runway 3 approach.",
       "position": {
         "kind": "waypoint",
         "id": "CHOMP"
@@ -304,7 +304,7 @@
     {
       "id": "direct-heity",
       "name": "Direct HEITY from the north, via AXIBY",
-      "clearance": "Descend and maintain 10800, proceed direct HEITY, cleared RNAV runway 3 approach via the HEITY transition.",
+      "clearance": "Cleared direct HEITY, maintain 10800 until HEITY, cleared RNAV runway 3 approach via the HEITY transition.",
       "position": {
         "kind": "waypoint",
         "id": "HEITY"
@@ -324,7 +324,7 @@
     {
       "id": "direct-hikox",
       "name": "Direct HIKOX from the west, via CEYFI",
-      "clearance": "Descend and maintain 9000, proceed direct HIKOX, cleared RNAV runway 3 approach via the HIKOX transition.",
+      "clearance": "Cleared direct HIKOX, maintain 9000 until HIKOX, cleared RNAV runway 3 approach via the HIKOX transition.",
       "position": {
         "kind": "waypoint",
         "id": "HIKOX"
@@ -344,7 +344,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Fly heading 060, maintain 8100 until established on the final approach course, cleared RNAV runway 3 approach.",
+      "clearance": "11 miles from YIWZE, fly heading 060, maintain 8100 until established on the final approach course, cleared RNAV runway 3 approach.",
       "position": {
         "kind": "waypoint",
         "id": "IPEYE"

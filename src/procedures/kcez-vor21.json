@@ -89,7 +89,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to the CEZ R-350 inbound",
-      "clearance": "Fly heading 140, maintain 8000 until established on the Cortez 350 radial, cleared VOR runway 21 approach.",
+      "clearance": "12 miles from Cortez, fly heading 140, maintain 8000 until established on the Cortez 350 radial, cleared VOR runway 21 approach to Cortez Municipal.",
       "position": { "kind": "radialDme", "navaid": "CEZ", "radialMag": 340, "dmeNm": 12 },
       "altitudeFt": 8000,
       "assigned": { "altFt": 8000, "until": "CEZ" },
@@ -101,7 +101,7 @@
     {
       "id": "direct-cez-south",
       "name": "Direct CEZ from the south-southeast",
-      "clearance": "Descend and maintain 10000, proceed direct Cortez, cleared VOR runway 21 approach.",
+      "clearance": "Cleared direct Cortez, maintain 10000 until Cortez, cleared VOR runway 21 approach to Cortez Municipal.",
       "position": { "kind": "navaid", "navaid": "CEZ" },
       "offset": { "bearingMag": 160, "distanceNm": 12 },
       "altitudeFt": 12000,
@@ -115,7 +115,7 @@
     {
       "id": "direct-cez-north",
       "name": "Direct CEZ from the north",
-      "clearance": "Descend and maintain 11000, proceed direct Cortez, cleared VOR runway 21 approach.",
+      "clearance": "Cleared direct Cortez, maintain 11000 until Cortez, cleared VOR runway 21 approach to Cortez Municipal.",
       "position": { "kind": "navaid", "navaid": "CEZ" },
       "offset": { "bearingMag": 10, "distanceNm": 12 },
       "altitudeFt": 13000,
@@ -129,7 +129,7 @@
     {
       "id": "direct-cez-west",
       "name": "Direct CEZ from the west",
-      "clearance": "Descend and maintain 11000, proceed direct Cortez, cleared VOR runway 21 approach.",
+      "clearance": "Cleared direct Cortez, maintain 11000 until Cortez, cleared VOR runway 21 approach to Cortez Municipal.",
       "position": { "kind": "navaid", "navaid": "CEZ" },
       "offset": { "bearingMag": 270, "distanceNm": 12 },
       "altitudeFt": 13000,

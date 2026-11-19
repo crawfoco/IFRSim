@@ -102,7 +102,7 @@ describe('KCYS ILS 27: hold entries at COLLA', () => {
 describe('KCYS ILS 27 from over-cys', () => {
   /** Down to 8500 to CYS, then R-098 outbound in NAV to COLLA (NAV2 on I-CYS for its DME). */
   function toColla(f: Flight) {
-    engage(f, 196, 10500);
+    engage(f, 180, 10500);
     descendTo(f, 8500);
     f.send({ type: 'ident', radio: 1 });
     f.wait(0.1);
@@ -193,7 +193,7 @@ describe('KCYS ILS 27 from direct-colla-southwest', () => {
 describe('KCYS ILS 27 from egber', () => {
   it('perfect run: direct EGBER, heading 220 to the localizer (NoPT), ILS, landing', () => {
     const f = new Flight(scenario({ startId: 'egber' }));
-    engage(f, 10, 9800);
+    engage(f, 235, 9800);
     descendTo(f, 7800); // descend and maintain 7800 (the route altitude) before EGBER
     f.send({ type: 'ident', radio: 1 }); // CYS: EGBER is CYS 23.2 DME
     f.wait(0.1);

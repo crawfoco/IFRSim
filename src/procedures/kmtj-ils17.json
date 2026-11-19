@@ -267,7 +267,7 @@
     {
       "id": "haqhy",
       "name": "Inbound on the JNC R-098 to HAQHY",
-      "clearance": "Descend and maintain 12000, proceed inbound on the Grand Junction 098 radial, cleared ILS runway 17 approach.",
+      "clearance": "Proceed inbound on the Grand Junction 098 radial, maintain 12000 until HAQHY, cleared ILS runway 17 approach to Montrose Regional.",
       "position": {
         "kind": "radialDme",
         "navaid": "JNC",
@@ -285,7 +285,7 @@
     {
       "id": "direct-haqhy",
       "name": "Direct HAQHY from the south-west",
-      "clearance": "Descend and maintain 12000, proceed direct HAQHY, cleared ILS runway 17 approach.",
+      "clearance": "Cleared direct HAQHY, maintain 12000 until HAQHY, cleared ILS runway 17 approach to Montrose Regional.",
       "position": {
         "kind": "radialDme",
         "navaid": "JNC",
@@ -307,7 +307,7 @@
     {
       "id": "pagre-arc",
       "name": "Inbound on the MTJ R-297 to PAGRE, via the 14.8 DME arc",
-      "clearance": "Descend and maintain 12000, proceed inbound on the Montrose 297 radial, cleared ILS runway 17 approach via the Montrose 14.8 DME arc.",
+      "clearance": "Proceed inbound on the Montrose 297 radial, maintain 12000 until established on the arc, cleared ILS runway 17 approach to Montrose Regional via the Montrose 14.8 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "MTJ",
@@ -325,7 +325,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Turn left heading 140, maintain 10000 until established on the localizer, cleared ILS runway 17 approach.",
+      "clearance": "15 miles from WIDRU, turn left heading 140, maintain 10000 until established on the localizer, cleared ILS runway 17 approach to Montrose Regional.",
       "position": {
         "kind": "radialDme",
         "navaid": "I-MTJ",
@@ -342,7 +342,7 @@
     {
       "id": "over-mtj",
       "name": "Direct MTJ from the west-south-west",
-      "clearance": "Descend and maintain 12500, proceed direct Montrose VOR, cleared ILS runway 17 approach via the Montrose 349 radial and the procedure turn.",
+      "clearance": "Cleared direct Montrose VOR, maintain 12500 until Montrose, cleared ILS runway 17 approach to Montrose Regional via the Montrose 349 radial.",
       "position": {
         "kind": "navaid",
         "navaid": "MTJ"
@@ -362,7 +362,7 @@
     {
       "id": "direct-bruuk",
       "name": "Direct BRUUK from the north-north-west",
-      "clearance": "Descend and maintain 12500, proceed direct BRUUK, cleared ILS runway 17 approach.",
+      "clearance": "Cleared direct BRUUK, maintain 12500 until BRUUK, cleared ILS runway 17 approach to Montrose Regional.",
       "position": {
         "kind": "locDme",
         "loc": "I-MTJ",

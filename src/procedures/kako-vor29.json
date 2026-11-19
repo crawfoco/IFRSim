@@ -224,7 +224,7 @@
     {
       "id": "direct-ako",
       "name": "Direct AKO from the northwest",
-      "clearance": "Descend and maintain 7000, proceed direct Akron, cleared VOR runway 29 approach.",
+      "clearance": "Cleared direct Akron, maintain 7000 until Akron, cleared VOR runway 29 approach to Colorado Plains Regional.",
       "position": {
         "kind": "radialDme",
         "navaid": "AKO",
@@ -242,7 +242,7 @@
     {
       "id": "direct-ako-east",
       "name": "Direct AKO from the east",
-      "clearance": "Descend and maintain 7000, proceed direct Akron, cleared VOR runway 29 approach.",
+      "clearance": "Cleared direct Akron, maintain 7000 until Akron, cleared VOR runway 29 approach to Colorado Plains Regional.",
       "position": {
         "kind": "navaid",
         "navaid": "AKO"
@@ -262,7 +262,7 @@
     {
       "id": "north-arc",
       "name": "Inbound on the Akron 050 radial",
-      "clearance": "Descend and maintain 7000, proceed inbound on the Akron 050 radial, cleared VOR runway 29 approach via the 10 DME arc.",
+      "clearance": "Proceed inbound on the Akron 050 radial, maintain 7000 until established on the arc, cleared VOR runway 29 approach to Colorado Plains Regional via the 10 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "AKO",
@@ -280,7 +280,7 @@
     {
       "id": "south-arc",
       "name": "Inbound on the Akron 170 radial",
-      "clearance": "Descend and maintain 7000, proceed inbound on the Akron 170 radial, cleared VOR runway 29 approach via the 10 DME arc.",
+      "clearance": "Proceed inbound on the Akron 170 radial, maintain 7000 until established on the arc, cleared VOR runway 29 approach to Colorado Plains Regional via the 10 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "AKO",

@@ -220,7 +220,7 @@
     {
       "id": "taa-west",
       "name": "Direct AHUFU from the northwest",
-      "clearance": "Descend and maintain 6000, proceed direct AHUFU, cleared RNAV runway 8 approach.",
+      "clearance": "Cleared direct AHUFU, maintain 6000 until AHUFU, cleared RNAV runway 8 approach to Searle Field.",
       "position": {
         "kind": "waypoint",
         "id": "AHUFU"
@@ -241,7 +241,7 @@
     {
       "id": "taa-east",
       "name": "Direct AHUFU from the southeast",
-      "clearance": "Descend and maintain 6000, proceed direct AHUFU, cleared RNAV runway 8 approach.",
+      "clearance": "Cleared direct AHUFU, maintain 6000 until AHUFU, cleared RNAV runway 8 approach to Searle Field.",
       "position": {
         "kind": "waypoint",
         "id": "AHUFU"
@@ -261,7 +261,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Fly heading 050, maintain 5200 until established on the final approach course, cleared RNAV runway 8 approach.",
+      "clearance": "10 miles from EZIFU, fly heading 060, maintain 5200 until established on the final approach course, cleared RNAV runway 8 approach to Searle Field.",
       "position": {
         "kind": "waypoint",
         "id": "AHUFU"
@@ -269,7 +269,7 @@
       "leadInNm": 3,
       "altitudeFt": 5200,
       "assigned": { "altFt": 5200 },
-      "headingMag": 50,
+      "headingMag": 60,
       "iasKt": 100,
       "nav1MHz": 112.4,
       "nav2MHz": 112.4

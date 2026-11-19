@@ -153,7 +153,7 @@
     {
       "id": "direct-albin",
       "name": "Direct ALBIN from the southeast",
-      "clearance": "Descend and maintain 7800, proceed direct ALBIN, cleared RNAV runway 12 approach via the ALBIN transition.",
+      "clearance": "Cleared direct ALBIN, maintain 7800 until ALBIN, cleared RNAV runway 12 approach to Western Nebraska Regional via the ALBIN transition.",
       "position": { "kind": "waypoint", "id": "ALBIN" },
       "offset": { "bearingMag": 120, "distanceNm": 10 },
       "altitudeFt": 9500,
@@ -167,7 +167,7 @@
     {
       "id": "direct-spons",
       "name": "Direct SPONS from the north",
-      "clearance": "Descend and maintain 7000, proceed direct SPONS, cleared RNAV runway 12 approach via the SPONS transition.",
+      "clearance": "Cleared direct SPONS, maintain 7000 until SPONS, cleared RNAV runway 12 approach to Western Nebraska Regional via the SPONS transition.",
       "position": { "kind": "waypoint", "id": "SPONS" },
       "offset": { "bearingMag": 340, "distanceNm": 10 },
       "altitudeFt": 9000,
@@ -181,7 +181,7 @@
     {
       "id": "direct-ledse",
       "name": "Direct LEDSE from the north",
-      "clearance": "Descend and maintain 7000, proceed direct LEDSE, cleared RNAV runway 12 approach.",
+      "clearance": "Cleared direct LEDSE, maintain 7000 until LEDSE, cleared RNAV runway 12 approach to Western Nebraska Regional.",
       "position": { "kind": "waypoint", "id": "LEDSE" },
       "offset": { "bearingMag": 345, "distanceNm": 10 },
       "altitudeFt": 9000,
@@ -196,7 +196,7 @@
     {
       "id": "direct-ledse-east",
       "name": "Direct LEDSE from the east",
-      "clearance": "Descend and maintain 7000, proceed direct LEDSE, cleared RNAV runway 12 approach.",
+      "clearance": "Cleared direct LEDSE, maintain 7000 until LEDSE, cleared RNAV runway 12 approach to Western Nebraska Regional.",
       "position": { "kind": "waypoint", "id": "LEDSE" },
       "offset": { "bearingMag": 80, "distanceNm": 12 },
       "altitudeFt": 9000,
@@ -211,7 +211,7 @@
     {
       "id": "direct-ledse-south",
       "name": "Direct LEDSE from the south",
-      "clearance": "Descend and maintain 7000, proceed direct LEDSE, cleared RNAV runway 12 approach.",
+      "clearance": "Cleared direct LEDSE, maintain 7000 until LEDSE, cleared RNAV runway 12 approach to Western Nebraska Regional.",
       "position": { "kind": "waypoint", "id": "LEDSE" },
       "offset": { "bearingMag": 170, "distanceNm": 12 },
       "altitudeFt": 9000,
@@ -226,7 +226,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Fly heading 095, maintain 6900 until established on the final approach course, cleared RNAV runway 12 approach.",
+      "clearance": "9 miles from CAPGA, fly heading 095, maintain 6900 until established on the final approach course, cleared RNAV runway 12 approach to Western Nebraska Regional.",
       "position": { "kind": "waypoint", "id": "LEDSE" },
       "leadInNm": 3,
       "altitudeFt": 6900,

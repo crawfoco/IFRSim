@@ -33,7 +33,7 @@ describe('KLAR VOR/DME RWY 30 encoding', () => {
     expect(p.transitions[3]!.legs[0]).toMatchObject({ type: 'heading', headingMag: 337 });
     expect(p.starts.map((s) => s.id)).toEqual([
       'direct-lar',
-      'direct-lar-east',
+      'direct-jesar',
       'povoh-arc',
       'flems',
     ]);

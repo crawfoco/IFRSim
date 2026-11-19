@@ -24,7 +24,7 @@ describe('assigned altitude in the start data', () => {
   for (const p of ALL)
     for (const st of p.starts)
       it(`${p.id} ${st.id}: the clearance assigns ${st.assigned.altFt}`, () => {
-        expect(Number(/maintain (\d+)/.exec(st.clearance)?.[1])).toBe(st.assigned.altFt);
+        expect(Number(/maintain (?:at or above )?(\d+)/.exec(st.clearance)?.[1])).toBe(st.assigned.altFt);
         expect(st.altitudeFt).toBeGreaterThanOrEqual(st.assigned.altFt);
         if (st.assigned.until) expect(build(p.id, st.id).fixes[st.assigned.until]).toBeDefined();
       });

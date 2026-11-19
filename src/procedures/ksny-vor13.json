@@ -238,7 +238,7 @@
     {
       "id": "riyop-arc",
       "name": "Inbound on SNY R-078 to RIYOP",
-      "clearance": "Descend and maintain 7000, proceed inbound on the Sidney 078 radial, cleared VOR/DME runway 13 approach via the 11 DME arc.",
+      "clearance": "Proceed inbound on the Sidney 078 radial, maintain 7000 until established on the arc, cleared VOR/DME runway 13 approach to Sidney Municipal via the 11 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "SNY",
@@ -256,7 +256,7 @@
     {
       "id": "ogjun-arc",
       "name": "Inbound on SNY R-202 to OGJUN",
-      "clearance": "Descend and maintain 7000, proceed inbound on the Sidney 202 radial, cleared VOR/DME runway 13 approach via the 11 DME arc.",
+      "clearance": "Proceed inbound on the Sidney 202 radial, maintain 7000 until established on the arc, cleared VOR/DME runway 13 approach to Sidney Municipal via the 11 DME arc.",
       "position": {
         "kind": "radialDme",
         "navaid": "SNY",
@@ -274,7 +274,7 @@
     {
       "id": "direct-sny",
       "name": "Direct SNY from the southeast",
-      "clearance": "Descend and maintain 7000, proceed direct Sidney, cleared VOR/DME runway 13 approach.",
+      "clearance": "Cleared direct Sidney, maintain 7000 until Sidney, cleared VOR/DME runway 13 approach to Sidney Municipal.",
       "position": {
         "kind": "radialDme",
         "navaid": "SNY",
@@ -292,7 +292,7 @@
     {
       "id": "direct-sny-northeast",
       "name": "Direct SNY from the northeast",
-      "clearance": "Descend and maintain 7000, proceed direct Sidney, cleared VOR/DME runway 13 approach.",
+      "clearance": "Cleared direct Sidney, maintain 7000 until Sidney, cleared VOR/DME runway 13 approach to Sidney Municipal.",
       "position": {
         "kind": "navaid",
         "navaid": "SNY"
