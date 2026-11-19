@@ -291,8 +291,6 @@ export function buildScenario(
       altitudeFt: start.altitudeFt,
       headingMagDeg: start.headingMag,
       iasKt: start.iasKt,
-      nav1MHz: start.nav1MHz,
-      nav2MHz: start.nav2MHz,
     },
     world,
   );

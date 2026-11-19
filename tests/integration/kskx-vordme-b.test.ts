@@ -26,6 +26,8 @@ const measuredStarting = (a: FlightAnalysis, prefix: string) =>
 const legs = (a: FlightAnalysis) =>
   a.sequencer.legs.map((l) => [a.sequencer.route[l.index]!.label, l.status]);
 
+const TAS = 115.8;
+
 const scenario = (o: Partial<ScenarioOptions> & { startId: string }) =>
   buildScenario(procedureById('kskx-vordme-b')!, NAVDATA, {
     ceiling: 'above',
@@ -124,8 +126,7 @@ describe('KSKX VOR/DME-B from the TAS R-353 (NoPT)', () => {
   function flyIn(f: Flight) {
     engage(f, 177, 15000);
     descendTo(f, 13000); // descend and maintain 13000 (MSA 12700 west of TAS)
-    f.send({ type: 'course', radio: 1, deg: 173 }, { type: 'ident', radio: 1 });
-    f.wait(0.1);
+    f.tune(1, TAS, 173);
     f.send({ type: 'button', button: 'NAV' });
     expect(f.until(() => f.r.state.ap.lateral === 'NAV', 300)).toBe(true);
     f.crossFix('TAS', 1.0, 900);
@@ -209,8 +210,7 @@ describe('KSKX VOR/DME-B from the TAS R-296 (hold-in-lieu, direct entry)', () =>
   function flyToTas(f: Flight) {
     engage(f, FINAL_HDG, 15000);
     descendTo(f, 13000);
-    f.send({ type: 'course', radio: 1, deg: 116 }, { type: 'ident', radio: 1 });
-    f.wait(0.1);
+    f.tune(1, TAS, 116);
     f.send({ type: 'button', button: 'NAV' });
     expect(f.until(() => f.r.state.ap.lateral === 'NAV', 300)).toBe(true);
     f.crossFix('TAS', 1.0, 900);
@@ -255,8 +255,7 @@ describe('KSKX VOR/DME-B direct TAS (offset starts)', () => {
   function setUp(f: Flight, assignedFt: number) {
     engage(f, f.sc.start.headingMag, f.sc.start.altitudeFt);
     descendTo(f, assignedFt);
-    f.send({ type: 'ident', radio: 1 });
-    f.wait(0.1);
+    f.tune(1, TAS);
   }
 
   it('perfect run from the southwest: parallel entry, final, circles to land', () => {

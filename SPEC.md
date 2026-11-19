@@ -837,7 +837,6 @@ scope".
   - `taa` (optional): the IAF, and areas, each with a course range **to** the IAF (magnetic,
     clockwise from–to), `noPT`, and rings (`withinNm`, `minAltFt`). Resolved to a pure
     "which area and ring am I in" function used by the scoring and the briefing text.
-  - Starts: `nav1MHz`/`nav2MHz` stay required (the radios still exist).
   - All additions are optional fields or new union members, so the six V1 files do not change.
 - **Nav data from CIFP.**
   - The pipeline gains a CIFP download and a small ARINC 424 reader, with no new dependency. It reads:

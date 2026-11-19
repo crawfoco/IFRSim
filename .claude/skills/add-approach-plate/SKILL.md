@@ -57,6 +57,12 @@ Word clearances the way FAA JO 7110.65 4-8-1, 4-8-2 and 5-9 do, with altitudes a
 - The turn at the cleared fix onto the next leg must be 90° or less, unless a procedure turn or
   hold-in-lieu at that fix will be flown.
 
+Start altitudes: 10,000 ft whenever the assigned altitude is 10,000 or lower. If it is higher
+(mountain approaches), start about 2000 ft above the assignment. Vectors to final start at the
+intercept altitude. Place the start far enough out that a descent of 700 fpm or less, at about
+100 kt, reaches the assigned altitude before the `until` fix (or the arc). Starts don't preset the radios: NAV1 and
+NAV2 come up on 108.00 with the OBS at 000, and the learner tunes everything.
+
 ## 4. Verify against the chart independently
 
 Use a subagent that gets **only the plate image and the encoding checklist** (not your JSON)

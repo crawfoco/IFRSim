@@ -24,7 +24,9 @@ describe('assigned altitude in the start data', () => {
   for (const p of ALL)
     for (const st of p.starts)
       it(`${p.id} ${st.id}: the clearance assigns ${st.assigned.altFt}`, () => {
-        expect(Number(/maintain (?:at or above )?(\d+)/.exec(st.clearance)?.[1])).toBe(st.assigned.altFt);
+        expect(Number(/maintain (?:at or above )?(\d+)/.exec(st.clearance)?.[1])).toBe(
+          st.assigned.altFt,
+        );
         expect(st.altitudeFt).toBeGreaterThanOrEqual(st.assigned.altFt);
         if (st.assigned.until) expect(build(p.id, st.id).fixes[st.assigned.until]).toBeDefined();
       });
@@ -54,11 +56,11 @@ describe('assigned-altitude rule (KLAA direct WEYYI, descend and maintain 7000)'
     expect(item(f).status).toBe('pass');
   });
 
-  it('bad run: never descends, still at 9000 at WEYYI', () => {
+  it('bad run: never descends, still at 10000 at WEYYI', () => {
     const f = weyyi();
     expect(f.until(() => f.sensors.gps.activeWaypoint === 'OBOZU', 900)).toBe(true);
     expect(item(f).status).toBe('fail');
-    expect(item(f).measured).toMatch(/^Still at 9,0\d\d ft at WEYYI .*assigned 7,000 ft/);
+    expect(item(f).measured).toMatch(/^Still at 10,0\d\d ft at WEYYI .*assigned 7,000 ft/);
   });
 
   it('bad run: down to the feeder minimum (6000) before WEYYI', () => {

@@ -16,7 +16,7 @@ function fly(opts: Partial<ScenarioOptions> & { startId: string }) {
 }
 
 /**
- * Load and activate, CDI on GPS, AP with NAV, and the descent from the 9000 ft start to the
+ * Load and activate, CDI on GPS, AP with NAV, and the descent from the 10000 ft start to the
  * 7000 ATC assigns (above the 6200 MSA until on the feeder or at OBOZU).
  */
 function setUp(f: Flight, transition: string) {
@@ -64,7 +64,7 @@ describe('KLAA RNAV 18 on the GPS', () => {
     expect(f.r.state.ap.lateral).toBe('NAV');
     // At WEYYI the GPS turns ~85° left onto the 092° feeder (NoPT: no reversal).
     expect(f.until(() => f.sensors.gps.activeWaypoint === 'OBOZU', 900)).toBe(true);
-    // Down from 9000 to the assigned 7000 well before WEYYI.
+    // Down from 10000 to the assigned 7000 well before WEYYI.
     expect(Math.abs(f.r.state.aircraft.altitudeFt - 7000)).toBeLessThan(50);
     f.descendOrClimb(6000, -500);
     f.wait(60); // settle after the turn onto the feeder

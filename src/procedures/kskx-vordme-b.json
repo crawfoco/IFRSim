@@ -127,9 +127,7 @@
       "assigned": { "altFt": 13000, "until": "TAS" },
       "headingMag": 177,
       "iasKt": 100,
-      "transition": "r353",
-      "nav1MHz": 115.8,
-      "nav2MHz": 115.8
+      "transition": "r353"
     },
     {
       "id": "r296",
@@ -140,9 +138,7 @@
       "assigned": { "altFt": 13000, "until": "TAS" },
       "headingMag": 120,
       "iasKt": 100,
-      "transition": "r296",
-      "nav1MHz": 115.8,
-      "nav2MHz": 115.8
+      "transition": "r296"
     },
     {
       "id": "direct-tas-southwest",
@@ -154,9 +150,7 @@
       "assigned": { "altFt": 13000, "until": "TAS" },
       "headingMag": 340,
       "iasKt": 100,
-      "transition": "tas-hold",
-      "nav1MHz": 115.8,
-      "nav2MHz": 115.8
+      "transition": "tas-hold"
     },
     {
       "id": "direct-tas-east",
@@ -168,9 +162,7 @@
       "assigned": { "altFt": 15000, "until": "TAS" },
       "headingMag": 200,
       "iasKt": 100,
-      "transition": "tas-hold",
-      "nav1MHz": 115.8,
-      "nav2MHz": 115.8
+      "transition": "tas-hold"
     }
   ],
   "notes": [

@@ -2,7 +2,7 @@
  * KCNY RNAV (GPS) RWY 3 flown headlessly with the GPS: LP and LNAV only (advisory 3.50° path,
  * never coupled), two step-downs inside the FAF, and an offset final whose MAP (FOGUG) is a
  * waypoint 0.5 NM before the threshold, 14.52° off the runway heading. The "direct" starts begin
- * off to one side at 12000, cleared to descend and maintain 10000 until the fix: KIDNE and PIGSE
+ * off to one side at 10000, cleared to maintain 10000 until the fix: KIDNE and PIGSE
  * are NoPT; the ARCHH route and direct HANOG need the HANOG hold-in-lieu.
  */
 import { describe, expect, it } from 'vitest';

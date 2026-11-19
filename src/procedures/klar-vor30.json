@@ -326,9 +326,7 @@
       "assigned": { "altFt": 11300, "until": "LAR" },
       "headingMag": 200,
       "iasKt": 100,
-      "transition": "lar-pt",
-      "nav1MHz": 113.1,
-      "nav2MHz": 113.1
+      "transition": "lar-pt"
     },
     {
       "id": "direct-jesar",
@@ -346,9 +344,7 @@
       "assigned": { "altFt": 10600, "until": "JESAR" },
       "headingMag": 124,
       "iasKt": 100,
-      "transition": "jesar-arc",
-      "nav1MHz": 117.6,
-      "nav2MHz": 113.1
+      "transition": "jesar-arc"
     },
     {
       "id": "povoh-arc",
@@ -364,9 +360,7 @@
       "assigned": { "altFt": 10600 },
       "headingMag": 235,
       "iasKt": 100,
-      "transition": "povoh-arc",
-      "nav1MHz": 117.6,
-      "nav2MHz": 113.1
+      "transition": "povoh-arc"
     },
     {
       "id": "flems",
@@ -383,9 +377,7 @@
       "assigned": { "altFt": 10600, "until": "FLEMS" },
       "headingMag": 337,
       "iasKt": 100,
-      "transition": "flems",
-      "nav1MHz": 113.1,
-      "nav2MHz": 117.6
+      "transition": "flems"
     }
   ],
   "notes": [

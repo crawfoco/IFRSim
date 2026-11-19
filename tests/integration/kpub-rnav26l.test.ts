@@ -2,7 +2,7 @@
  * KPUB RNAV (GPS) RWY 26L flown headlessly with the GPS: load, activate, CDI on GPS, NAV/APR,
  * GP capture (LPV) or step-down to the MDA (LNAV), the missed approach into the MERTZ hold, the
  * HELER hold-in-lieu (direct, teardrop and parallel entries) and vectors to final. The "direct"
- * starts begin off to one side at 11000, cleared to descend and maintain the MSA (9300) until the
+ * starts begin off to one side at 10000, cleared to descend and maintain the MSA (9300) until the
  * IAF, so the learner descends, turns toward the fix, then descends on the NoPT route to 7000 or
  * flies the hold-in-lieu at HELER.
  */

@@ -293,13 +293,11 @@
         "bearingMag": 270,
         "distanceNm": 10
       },
-      "altitudeFt": 12000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 10000, "until": "CHOMP" },
       "headingMag": 40,
       "iasKt": 100,
-      "transition": "chomp",
-      "nav1MHz": 116.2,
-      "nav2MHz": 116.2
+      "transition": "chomp"
     },
     {
       "id": "direct-heity",
@@ -317,9 +315,7 @@
       "assigned": { "altFt": 10800, "until": "HEITY" },
       "headingMag": 220,
       "iasKt": 100,
-      "transition": "heity",
-      "nav1MHz": 116.2,
-      "nav2MHz": 116.2
+      "transition": "heity"
     },
     {
       "id": "direct-hikox",
@@ -333,13 +329,11 @@
         "bearingMag": 270,
         "distanceNm": 10
       },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9000, "until": "HIKOX" },
       "headingMag": 40,
       "iasKt": 100,
-      "transition": "hikox",
-      "nav1MHz": 116.2,
-      "nav2MHz": 116.2
+      "transition": "hikox"
     },
     {
       "id": "vectors-final",
@@ -353,9 +347,7 @@
       "altitudeFt": 8100,
       "assigned": { "altFt": 8100 },
       "headingMag": 60,
-      "iasKt": 100,
-      "nav1MHz": 116.2,
-      "nav2MHz": 116.2
+      "iasKt": 100
     }
   ],
   "notes": [

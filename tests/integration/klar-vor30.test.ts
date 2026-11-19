@@ -127,9 +127,10 @@ describe('KLAR VOR/DME 30 direct JESAR (offset start)', () => {
     finalFromEcecu(f);
     const a = f.analyze();
     expect(failed(a), summary(a)).toEqual([]);
-    expect(a.items.map((x) => x.id), summary(a)).toEqual(
-      expect.arrayContaining(['ident:LAR', 'assigned-altitude', 'final-course']),
-    );
+    expect(
+      a.items.map((x) => x.id),
+      summary(a),
+    ).toEqual(expect.arrayContaining(['ident:LAR', 'assigned-altitude', 'final-course']));
     expect(a.items.find((x) => x.id === 'fix-order')!.measured).toBe('ECECU → DUCBE → HEMBI');
     expect(a.items.some((x) => x.id.startsWith('procedure-turn'))).toBe(false);
   });

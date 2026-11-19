@@ -278,9 +278,7 @@
       "assigned": { "altFt": 12000, "until": "HAQHY" },
       "headingMag": 98,
       "iasKt": 100,
-      "transition": "haqhy",
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "transition": "haqhy"
     },
     {
       "id": "direct-haqhy",
@@ -300,9 +298,7 @@
       "assigned": { "altFt": 12000, "until": "HAQHY" },
       "headingMag": 350,
       "iasKt": 100,
-      "transition": "haqhy",
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "transition": "haqhy"
     },
     {
       "id": "pagre-arc",
@@ -318,9 +314,7 @@
       "assigned": { "altFt": 12000 },
       "headingMag": 117,
       "iasKt": 100,
-      "transition": "pagre",
-      "nav1MHz": 117.1,
-      "nav2MHz": 117.1
+      "transition": "pagre"
     },
     {
       "id": "vectors-final",
@@ -335,9 +329,7 @@
       "altitudeFt": 10000,
       "assigned": { "altFt": 10000 },
       "headingMag": 170,
-      "iasKt": 100,
-      "nav1MHz": 117.1,
-      "nav2MHz": 117.1
+      "iasKt": 100
     },
     {
       "id": "over-mtj",
@@ -355,9 +347,7 @@
       "assigned": { "altFt": 12500, "until": "MTJ" },
       "headingMag": 20,
       "iasKt": 100,
-      "transition": "mtj",
-      "nav1MHz": 117.1,
-      "nav2MHz": 117.1
+      "transition": "mtj"
     },
     {
       "id": "direct-bruuk",
@@ -378,9 +368,7 @@
       "headingMag": 200,
       "iasKt": 100,
       "transition": "mtj",
-      "joinAt": "BRUUK",
-      "nav1MHz": 117.1,
-      "nav2MHz": 117.1
+      "joinAt": "BRUUK"
     }
   ],
   "notes": [

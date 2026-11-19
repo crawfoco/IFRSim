@@ -18,7 +18,7 @@ function fly(opts: Partial<ScenarioOptions> & { startId: string }) {
 
 /**
  * Load AHUFU (with or without the hold), activate, CDI GPS, AP NAV, and the descent from the
- * 8000 ft start to the 6000 ATC assigns (above both outer TAA rings, the hold maximum).
+ * 10000 ft start to the 6000 ATC assigns (above both outer TAA rings, the hold maximum).
  */
 function setUp(f: Flight, hold: boolean) {
   f.send(
@@ -113,8 +113,9 @@ describe('KOGA RNAV 8 through the TAA', () => {
   it('bad run: down to 5300 in the outer ring of the straight-in area fails taa-altitude only', () => {
     const f = fly({ startId: 'taa-west' });
     setUp(f, false);
-    // Already descending in VS: the pilot sets 5300 instead of the assigned 6000.
-    f.send({ type: 'altPreselect', ft: 5300 });
+    // Already descending in VS: the pilot sets 5300 instead of the assigned 6000, and steepens
+    // the descent so it is below 5700 while still in the outer ring.
+    f.send({ type: 'altPreselect', ft: 5300 }, { type: 'vsTarget', fpm: -1500 });
     finishLpv(f);
     expect(fails(f)).toEqual(['taa-altitude']);
   });

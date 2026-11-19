@@ -115,7 +115,6 @@ describe('KCEZ VOR 21: direct CEZ starts with the procedure turn', () => {
     const f = new Flight(scenario('direct-cez-south'));
     engage(f, 20);
     directCez(f);
-    f.descendOrClimb(10000, -1000); // the assigned altitude, from 12000
     f.crossFix('CEZ', 1.0, 900);
     f.descendOrClimb(9800, -500); // over the IAF: the PT altitude
     procedureTurn(f);
@@ -210,7 +209,6 @@ describe('KCEZ VOR 21: direct CEZ starts with the procedure turn', () => {
     const f = new Flight(scenario('direct-cez-south'));
     engage(f, 20);
     directCez(f);
-    f.descendOrClimb(10000, -1000);
     f.crossFix('CEZ', 1.0, 900);
     f.descendOrClimb(9800, -500);
     procedureTurn(f, 35, [305, 215]); // right to 035, then left turn through west to 215

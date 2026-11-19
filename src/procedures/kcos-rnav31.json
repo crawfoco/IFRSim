@@ -253,13 +253,11 @@
         "bearingMag": 130,
         "distanceNm": 10
       },
-      "altitudeFt": 11500,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9400, "until": "ZENER" },
       "headingMag": 270,
       "iasKt": 100,
-      "transition": "zener",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "transition": "zener"
     },
     {
       "id": "direct-onkie",
@@ -273,13 +271,11 @@
         "bearingMag": 90,
         "distanceNm": 10
       },
-      "altitudeFt": 11500,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9400, "until": "ONKIE" },
       "headingMag": 220,
       "iasKt": 100,
-      "transition": "onkie",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "transition": "onkie"
     },
     {
       "id": "vectors-final",
@@ -293,9 +289,7 @@
       "altitudeFt": 8600,
       "assigned": { "altFt": 8600 },
       "headingMag": 280,
-      "iasKt": 100,
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "iasKt": 100
     }
   ],
   "notes": [

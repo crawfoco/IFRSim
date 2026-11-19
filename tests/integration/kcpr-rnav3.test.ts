@@ -56,12 +56,11 @@ const failed = (f: Flight) =>
     .map((i) => `${i.id}: ${i.measured}`);
 
 describe('KCPR RNAV 3 on the GPS', () => {
-  it('direct CHOMP from the west, descending from 12000 to 10000: turns onto 012° at CHOMP, down to 8100, captures the GP, lands at the LPV DA (100%)', () => {
+  it('direct CHOMP from the west, at 10000: turns onto 012° at CHOMP, down to 8100, captures the GP, lands at the LPV DA (100%)', () => {
     const f = fly({ startId: 'direct-chomp' });
     setUp(f, 'chomp');
     expect(f.r.state.ap.lateral).toBe('NAV');
-    // Descend and maintain 10000 (the MSA) to CHOMP, then 8100 on the CHOMP–IPEYE leg.
-    f.descendOrClimb(10000, -1000);
+    // Maintain 10000 (the MSA) to CHOMP, then 8100 on the CHOMP–IPEYE leg.
     overIaf(f, 'CHOMP', 8100);
     const a = trackUntil(f, () => f.sensors.gps.activeWaypoint === 'YIWZE');
     expect(a.ok).toBe(true);
@@ -84,7 +83,7 @@ describe('KCPR RNAV 3 on the GPS', () => {
   it('direct HIKOX from the west via CEYFI: LPV to a landing (100%)', () => {
     const f = fly({ startId: 'direct-hikox' });
     setUp(f, 'hikox');
-    // Descend and maintain 9000 from 11000; HIKOX → CEYFI at 9000; 8100 only once past CEYFI.
+    // Descend and maintain 9000 from 10000; HIKOX → CEYFI at 9000; 8100 only once past CEYFI.
     f.descendOrClimb(9000, -1000);
     expect(f.until(() => f.sensors.gps.activeWaypoint === 'IPEYE', 1800)).toBe(true);
     overIaf(f, 'CEYFI', 8100);

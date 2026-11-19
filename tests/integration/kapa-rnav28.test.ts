@@ -75,7 +75,7 @@ describe('KAPA RNAV 28 on the GPS', () => {
   it('direct DILVE from the south: turns onto 283° at DILVE, MESME step-down, captures the GP, lands at the LPV DA (100%)', () => {
     const f = fly({ startId: 'from-dilve' });
     setUp(f, 'dilve');
-    // Descend and maintain 9000 from 11000 to DILVE.
+    // Descend and maintain 9000 from 10000 to DILVE.
     f.descendOrClimb(9000, -1000);
     expect(f.r.state.ap.lateral).toBe('NAV');
     overIaf(f, 'DILVE');
