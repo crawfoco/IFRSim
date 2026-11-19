@@ -25,7 +25,7 @@ function fly(f: Flight, arcAltFt = 7000) {
   f.send({ type: 'altPreselect', ft: 7000 });
   f.wait(0.1);
   f.send({ type: 'button', button: 'ALT' });
-  // Start at 9000: descend and maintain 7000 (the arc altitude) before WAVDI.
+  // Start at 10000: descend and maintain 7000 (the arc altitude) before WAVDI.
   if (f.alt > 7050) f.descendOrClimb(7000, -1000);
   f.tune(1, 114.2, 136); // GLL, outbound on R-136
   f.tune(2, 110.3, 350); // I-DCI, ready for the final

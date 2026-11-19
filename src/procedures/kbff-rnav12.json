@@ -156,13 +156,11 @@
       "clearance": "Cleared direct ALBIN, maintain 7800 until ALBIN, cleared RNAV runway 12 approach to Western Nebraska Regional via the ALBIN transition.",
       "position": { "kind": "waypoint", "id": "ALBIN" },
       "offset": { "bearingMag": 120, "distanceNm": 10 },
-      "altitudeFt": 9500,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7800, "until": "ALBIN" },
       "headingMag": 260,
       "iasKt": 100,
-      "transition": "albin",
-      "nav1MHz": 116.1,
-      "nav2MHz": 116.1
+      "transition": "albin"
     },
     {
       "id": "direct-spons",
@@ -170,13 +168,11 @@
       "clearance": "Cleared direct SPONS, maintain 7000 until SPONS, cleared RNAV runway 12 approach to Western Nebraska Regional via the SPONS transition.",
       "position": { "kind": "waypoint", "id": "SPONS" },
       "offset": { "bearingMag": 340, "distanceNm": 10 },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "SPONS" },
       "headingMag": 120,
       "iasKt": 100,
-      "transition": "spons",
-      "nav1MHz": 116.1,
-      "nav2MHz": 116.1
+      "transition": "spons"
     },
     {
       "id": "direct-ledse",
@@ -184,14 +180,12 @@
       "clearance": "Cleared direct LEDSE, maintain 7000 until LEDSE, cleared RNAV runway 12 approach to Western Nebraska Regional.",
       "position": { "kind": "waypoint", "id": "LEDSE" },
       "offset": { "bearingMag": 345, "distanceNm": 10 },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "LEDSE" },
       "headingMag": 120,
       "iasKt": 100,
       "transition": "ledse",
-      "joinAt": "LEDSE",
-      "nav1MHz": 116.1,
-      "nav2MHz": 116.1
+      "joinAt": "LEDSE"
     },
     {
       "id": "direct-ledse-east",
@@ -199,14 +193,12 @@
       "clearance": "Cleared direct LEDSE, maintain 7000 until LEDSE, cleared RNAV runway 12 approach to Western Nebraska Regional.",
       "position": { "kind": "waypoint", "id": "LEDSE" },
       "offset": { "bearingMag": 80, "distanceNm": 12 },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "LEDSE" },
       "headingMag": 310,
       "iasKt": 100,
       "transition": "ledse",
-      "joinAt": "LEDSE",
-      "nav1MHz": 116.1,
-      "nav2MHz": 116.1
+      "joinAt": "LEDSE"
     },
     {
       "id": "direct-ledse-south",
@@ -214,14 +206,12 @@
       "clearance": "Cleared direct LEDSE, maintain 7000 until LEDSE, cleared RNAV runway 12 approach to Western Nebraska Regional.",
       "position": { "kind": "waypoint", "id": "LEDSE" },
       "offset": { "bearingMag": 170, "distanceNm": 12 },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "LEDSE" },
       "headingMag": 300,
       "iasKt": 100,
       "transition": "ledse",
-      "joinAt": "LEDSE",
-      "nav1MHz": 116.1,
-      "nav2MHz": 116.1
+      "joinAt": "LEDSE"
     },
     {
       "id": "vectors-final",
@@ -232,9 +222,7 @@
       "altitudeFt": 6900,
       "assigned": { "altFt": 6900 },
       "headingMag": 95,
-      "iasKt": 100,
-      "nav1MHz": 116.1,
-      "nav2MHz": 116.1
+      "iasKt": 100
     }
   ],
   "notes": [

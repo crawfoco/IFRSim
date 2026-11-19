@@ -18,6 +18,7 @@ import { Flight } from '../sim/scripted';
 
 const ICYS = 110.1;
 const CYS = 113.1;
+const GLL = 114.2;
 
 const failed = (a: FlightAnalysis) => a.items.filter((x) => x.status === 'fail').map((x) => x.id);
 const summary = (a: FlightAnalysis) =>
@@ -104,8 +105,7 @@ describe('KCYS ILS 27 from over-cys', () => {
   function toColla(f: Flight) {
     engage(f, 180, 10500);
     descendTo(f, 8500);
-    f.send({ type: 'ident', radio: 1 });
-    f.wait(0.1);
+    f.tune(1, CYS);
     f.tune(2, ICYS, 265);
     f.crossFix('CYS', 1.0, 600);
     f.send({ type: 'course', radio: 1, deg: 98 });
@@ -195,8 +195,7 @@ describe('KCYS ILS 27 from egber', () => {
     const f = new Flight(scenario({ startId: 'egber' }));
     engage(f, 235, 9800);
     descendTo(f, 7800); // descend and maintain 7800 (the route altitude) before EGBER
-    f.send({ type: 'ident', radio: 1 }); // CYS: EGBER is CYS 23.2 DME
-    f.wait(0.1);
+    f.tune(1, CYS); // EGBER is CYS 23.2 DME
     f.tune(2, ICYS, 265); // the localizer, flown from EGBER on
     flyDirect(f, 'EGBER');
     f.turn(220);
@@ -221,8 +220,7 @@ describe('KCYS ILS 27 from direct-hamer-south', () => {
   function fly(f: Flight, early: boolean) {
     engage(f, 50, 10500);
     descendTo(f, early ? 7800 : 8500);
-    f.send({ type: 'course', radio: 1, deg: 350 }, { type: 'ident', radio: 1 }); // GLL
-    f.wait(0.1);
+    f.tune(1, GLL, 350);
     f.tune(2, ICYS, 265);
     flyDirect(f, 'HAMER');
     f.send({ type: 'button', button: 'NAV' });
@@ -262,8 +260,7 @@ describe('KCYS ILS 27 from direct-hamer-south', () => {
 describe('KCYS ILS 27 from vectors-final', () => {
   function flyVectors(f: Flight) {
     engage(f, 235, 7800);
-    f.send({ type: 'course', radio: 1, deg: 265 }, { type: 'ident', radio: 1 });
-    f.wait(0.1);
+    f.tune(1, ICYS, 265);
     f.send({ type: 'button', button: 'APR' });
     expect(f.until(() => f.r.state.ap.lateral === 'APR', 900)).toBe(true);
   }

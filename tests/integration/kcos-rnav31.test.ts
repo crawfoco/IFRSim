@@ -75,7 +75,7 @@ describe('KCOS RNAV 31 on the GPS', () => {
     const f = fly({ startId: 'direct-zener' });
     setUp(f, 'zener');
     expect(f.r.state.ap.lateral).toBe('NAV');
-    // Descend and maintain 9400 from 11500 to ZENER.
+    // Descend and maintain 9400 from 10000 to ZENER.
     f.descendOrClimb(9400, -1000);
     overIaf(f, 'ZENER');
     const a = trackUntil(f, () => f.sensors.gps.activeWaypoint === 'JATOL');

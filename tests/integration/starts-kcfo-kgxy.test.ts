@@ -287,9 +287,8 @@ describe('KCFO ILS 26 from join-feeder', () => {
     const f = new Flight(scenario('kcfo-ils26', { startId: 'join-feeder' }));
     engage(f, 360, 10000);
     descendTo(f, 8000); // descend and maintain 8000, the feeder minimum
-    // NAV1 is already on FQF: identify, set R-045 and arm NAV (45° intercept on heading 360).
-    f.send({ type: 'course', radio: 1, deg: 45 }, { type: 'ident', radio: 1 });
-    f.wait(0.1);
+    // NAV1 → FQF: identify, set R-045 and arm NAV (45° intercept on heading 360).
+    f.tune(1, 116.3, 45);
     f.send({ type: 'button', button: 'NAV' });
     // NAV2 → I-FTG for the DME (SKIPI is I-FTG 7 DME); localizer preselected on NAV1 standby.
     f.tune(2, 109.3, 263);
@@ -342,7 +341,7 @@ describe('KGXY ILS 35 from over-gll', () => {
     const f = new Flight(scenario('kgxy-ils35', { startId: 'over-gll' }));
     engage(f, 180, 11000);
     descendTo(f, 9000); // descend and maintain 9000 (MSA 8100 north-west of GLL)
-    f.send({ type: 'course', radio: 1, deg: 177 }, { type: 'ident', radio: 1 });
+    f.tune(1, 114.2, 177); // GLL, R-177
     f.tune(2, 110.3, 350); // I-DCI: WELDS is I-DCI 14.5 DME
     f.crossFix('GLL', 1.0, 600);
     f.send({ type: 'button', button: 'NAV' });

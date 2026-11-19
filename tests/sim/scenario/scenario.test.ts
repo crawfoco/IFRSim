@@ -24,7 +24,9 @@ describe('building a scenario', () => {
   it('places the aircraft at the start and sets up the world', () => {
     const sc = buildScenario(p, nav, opts({ gsOutOfService: true }));
     expect(sc.initial.aircraft.altitudeFt).toBe(8000);
-    expect(sc.initial.radios.nav1.activeMHz).toBe(116.3);
+    // Radios are not preset: the learner tunes every navaid from the default.
+    expect(sc.initial.radios.nav1).toEqual({ activeMHz: 108, standbyMHz: 108, obsDeg: 0 });
+    expect(sc.initial.radios.nav2).toEqual({ activeMHz: 108, standbyMHz: 108, obsDeg: 0 });
     expect(sc.world.gsOutOfService).toBe(true);
     expect(sc.world.glidePaths['I-FTG']).toBeDefined();
     expect(sc.missedHold.fix).toBe('SKIPI');

@@ -94,9 +94,7 @@
       "altitudeFt": 8000,
       "assigned": { "altFt": 8000, "until": "CEZ" },
       "headingMag": 140,
-      "iasKt": 100,
-      "nav1MHz": 114.35,
-      "nav2MHz": 114.35
+      "iasKt": 100
     },
     {
       "id": "direct-cez-south",
@@ -104,13 +102,11 @@
       "clearance": "Cleared direct Cortez, maintain 10000 until Cortez, cleared VOR runway 21 approach to Cortez Municipal.",
       "position": { "kind": "navaid", "navaid": "CEZ" },
       "offset": { "bearingMag": 160, "distanceNm": 12 },
-      "altitudeFt": 12000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 10000, "until": "CEZ" },
       "headingMag": 20,
       "iasKt": 100,
-      "transition": "cez-pt",
-      "nav1MHz": 117.1,
-      "nav2MHz": 117.1
+      "transition": "cez-pt"
     },
     {
       "id": "direct-cez-north",
@@ -122,9 +118,7 @@
       "assigned": { "altFt": 11000, "until": "CEZ" },
       "headingMag": 230,
       "iasKt": 100,
-      "transition": "cez-pt",
-      "nav1MHz": 117.1,
-      "nav2MHz": 117.1
+      "transition": "cez-pt"
     },
     {
       "id": "direct-cez-west",
@@ -136,9 +130,7 @@
       "assigned": { "altFt": 11000, "until": "CEZ" },
       "headingMag": 60,
       "iasKt": 100,
-      "transition": "cez-pt",
-      "nav1MHz": 114.35,
-      "nav2MHz": 117.1
+      "transition": "cez-pt"
     }
   ],
   "notes": [

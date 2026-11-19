@@ -158,14 +158,12 @@
       "id": "wavdi-arc",
       "name": "Outbound on GLL R-136 to WAVDI, then the 17.5 DME arc",
       "clearance": "Proceed outbound on the Gill 136 radial to WAVDI, maintain 7000 until established on the arc, cleared ILS runway 35 approach to Greeley-Weld County via the Gill 17.5 DME arc.",
-      "position": { "kind": "radialDme", "navaid": "GLL", "radialMag": 136, "dmeNm": 11 },
-      "altitudeFt": 9000,
+      "position": { "kind": "radialDme", "navaid": "GLL", "radialMag": 136, "dmeNm": 8 },
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000 },
       "headingMag": 136,
       "iasKt": 100,
-      "transition": "wavdi",
-      "nav1MHz": 114.2,
-      "nav2MHz": 114.2
+      "transition": "wavdi"
     },
     {
       "id": "over-gll",
@@ -173,13 +171,11 @@
       "clearance": "Cleared direct Gill, maintain 9000 until Gill, cleared ILS runway 35 approach to Greeley-Weld County via the Gill 177 radial.",
       "position": { "kind": "navaid", "navaid": "GLL" },
       "leadInNm": 8,
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9000, "until": "GLL" },
       "headingMag": 180,
       "iasKt": 100,
-      "transition": "gll",
-      "nav1MHz": 114.2,
-      "nav2MHz": 114.2
+      "transition": "gll"
     },
     {
       "id": "direct-welds-northwest",
@@ -187,14 +183,12 @@
       "clearance": "Cleared direct WELDS, maintain 9000 until WELDS, cleared ILS runway 35 approach to Greeley-Weld County.",
       "position": { "kind": "locDme", "loc": "I-DCI", "dmeNm": 14.5 },
       "offset": { "bearingMag": 315, "distanceNm": 12 },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9000, "until": "WELDS" },
       "headingMag": 180,
       "iasKt": 100,
       "transition": "gll",
-      "joinAt": "WELDS",
-      "nav1MHz": 114.2,
-      "nav2MHz": 114.2
+      "joinAt": "WELDS"
     },
     {
       "id": "direct-welds-southeast",
@@ -202,14 +196,12 @@
       "clearance": "Cleared direct WELDS, maintain 7000 until WELDS, cleared ILS runway 35 approach to Greeley-Weld County.",
       "position": { "kind": "locDme", "loc": "I-DCI", "dmeNm": 14.5 },
       "offset": { "bearingMag": 120, "distanceNm": 10 },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "WELDS" },
       "headingMag": 360,
       "iasKt": 100,
       "transition": "gll",
-      "joinAt": "WELDS",
-      "nav1MHz": 114.2,
-      "nav2MHz": 114.2
+      "joinAt": "WELDS"
     },
     {
       "id": "vectors-final",
@@ -219,9 +211,7 @@
       "altitudeFt": 7000,
       "assigned": { "altFt": 7000 },
       "headingMag": 320,
-      "iasKt": 100,
-      "nav1MHz": 114.2,
-      "nav2MHz": 114.2
+      "iasKt": 100
     }
   ],
   "notes": [

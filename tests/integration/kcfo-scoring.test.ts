@@ -45,9 +45,14 @@ export function flyFeederAndHold(f: Flight, o: FeederOptions = {}) {
   f.wait(0.1);
   f.send({ type: 'button', button: 'ALT' });
   descendTo8000(f);
-  // NAV1 stays on FQF (already tuned): identify it and set the radial. NAV2 → I-FTG for DME.
-  f.send({ type: 'course', radio: 1, deg: 45 });
-  if (identify) f.send({ type: 'ident', radio: 1 });
+  // NAV1 → FQF on R-045 (identified unless the run skips it). NAV2 → I-FTG for DME.
+  if (identify) f.tune(1, 116.3, 45);
+  else
+    f.send(
+      { type: 'standby', radio: 1, mhz: 116.3 },
+      { type: 'swap', radio: 1 },
+      { type: 'course', radio: 1, deg: 45 },
+    );
   f.send({ type: 'standby', radio: 2, mhz: 109.3 }, { type: 'swap', radio: 2 });
   f.send({ type: 'course', radio: 2, deg: 263 }, { type: 'dmeSource', radio: 2 });
   f.wait(0.1);
@@ -292,9 +297,9 @@ describe('KCFO regressions from the M5 review', () => {
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
     f.send({ type: 'headingBug', deg: 360 }, { type: 'altPreselect', ft: 8000 });
     f.wait(0.1);
-    f.send({ type: 'button', button: 'ALT' }, { type: 'course', radio: 1, deg: 45 });
+    f.send({ type: 'button', button: 'ALT' });
     descendTo8000(f);
-    f.send({ type: 'ident', radio: 1 });
+    f.tune(1, 116.3, 45); // FQF, R-045
     f.send({ type: 'standby', radio: 2, mhz: 109.3 }, { type: 'swap', radio: 2 });
     f.send({ type: 'dmeSource', radio: 2 }, { type: 'standby', radio: 1, mhz: 109.3 });
     f.wait(0.1);
@@ -331,7 +336,8 @@ describe('KCFO regressions from the M5 review', () => {
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
     f.send({ type: 'headingBug', deg: 90 }, { type: 'altPreselect', ft: 8000 });
     f.wait(0.1);
-    f.send({ type: 'button', button: 'ALT' }, { type: 'ident', radio: 1 });
+    f.send({ type: 'button', button: 'ALT' });
+    f.tune(1, 116.3); // FQF
     descendTo8000(f);
     f.wait(900); // east, well south of SKIPI (the start is 8 NM south of FQF)
     f.tune(1, 109.3, 263);

@@ -169,13 +169,11 @@
       "clearance": "Cleared direct Cheyenne, maintain 8500 until Cheyenne, cleared ILS runway 27 approach via the Cheyenne 098 radial.",
       "position": { "kind": "navaid", "navaid": "CYS" },
       "leadInNm": 8,
-      "altitudeFt": 10500,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 8500, "until": "CYS" },
       "headingMag": 180,
       "iasKt": 100,
-      "transition": "cys",
-      "nav1MHz": 113.1,
-      "nav2MHz": 113.1
+      "transition": "cys"
     },
     {
       "id": "direct-colla-southwest",
@@ -183,14 +181,12 @@
       "clearance": "Cleared direct COLLA, maintain 8500 until COLLA, cleared ILS runway 27 approach.",
       "position": { "kind": "locDme", "loc": "I-CYS", "dmeNm": 14.5 },
       "offset": { "bearingMag": 225, "distanceNm": 12 },
-      "altitudeFt": 10500,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 8500, "until": "COLLA" },
       "headingMag": 80,
       "iasKt": 100,
       "transition": "cys",
-      "joinAt": "COLLA",
-      "nav1MHz": 113.1,
-      "nav2MHz": 113.1
+      "joinAt": "COLLA"
     },
     {
       "id": "egber",
@@ -198,13 +194,11 @@
       "clearance": "Cleared direct EGBER, maintain 7800 until EGBER, cleared ILS runway 27 approach.",
       "position": { "kind": "radialDme", "navaid": "CYS", "radialMag": 81.3, "dmeNm": 23.2 },
       "offset": { "bearingMag": 80, "distanceNm": 8 },
-      "altitudeFt": 9800,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7800, "until": "EGBER" },
       "headingMag": 235,
       "iasKt": 100,
-      "transition": "egber",
-      "nav1MHz": 113.1,
-      "nav2MHz": 113.1
+      "transition": "egber"
     },
     {
       "id": "direct-hamer-south",
@@ -212,13 +206,11 @@
       "clearance": "Cleared direct HAMER, maintain 8500 until HAMER, cleared ILS runway 27 approach.",
       "position": { "kind": "radialDme", "navaid": "GLL", "radialMag": 350, "dmeNm": 32.5 },
       "offset": { "bearingMag": 190, "distanceNm": 10 },
-      "altitudeFt": 10500,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 8500, "until": "HAMER" },
       "headingMag": 50,
       "iasKt": 100,
-      "transition": "hamer",
-      "nav1MHz": 114.2,
-      "nav2MHz": 114.2
+      "transition": "hamer"
     },
     {
       "id": "vectors-final",
@@ -228,9 +220,7 @@
       "altitudeFt": 7800,
       "assigned": { "altFt": 7800 },
       "headingMag": 235,
-      "iasKt": 100,
-      "nav1MHz": 110.1,
-      "nav2MHz": 113.1
+      "iasKt": 100
     }
   ],
   "notes": [

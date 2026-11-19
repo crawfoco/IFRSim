@@ -273,13 +273,11 @@
         "bearingMag": 300,
         "distanceNm": 10
       },
-      "altitudeFt": 12000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 10000, "until": "KIDNE" },
       "headingMag": 180,
       "iasKt": 100,
-      "transition": "kidne",
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "transition": "kidne"
     },
     {
       "id": "direct-pigse",
@@ -293,13 +291,11 @@
         "bearingMag": 230,
         "distanceNm": 10
       },
-      "altitudeFt": 12000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 10000, "until": "PIGSE" },
       "headingMag": 100,
       "iasKt": 100,
-      "transition": "pigse",
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "transition": "pigse"
     },
     {
       "id": "direct-archh",
@@ -313,13 +309,11 @@
         "bearingMag": 90,
         "distanceNm": 10
       },
-      "altitudeFt": 12000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 10000, "until": "ARCHH" },
       "headingMag": 210,
       "iasKt": 100,
-      "transition": "archh",
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "transition": "archh"
     },
     {
       "id": "direct-hanog",
@@ -333,14 +327,12 @@
         "bearingMag": 340,
         "distanceNm": 10
       },
-      "altitudeFt": 12000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 10000, "until": "HANOG" },
       "headingMag": 220,
       "iasKt": 100,
       "transition": "hanog",
-      "joinAt": "HANOG",
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "joinAt": "HANOG"
     },
     {
       "id": "vectors-final",
@@ -354,9 +346,7 @@
       "altitudeFt": 8100,
       "assigned": { "altFt": 8100 },
       "headingMag": 20,
-      "iasKt": 100,
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "iasKt": 100
     }
   ],
   "notes": [

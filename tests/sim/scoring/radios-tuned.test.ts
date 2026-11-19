@@ -16,9 +16,10 @@ const vectors = () =>
 
 const item = (a: FlightAnalysis, id: string) => a.items.find((x) => x.id === id)!;
 
-/** Vectors to the ILS: NAV1 → I-FTG (identified), NAV2 stays on FQF; APR to SKIPI. */
+/** Vectors to the ILS: NAV2 → FQF (missed approach), NAV1 → I-FTG (both identified); APR to SKIPI. */
 function vectorsToFaf(f: Flight) {
   f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
+  f.tune(2, 116.3); // FQF, for the missed approach
   f.send({ type: 'headingBug', deg: 293 }, { type: 'altPreselect', ft: 8000 });
   f.wait(0.1);
   f.send({ type: 'button', button: 'ALT' });
@@ -30,7 +31,7 @@ function vectorsToFaf(f: Flight) {
 
 /**
  * Swap NAV1 to `mhz` for `seconds`, then back to I-FTG (no new ident). NAV2 stays on FQF
- * (needed by the missed approach) the whole time: parked there from the start, it does not
+ * (needed by the missed approach) the whole time: parked there since the vectors, it does not
  * suspend the watch on I-FTG.
  */
 function swapAway(f: Flight, seconds: number, mhz = 112.0) {

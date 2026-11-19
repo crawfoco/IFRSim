@@ -28,7 +28,7 @@ describe('KMTJ ILS 17: DME from the MTJ VOR/DME', () => {
     f.wait(0.1);
     f.send({ type: 'button', button: 'ALT' });
     f.tune(1, 111.3, 168); // I-MTJ: no DME of its own
-    f.send({ type: 'ident', radio: 2 }); // NAV2 is already on MTJ 117.1
+    f.tune(2, 117.1); // MTJ, for the DME
     if (dmeFromMtj) f.send({ type: 'dmeSource', radio: 2 });
     f.send({ type: 'button', button: 'APR' });
     // Established on the localizer: descend to the 8100 glideslope intercept altitude.
@@ -69,7 +69,8 @@ describe('KMTJ ILS 17: procedure turn at BRUUK (over MTJ start)', () => {
     f.wait(0.1);
     f.send({ type: 'button', button: 'ALT' });
     f.descendOrClimb(12500, -1000); // the assigned altitude, from 14500
-    f.send({ type: 'ident', radio: 1 }, { type: 'dmeSource', radio: 1 }); // MTJ on NAV1
+    f.tune(1, 117.1); // MTJ on NAV1
+    f.send({ type: 'dmeSource', radio: 1 });
     f.tune(2, 111.3, 168); // I-MTJ on NAV2 for now
     const toMtj = () => Math.round((f.radialFrom('MTJ').radial + 180) % 360);
     f.turn(toMtj());
@@ -118,7 +119,7 @@ describe('KAKO VOR 29: barbed procedure turn at AKO', () => {
     f.send({ type: 'button', button: 'AP' }, { type: 'button', button: 'HDG' });
     f.tune(1, 114.4, 135);
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 10000
     f.crossFix('AKO', 1.0, 600);
     f.descendOrClimb(6000, -500); // over the IAF: down to the 6000 PT altitude
     // Outbound on R-110: heading 110, then NAV (pressing NAV while in NAV would cancel it).
@@ -226,7 +227,8 @@ describe('Offset starts nearly straight in: the course reversal is still require
     f.send({ type: 'button', button: 'ALT' });
     f.descendOrClimb(12500, -1000); // the assigned altitude, from 14500
     f.tune(1, 111.3, 168);
-    f.send({ type: 'dmeSource', radio: 2 }, { type: 'ident', radio: 2 });
+    f.tune(2, 117.1); // MTJ, for the DME
+    f.send({ type: 'dmeSource', radio: 2 });
     steerTo(f, 'BRUUK', 3);
     // Arriving heading ~150, 18° off the localizer: joins it and carries straight on.
     f.send({ type: 'button', button: 'APR' });
@@ -255,7 +257,7 @@ describe('Offset starts nearly straight in: the course reversal is still require
     const toAko = () => Math.round((f.radialFrom('AKO').radial + 180) % 360);
     f.turn(toAko());
     f.send({ type: 'course', radio: 1, deg: toAko() }, { type: 'button', button: 'NAV' });
-    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 10000
     f.crossFix('AKO', 1.0, 600);
     f.descendOrClimb(6000, -500); // over the IAF: down to the 6000 PT altitude
     // Over AKO heading ~255: the shorter, left turn round to R-110 outbound ends south of
@@ -299,7 +301,7 @@ describe('Offset starts nearly straight in: the course reversal is still require
     const toAko = () => Math.round((f.radialFrom('AKO').radial + 180) % 360);
     f.turn(toAko());
     f.send({ type: 'course', radio: 1, deg: toAko() }, { type: 'button', button: 'NAV' });
-    f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
+    f.descendOrClimb(7000, -1000); // the assigned altitude, from 10000
     // Planning a straight-in, the pilot is already down to the 6000 PT altitude at AKO.
     expect(f.until(() => f.distTo('AKO') < 4, 600)).toBe(true);
     f.descendOrClimb(6000, -1000);
@@ -336,7 +338,7 @@ describe('KGXY ILS 35: fixes flown in order', () => {
     f.tune(2, 110.3, 350); // I-DCI on NAV2 for now
     f.turn(177);
     f.send({ type: 'button', button: 'NAV' });
-    f.descendOrClimb(9000, -1000); // from 11000: descend and maintain 9000 to GLL
+    f.descendOrClimb(9000, -1000); // from 10000: descend and maintain 9000 to GLL
     f.crossFix('GLL', 1.0, 600);
     f.descendOrClimb(7000, -1000); // on the feeder: down to its 7000 minimum
     // Turn back early, 12.5 NM out (BUFFS is 1.5 NM west of the feeder), instead of

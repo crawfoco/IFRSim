@@ -45,7 +45,7 @@ describe('KMTJ ILS 17: HAQHY and PAGRE arc starts', () => {
   /** HAQHY feeder: JNC R-098 FROM to BRUUK at 9400, then the localizer. */
   function flyHaqhy(f: Flight) {
     engage(f, 98);
-    f.tune(1, 112.4, 98); // JNC R-098 (NAV2 is on JNC too)
+    f.tune(1, 112.4, 98); // JNC R-098
     f.send({ type: 'button', button: 'NAV' });
     f.descendOrClimb(12000, -1000); // the assigned altitude, from 14000
     f.untilDme('JNC', 36.2, true, 900); // past HAQHY at 12000
@@ -143,7 +143,7 @@ describe('KAKO VOR 29: AKO 10 DME arc starts', () => {
   it('north arc (R-050, clockwise), ceiling above: lands, 100%', () => {
     const f = new Flight(scenario('kako-vor29', 'north-arc', 'above'));
     engage(f, 230);
-    f.tune(1, 114.4, 230); // AKO (already on NAV1), inbound on R-050
+    f.tune(1, 114.4, 230); // AKO, inbound on R-050
     f.send({ type: 'button', button: 'NAV' });
     f.descendOrClimb(7000, -1000); // the assigned altitude, from 9000
     f.untilDme('AKO', 10.5, false, 600);
@@ -276,7 +276,8 @@ describe('KMTJ ILS 17: direct BRUUK from the north-north-west (offset start)', (
     engage(f, 200);
     f.descendOrClimb(12500, -1000); // the assigned altitude, from 14500
     f.tune(1, 111.3, 168); // I-MTJ
-    f.send({ type: 'dmeSource', radio: 2 }, { type: 'ident', radio: 2 }); // NAV2: MTJ 117.1
+    f.tune(2, 117.1); // MTJ, for the DME
+    f.send({ type: 'dmeSource', radio: 2 });
     steerTo(f, 'BRUUK', 1.5);
     f.crossFix('BRUUK', 1.0, 300);
     // Arrived heading ~150, nearly inbound: the PT is still required. Turn right (the PT

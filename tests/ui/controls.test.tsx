@@ -163,9 +163,10 @@ describe('BrowserSim', () => {
         gsOutOfService: false,
       }),
     );
-    for (let i = 0; i < 7; i++) sim.send((s) => frequencyKnob(s, 1, 'mhz', -1));
+    // Radios start on 108.00: seven clicks up land on 115.00 (no wrap past 117).
+    for (let i = 0; i < 7; i++) sim.send((s) => frequencyKnob(s, 1, 'mhz', 1));
     for (let i = 0; i < 3; i++) sim.send((s) => headingKnob(s, -1, true));
-    expect(sim.view().radios.nav1.standbyMHz).toBe(109.3);
+    expect(sim.view().radios.nav1.standbyMHz).toBe(115);
     expect(sim.view().panel.headingBugDeg).toBe(300);
   });
 });

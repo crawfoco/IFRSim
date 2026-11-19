@@ -243,15 +243,13 @@
         "kind": "radialDme",
         "navaid": "SNY",
         "radialMag": 78,
-        "dmeNm": 18
+        "dmeNm": 21
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000 },
       "headingMag": 258,
       "iasKt": 100,
-      "transition": "riyop-arc",
-      "nav1MHz": 115.9,
-      "nav2MHz": 114.4
+      "transition": "riyop-arc"
     },
     {
       "id": "ogjun-arc",
@@ -261,15 +259,13 @@
         "kind": "radialDme",
         "navaid": "SNY",
         "radialMag": 202,
-        "dmeNm": 18
+        "dmeNm": 21
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000 },
       "headingMag": 22,
       "iasKt": 100,
-      "transition": "ogjun-arc",
-      "nav1MHz": 114.4,
-      "nav2MHz": 114.4
+      "transition": "ogjun-arc"
     },
     {
       "id": "direct-sny",
@@ -281,13 +277,11 @@
         "radialMag": 140,
         "dmeNm": 10
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "SNY" },
       "headingMag": 320,
       "iasKt": 100,
-      "transition": "sny-pt",
-      "nav1MHz": 114.4,
-      "nav2MHz": 114.4
+      "transition": "sny-pt"
     },
     {
       "id": "direct-sny-northeast",
@@ -301,13 +295,11 @@
         "bearingMag": 40,
         "distanceNm": 12
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "SNY" },
       "headingMag": 270,
       "iasKt": 100,
-      "transition": "sny-pt",
-      "nav1MHz": 114.4,
-      "nav2MHz": 114.4
+      "transition": "sny-pt"
     }
   ],
   "notes": [

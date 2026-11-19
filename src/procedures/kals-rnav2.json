@@ -239,9 +239,7 @@
       "assigned": { "altFt": 15600, "until": "GEMKY" },
       "headingMag": 120,
       "iasKt": 100,
-      "transition": "gemky",
-      "nav1MHz": 113.9,
-      "nav2MHz": 113.9
+      "transition": "gemky"
     },
     {
       "id": "direct-vepuy",
@@ -253,9 +251,7 @@
       "assigned": { "altFt": 15600, "until": "VEPUY" },
       "headingMag": 320,
       "iasKt": 100,
-      "transition": "vepuy",
-      "nav1MHz": 113.9,
-      "nav2MHz": 113.9
+      "transition": "vepuy"
     },
     {
       "id": "direct-als",
@@ -267,9 +263,7 @@
       "assigned": { "altFt": 15600, "until": "ALS" },
       "headingMag": 210,
       "iasKt": 100,
-      "transition": "als",
-      "nav1MHz": 113.9,
-      "nav2MHz": 113.9
+      "transition": "als"
     },
     {
       "id": "direct-rodds",
@@ -282,9 +276,7 @@
       "headingMag": 110,
       "iasKt": 100,
       "transition": "rodds",
-      "joinAt": "RODDS",
-      "nav1MHz": 113.9,
-      "nav2MHz": 113.9
+      "joinAt": "RODDS"
     },
     {
       "id": "vectors-final",
@@ -295,9 +287,7 @@
       "altitudeFt": 12200,
       "assigned": { "altFt": 12200 },
       "headingMag": 50,
-      "iasKt": 100,
-      "nav1MHz": 113.9,
-      "nav2MHz": 113.9
+      "iasKt": 100
     }
   ],
   "notes": [
