@@ -245,7 +245,7 @@
     {
       "id": "direct-bonuh",
       "name": "Direct BONUH from the west",
-      "clearance": "Descend and maintain 9300, proceed direct BONUH, cleared RNAV runway 26L approach.",
+      "clearance": "Cleared direct BONUH, maintain 9300 until BONUH, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "BONUH" },
       "offset": { "bearingMag": 275, "distanceNm": 10 },
       "altitudeFt": 11000,
@@ -259,7 +259,7 @@
     {
       "id": "direct-redhi",
       "name": "Direct REDHI from the east",
-      "clearance": "Descend and maintain 9300, proceed direct REDHI, cleared RNAV runway 26L approach.",
+      "clearance": "Cleared direct REDHI, maintain 9300 until REDHI, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "REDHI" },
       "offset": { "bearingMag": 95, "distanceNm": 10 },
       "altitudeFt": 11000,
@@ -273,7 +273,7 @@
     {
       "id": "direct-orway",
       "name": "Direct ORWAY from the north",
-      "clearance": "Descend and maintain 9300, proceed direct ORWAY, cleared RNAV runway 26L approach.",
+      "clearance": "Cleared direct ORWAY, maintain 9300 until ORWAY, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "ORWAY" },
       "offset": { "bearingMag": 10, "distanceNm": 10 },
       "altitudeFt": 11000,
@@ -287,7 +287,7 @@
     {
       "id": "direct-heler",
       "name": "Direct HELER from the southeast",
-      "clearance": "Descend and maintain 9300, proceed direct HELER, cleared RNAV runway 26L approach.",
+      "clearance": "Cleared direct HELER, maintain 9300 until HELER, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "HELER" },
       "offset": { "bearingMag": 120, "distanceNm": 10 },
       "altitudeFt": 11000,
@@ -302,7 +302,7 @@
     {
       "id": "direct-heler-southwest",
       "name": "Direct HELER from the southwest",
-      "clearance": "Descend and maintain 9300, proceed direct HELER, cleared RNAV runway 26L approach.",
+      "clearance": "Cleared direct HELER, maintain 9300 until HELER, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "HELER" },
       "offset": { "bearingMag": 215, "distanceNm": 10 },
       "altitudeFt": 11000,
@@ -317,7 +317,7 @@
     {
       "id": "direct-heler-northwest",
       "name": "Direct HELER from the northwest",
-      "clearance": "Descend and maintain 9300, proceed direct HELER, cleared RNAV runway 26L approach.",
+      "clearance": "Cleared direct HELER, maintain 9300 until HELER, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "HELER" },
       "offset": { "bearingMag": 305, "distanceNm": 10 },
       "altitudeFt": 11000,
@@ -332,7 +332,7 @@
     {
       "id": "direct-pub",
       "name": "Direct Pueblo VORTAC from the north",
-      "clearance": "Descend and maintain 9300, proceed direct Pueblo VORTAC, cleared RNAV runway 26L approach via the Pueblo transition.",
+      "clearance": "Cleared direct Pueblo VORTAC, maintain 9300 until Pueblo, cleared RNAV runway 26L approach via the Pueblo transition.",
       "position": { "kind": "waypoint", "id": "PUB" },
       "offset": { "bearingMag": 340, "distanceNm": 10 },
       "altitudeFt": 11000,
@@ -346,7 +346,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Fly heading 230, maintain 7000 until established on the final approach course, cleared RNAV runway 26L approach.",
+      "clearance": "9 miles from JIKTA, fly heading 230, maintain 7000 until established on the final approach course, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "HELER" },
       "leadInNm": 3,
       "altitudeFt": 7000,

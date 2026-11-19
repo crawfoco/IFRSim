@@ -121,7 +121,7 @@
     {
       "id": "r353",
       "name": "Inbound on the TAS R-353 from the north",
-      "clearance": "Descend and maintain 13000, proceed inbound on the Taos 353 radial, cleared VOR/DME-B approach.",
+      "clearance": "Proceed inbound on the Taos 353 radial, maintain 13000 until Taos, cleared VOR/DME-B approach to Taos Regional.",
       "position": { "kind": "radialDme", "navaid": "TAS", "radialMag": 353, "dmeNm": 16 },
       "altitudeFt": 15000,
       "assigned": { "altFt": 13000, "until": "TAS" },
@@ -134,7 +134,7 @@
     {
       "id": "r296",
       "name": "Inbound on the TAS R-296 from the northwest",
-      "clearance": "Descend and maintain 13000, proceed inbound on the Taos 296 radial, cleared VOR/DME-B approach.",
+      "clearance": "Proceed inbound on the Taos 296 radial, maintain 13000 until Taos, cleared VOR/DME-B approach to Taos Regional.",
       "position": { "kind": "radialDme", "navaid": "TAS", "radialMag": 296, "dmeNm": 16 },
       "altitudeFt": 15000,
       "assigned": { "altFt": 13000, "until": "TAS" },
@@ -147,7 +147,7 @@
     {
       "id": "direct-tas-southwest",
       "name": "Direct TAS from the southwest",
-      "clearance": "Descend and maintain 13000, proceed direct Taos, cleared VOR/DME-B approach.",
+      "clearance": "Cleared direct Taos, maintain 13000 until Taos, cleared VOR/DME-B approach to Taos Regional.",
       "position": { "kind": "navaid", "navaid": "TAS" },
       "offset": { "bearingMag": 210, "distanceNm": 12 },
       "altitudeFt": 15000,
@@ -161,7 +161,7 @@
     {
       "id": "direct-tas-east",
       "name": "Direct TAS from the east-northeast",
-      "clearance": "Descend and maintain 15000, proceed direct Taos, cleared VOR/DME-B approach.",
+      "clearance": "Cleared direct Taos, maintain 15000 until Taos, cleared VOR/DME-B approach to Taos Regional.",
       "position": { "kind": "navaid", "navaid": "TAS" },
       "offset": { "bearingMag": 70, "distanceNm": 12 },
       "altitudeFt": 16500,

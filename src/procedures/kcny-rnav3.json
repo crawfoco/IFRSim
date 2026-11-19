@@ -264,7 +264,7 @@
     {
       "id": "direct-kidne",
       "name": "Direct KIDNE from the northwest",
-      "clearance": "Descend and maintain 10000, proceed direct KIDNE, cleared RNAV runway 3 approach.",
+      "clearance": "Cleared direct KIDNE, maintain 10000 until KIDNE, cleared RNAV runway 3 approach to Canyonlands Regional.",
       "position": {
         "kind": "waypoint",
         "id": "KIDNE"
@@ -284,7 +284,7 @@
     {
       "id": "direct-pigse",
       "name": "Direct PIGSE from the southwest",
-      "clearance": "Descend and maintain 10000, proceed direct PIGSE, cleared RNAV runway 3 approach.",
+      "clearance": "Cleared direct PIGSE, maintain 10000 until PIGSE, cleared RNAV runway 3 approach to Canyonlands Regional.",
       "position": {
         "kind": "waypoint",
         "id": "PIGSE"
@@ -304,7 +304,7 @@
     {
       "id": "direct-archh",
       "name": "Direct ARCHH from the east",
-      "clearance": "Descend and maintain 10000, proceed direct ARCHH, cleared RNAV runway 3 approach via the ARCHH transition.",
+      "clearance": "Cleared direct ARCHH, maintain 10000 until ARCHH, cleared RNAV runway 3 approach to Canyonlands Regional via the ARCHH transition.",
       "position": {
         "kind": "waypoint",
         "id": "ARCHH"
@@ -324,7 +324,7 @@
     {
       "id": "direct-hanog",
       "name": "Direct HANOG from the north",
-      "clearance": "Descend and maintain 10000, proceed direct HANOG, cleared RNAV runway 3 approach.",
+      "clearance": "Cleared direct HANOG, maintain 10000 until HANOG, cleared RNAV runway 3 approach to Canyonlands Regional.",
       "position": {
         "kind": "waypoint",
         "id": "HANOG"
@@ -345,7 +345,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Fly heading 020, maintain 8100 until established on the final approach course, cleared RNAV runway 3 approach.",
+      "clearance": "9 miles from NERRI, fly heading 020, maintain 8100 until established on the final approach course, cleared RNAV runway 3 approach to Canyonlands Regional.",
       "position": {
         "kind": "waypoint",
         "id": "HANOG"

@@ -45,6 +45,18 @@ does, encode legs, minimums and start conditions (each with a clearance a contro
 give), and register it in `src/procedures/index.ts`. The zod schema reports every problem with
 its path.
 
+Word clearances the way FAA JO 7110.65 4-8-1, 4-8-2 and 5-9 do, with altitudes as digits:
+
+- Direct to a fix: "Cleared direct X, maintain N until X, cleared (approach) approach."
+- Radial or heading to an arc: "Proceed inbound on the (VOR) (nnn) radial, maintain N until
+  established on the arc, cleared ..."
+- Vectors: "(n) miles from (fix on final), fly heading H, maintain N until established on the
+  localizer/final approach course, cleared ..." Intercept final at 30° or less.
+- If the field has no tower (the chart's comm box shows CTAF/UNICOM but no tower), add
+  "to (airport name)" after "approach".
+- The turn at the cleared fix onto the next leg must be 90° or less, unless a procedure turn or
+  hold-in-lieu at that fix will be flown.
+
 ## 4. Verify against the chart independently
 
 Use a subagent that gets **only the plate image and the encoding checklist** (not your JSON)

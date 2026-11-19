@@ -221,7 +221,7 @@
     {
       "id": "from-dilve",
       "name": "Direct DILVE from the south",
-      "clearance": "Descend and maintain 9000, proceed direct DILVE, cleared RNAV runway 28 approach.",
+      "clearance": "Cleared direct DILVE, maintain 9000 until DILVE, cleared RNAV runway 28 approach.",
       "position": {
         "kind": "waypoint",
         "id": "DILVE"
@@ -241,7 +241,7 @@
     {
       "id": "from-ezbel",
       "name": "Direct EZBEL from the north",
-      "clearance": "Descend and maintain 9000, proceed direct EZBEL, cleared RNAV runway 28 approach.",
+      "clearance": "Cleared direct EZBEL, maintain 9000 until EZBEL, cleared RNAV runway 28 approach.",
       "position": {
         "kind": "waypoint",
         "id": "EZBEL"
@@ -261,7 +261,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Fly heading 250, maintain 8100 until established on the final approach course, cleared RNAV runway 28 approach.",
+      "clearance": "9 miles from NIDLY, fly heading 260, maintain 8100 until established on the final approach course, cleared RNAV runway 28 approach.",
       "position": {
         "kind": "waypoint",
         "id": "DOCKY"
@@ -269,7 +269,7 @@
       "leadInNm": 3,
       "altitudeFt": 8100,
       "assigned": { "altFt": 8100 },
-      "headingMag": 250,
+      "headingMag": 260,
       "iasKt": 100,
       "nav1MHz": 116.3,
       "nav2MHz": 116.3

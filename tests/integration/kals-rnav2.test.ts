@@ -115,7 +115,7 @@ describe('KALS RNAV 2 on the GPS', () => {
     expect(failedItems(f)).toEqual([]);
   });
 
-  it('direct VEPUY from the west, no WAAS: LNAV via the XOGSY step-down to the MDA, GA, SUSP, the ICORY hold with the climb in hold (100%)', () => {
+  it('direct VEPUY from the south, no WAAS: LNAV via the XOGSY step-down to the MDA, GA, SUSP, the ICORY hold with the climb in hold (100%)', () => {
     const f = fly({ startId: 'direct-vepuy', ceiling: 'below', waasAvailable: false });
     setUp(f, 'vepuy');
     descendTo(f, 15600, -1000);

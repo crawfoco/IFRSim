@@ -315,7 +315,7 @@
     {
       "id": "direct-lar",
       "name": "Direct LAR from the north",
-      "clearance": "Cleared direct Laramie, maintain at or above 11300 until Laramie, cleared VOR/DME runway 30 approach to Laramie Regional.",
+      "clearance": "Cleared direct Laramie, maintain 11300 until Laramie, cleared VOR/DME runway 30 approach to Laramie Regional.",
       "position": {
         "kind": "radialDme",
         "navaid": "LAR",
@@ -333,7 +333,7 @@
     {
       "id": "direct-jesar",
       "name": "Direct JESAR from the east-northeast",
-      "clearance": "Cleared direct JESAR, maintain at or above 10600 until JESAR, cleared VOR/DME runway 30 approach to Laramie Regional.",
+      "clearance": "Cleared direct JESAR, maintain 10600 until JESAR, cleared VOR/DME runway 30 approach to Laramie Regional.",
       "position": {
         "kind": "navaid",
         "navaid": "LAR"
@@ -353,7 +353,7 @@
     {
       "id": "povoh-arc",
       "name": "Inbound on LAR R-055 to POVOH",
-      "clearance": "Proceed inbound on the Laramie 055 radial, maintain at or above 10600 until established on the arc, cleared VOR/DME runway 30 approach to Laramie Regional.",
+      "clearance": "Proceed inbound on the Laramie 055 radial, maintain 10600 until established on the arc, cleared VOR/DME runway 30 approach to Laramie Regional.",
       "position": {
         "kind": "radialDme",
         "navaid": "LAR",
@@ -371,7 +371,7 @@
     {
       "id": "flems",
       "name": "Inbound to FLEMS from the south-southeast",
-      "clearance": "Cleared direct FLEMS, maintain at or above 10600 until FLEMS, cleared VOR/DME runway 30 approach to Laramie Regional.",
+      "clearance": "Cleared direct FLEMS, maintain 10600 until FLEMS, cleared VOR/DME runway 30 approach to Laramie Regional.",
       "position": {
         "kind": "radialDme",
         "navaid": "LAR",

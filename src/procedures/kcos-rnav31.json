@@ -244,7 +244,7 @@
     {
       "id": "direct-zener",
       "name": "Direct ZENER from the southeast",
-      "clearance": "Descend and maintain 9400, proceed direct ZENER, cleared RNAV runway 31 approach.",
+      "clearance": "Cleared direct ZENER, maintain 9400 until ZENER, cleared RNAV runway 31 approach.",
       "position": {
         "kind": "waypoint",
         "id": "ZENER"
@@ -264,7 +264,7 @@
     {
       "id": "direct-onkie",
       "name": "Direct ONKIE from the east",
-      "clearance": "Descend and maintain 9400, proceed direct ONKIE, cleared RNAV runway 31 approach.",
+      "clearance": "Cleared direct ONKIE, maintain 9400 until ONKIE, cleared RNAV runway 31 approach.",
       "position": {
         "kind": "waypoint",
         "id": "ONKIE"
@@ -284,7 +284,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Fly heading 280, maintain 8600 until established on the final approach course, cleared RNAV runway 31 approach.",
+      "clearance": "9 miles from JATOL, fly heading 280, maintain 8600 until established on the final approach course, cleared RNAV runway 31 approach.",
       "position": {
         "kind": "waypoint",
         "id": "NUTVE"

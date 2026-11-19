@@ -217,7 +217,7 @@
     {
       "id": "direct-weyyi",
       "name": "Direct WEYYI from the north",
-      "clearance": "Descend and maintain 7000, proceed direct WEYYI, cleared RNAV runway 18 approach.",
+      "clearance": "Cleared direct WEYYI, maintain 7000 until WEYYI, cleared RNAV runway 18 approach to Southeast Colorado Regional.",
       "position": {
         "kind": "waypoint",
         "id": "WEYYI"
@@ -237,7 +237,7 @@
     {
       "id": "direct-wizge",
       "name": "Direct WIZGE from the south",
-      "clearance": "Descend and maintain 7000, proceed direct WIZGE, cleared RNAV runway 18 approach.",
+      "clearance": "Cleared direct WIZGE, maintain 7000 until WIZGE, cleared RNAV runway 18 approach to Southeast Colorado Regional.",
       "position": {
         "kind": "waypoint",
         "id": "WIZGE"
@@ -257,7 +257,7 @@
     {
       "id": "direct-obozu",
       "name": "Direct OBOZU from the southeast",
-      "clearance": "Descend and maintain 7000, proceed direct OBOZU, cleared RNAV runway 18 approach.",
+      "clearance": "Cleared direct OBOZU, maintain 7000 until OBOZU, cleared RNAV runway 18 approach to Southeast Colorado Regional.",
       "position": {
         "kind": "waypoint",
         "id": "OBOZU"
@@ -278,7 +278,7 @@
     {
       "id": "direct-obozu-west",
       "name": "Direct OBOZU from the southwest",
-      "clearance": "Descend and maintain 7000, proceed direct OBOZU, cleared RNAV runway 18 approach.",
+      "clearance": "Cleared direct OBOZU, maintain 7000 until OBOZU, cleared RNAV runway 18 approach to Southeast Colorado Regional.",
       "position": {
         "kind": "waypoint",
         "id": "OBOZU"
@@ -299,7 +299,7 @@
     {
       "id": "direct-obozu-northwest",
       "name": "Direct OBOZU from the northwest",
-      "clearance": "Descend and maintain 7000, proceed direct OBOZU, cleared RNAV runway 18 approach.",
+      "clearance": "Cleared direct OBOZU, maintain 7000 until OBOZU, cleared RNAV runway 18 approach to Southeast Colorado Regional.",
       "position": {
         "kind": "waypoint",
         "id": "OBOZU"
@@ -320,7 +320,7 @@
     {
       "id": "vectors-final",
       "name": "Radar vectors to final",
-      "clearance": "Fly heading 230, maintain 6000 until established on the final approach course, cleared RNAV runway 18 approach.",
+      "clearance": "9 miles from LOLME, fly heading 210, maintain 6000 until established on the final approach course, cleared RNAV runway 18 approach to Southeast Colorado Regional.",
       "position": {
         "kind": "waypoint",
         "id": "OBOZU"
@@ -328,7 +328,7 @@
       "leadInNm": 3,
       "altitudeFt": 6000,
       "assigned": { "altFt": 6000 },
-      "headingMag": 230,
+      "headingMag": 210,
       "iasKt": 100,
       "nav1MHz": 116.9,
       "nav2MHz": 116.9
