@@ -11,6 +11,13 @@ async function turn(page: Page, testId: string, key: string, times: number) {
   for (let i = 0; i < times; i++) await knob.press(key);
 }
 
+/** Tune a radio's standby from the 108.00 the radios start on: MHz knob up, then kHz knob up. */
+async function tuneStandby(page: Page, radio: 1 | 2, mhz: number) {
+  const whole = Math.floor(mhz);
+  await turn(page, `nav${radio}-mhz`, 'ArrowUp', whole - 108);
+  await turn(page, `nav${radio}-khz`, 'ArrowUp', Math.round((mhz - whole) * 20));
+}
+
 /** Running CSS animations on an element (the mode-change flash). */
 const animations = (page: Page, testId: string) =>
   page.getByTestId(testId).evaluate((el) => el.getAnimations().length);
@@ -32,8 +39,9 @@ test('glass: vectors to the KCFO ILS 26, coupled down to DA, MINIMUMS alert', as
   await expect(page.getByTestId('pfd-mins-box-value')).toHaveText('5,689');
 
   // NAV1 → I-FTG 109.30: auto-ID shows it (no ID press needed on glass). CRS 263, DME on NAV1.
-  await expect(page.getByTestId('nav1-autoid')).toHaveText('FQF');
-  await turn(page, 'nav1-mhz', 'ArrowDown', 7);
+  // The radios start on 108.00, with nothing to identify.
+  await expect(page.getByTestId('nav1-autoid')).toHaveText('----');
+  await tuneStandby(page, 1, 109.3);
   await page.getByTestId('nav1-swap').click();
   await expect(page.getByTestId('nav1-autoid')).toHaveText('I-FTG');
   await turn(page, 'knob-crs', 'PageDown', 10);

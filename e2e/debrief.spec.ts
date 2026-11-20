@@ -12,9 +12,13 @@ test('a short flight ends in a debrief with score, plan, profile, timeline and r
 
   await page.getByTestId('btn-AP').click();
   await page.getByTestId('btn-HDG').click();
+  // NAV1 → I-FTG 109.30 from the 108.00 the radios start on: MHz up 1, kHz up 6.
   const mhz = page.getByTestId('nav1-mhz');
   await mhz.focus();
-  for (let i = 0; i < 7; i++) await mhz.press('ArrowDown');
+  await mhz.press('ArrowUp');
+  const khz = page.getByTestId('nav1-khz');
+  await khz.focus();
+  for (let i = 0; i < 6; i++) await khz.press('ArrowUp');
   await page.getByTestId('nav1-swap').click();
   await page.getByTestId('nav1-ident').click();
   await page.getByTestId('speed-4').click();

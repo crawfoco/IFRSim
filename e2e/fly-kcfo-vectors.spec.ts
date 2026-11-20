@@ -12,6 +12,13 @@ async function turn(page: Page, testId: string, key: string, times: number) {
   for (let i = 0; i < times; i++) await knob.press(key);
 }
 
+/** Tune a radio's standby from the 108.00 the radios start on: MHz knob up, then kHz knob up. */
+async function tuneStandby(page: Page, radio: 1 | 2, mhz: number) {
+  const whole = Math.floor(mhz);
+  await turn(page, `nav${radio}-mhz`, 'ArrowUp', whole - 108);
+  await turn(page, `nav${radio}-khz`, 'ArrowUp', Math.round((mhz - whole) * 20));
+}
+
 test('select → briefing → fly: arm APR on vectors and see the localizer capture', async ({
   page,
 }) => {
@@ -33,8 +40,8 @@ test('select → briefing → fly: arm APR on vectors and see the localizer capt
   // Every flight starts in the clear above the overcast.
   await expect(page.getByTestId('outside-view')).toHaveAttribute('data-layer', 'clear');
 
-  // Tune NAV1 to I-FTG 109.30 (standby 116.30, MHz knob down 7), swap, identify.
-  await turn(page, 'nav1-mhz', 'ArrowDown', 7);
+  // Tune NAV1 to I-FTG 109.30 (the radios start on 108.00), swap, identify.
+  await tuneStandby(page, 1, 109.3);
   await expect(page.getByTestId('nav1-standby')).toHaveText('109.30');
   await page.getByTestId('nav1-swap').click();
   await expect(page.getByTestId('nav1-active')).toHaveText('109.30');
