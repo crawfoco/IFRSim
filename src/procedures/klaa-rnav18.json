@@ -226,13 +226,11 @@
         "bearingMag": 355,
         "distanceNm": 10
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "WEYYI" },
       "headingMag": 230,
       "iasKt": 100,
-      "transition": "weyyi",
-      "nav1MHz": 116.9,
-      "nav2MHz": 116.9
+      "transition": "weyyi"
     },
     {
       "id": "direct-wizge",
@@ -246,13 +244,11 @@
         "bearingMag": 170,
         "distanceNm": 11
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "WIZGE" },
       "headingMag": 40,
       "iasKt": 100,
-      "transition": "wizge",
-      "nav1MHz": 116.9,
-      "nav2MHz": 116.9
+      "transition": "wizge"
     },
     {
       "id": "direct-obozu",
@@ -266,14 +262,12 @@
         "bearingMag": 140,
         "distanceNm": 12
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "OBOZU" },
       "headingMag": 270,
       "iasKt": 100,
       "transition": "obozu",
-      "joinAt": "OBOZU",
-      "nav1MHz": 116.9,
-      "nav2MHz": 116.9
+      "joinAt": "OBOZU"
     },
     {
       "id": "direct-obozu-west",
@@ -287,14 +281,12 @@
         "bearingMag": 235,
         "distanceNm": 12
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "OBOZU" },
       "headingMag": 10,
       "iasKt": 100,
       "transition": "obozu",
-      "joinAt": "OBOZU",
-      "nav1MHz": 116.9,
-      "nav2MHz": 116.9
+      "joinAt": "OBOZU"
     },
     {
       "id": "direct-obozu-northwest",
@@ -308,14 +300,12 @@
         "bearingMag": 325,
         "distanceNm": 12
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "OBOZU" },
       "headingMag": 90,
       "iasKt": 100,
       "transition": "obozu",
-      "joinAt": "OBOZU",
-      "nav1MHz": 116.9,
-      "nav2MHz": 116.9
+      "joinAt": "OBOZU"
     },
     {
       "id": "vectors-final",
@@ -329,9 +319,7 @@
       "altitudeFt": 6000,
       "assigned": { "altFt": 6000 },
       "headingMag": 210,
-      "iasKt": 100,
-      "nav1MHz": 116.9,
-      "nav2MHz": 116.9
+      "iasKt": 100
     }
   ],
   "notes": [

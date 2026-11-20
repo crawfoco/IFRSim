@@ -248,13 +248,11 @@
       "clearance": "Cleared direct BONUH, maintain 9300 until BONUH, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "BONUH" },
       "offset": { "bearingMag": 275, "distanceNm": 10 },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9300, "until": "BONUH" },
       "headingMag": 50,
       "iasKt": 100,
-      "transition": "bonuh",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "transition": "bonuh"
     },
     {
       "id": "direct-redhi",
@@ -262,13 +260,11 @@
       "clearance": "Cleared direct REDHI, maintain 9300 until REDHI, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "REDHI" },
       "offset": { "bearingMag": 95, "distanceNm": 10 },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9300, "until": "REDHI" },
       "headingMag": 230,
       "iasKt": 100,
-      "transition": "redhi",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "transition": "redhi"
     },
     {
       "id": "direct-orway",
@@ -276,13 +272,11 @@
       "clearance": "Cleared direct ORWAY, maintain 9300 until ORWAY, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "ORWAY" },
       "offset": { "bearingMag": 10, "distanceNm": 10 },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9300, "until": "ORWAY" },
       "headingMag": 140,
       "iasKt": 100,
-      "transition": "orway",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "transition": "orway"
     },
     {
       "id": "direct-heler",
@@ -290,14 +284,12 @@
       "clearance": "Cleared direct HELER, maintain 9300 until HELER, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "HELER" },
       "offset": { "bearingMag": 120, "distanceNm": 10 },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9300, "until": "HELER" },
       "headingMag": 260,
       "iasKt": 100,
       "transition": "heler",
-      "joinAt": "HELER",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "joinAt": "HELER"
     },
     {
       "id": "direct-heler-southwest",
@@ -305,14 +297,12 @@
       "clearance": "Cleared direct HELER, maintain 9300 until HELER, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "HELER" },
       "offset": { "bearingMag": 215, "distanceNm": 10 },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9300, "until": "HELER" },
       "headingMag": 80,
       "iasKt": 100,
       "transition": "heler",
-      "joinAt": "HELER",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "joinAt": "HELER"
     },
     {
       "id": "direct-heler-northwest",
@@ -320,14 +310,12 @@
       "clearance": "Cleared direct HELER, maintain 9300 until HELER, cleared RNAV runway 26L approach.",
       "position": { "kind": "waypoint", "id": "HELER" },
       "offset": { "bearingMag": 305, "distanceNm": 10 },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9300, "until": "HELER" },
       "headingMag": 80,
       "iasKt": 100,
       "transition": "heler",
-      "joinAt": "HELER",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "joinAt": "HELER"
     },
     {
       "id": "direct-pub",
@@ -335,13 +323,11 @@
       "clearance": "Cleared direct Pueblo VORTAC, maintain 9300 until Pueblo, cleared RNAV runway 26L approach via the Pueblo transition.",
       "position": { "kind": "waypoint", "id": "PUB" },
       "offset": { "bearingMag": 340, "distanceNm": 10 },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9300, "until": "PUB" },
       "headingMag": 200,
       "iasKt": 100,
-      "transition": "pub",
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "transition": "pub"
     },
     {
       "id": "vectors-final",
@@ -352,9 +338,7 @@
       "altitudeFt": 7000,
       "assigned": { "altFt": 7000 },
       "headingMag": 230,
-      "iasKt": 100,
-      "nav1MHz": 116.7,
-      "nav2MHz": 116.7
+      "iasKt": 100
     }
   ],
   "notes": [

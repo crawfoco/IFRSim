@@ -102,8 +102,7 @@ selector sets the category: A at 90 KIAS or less, B above.
   "clearance": "Cross FQF at or above 8000, cleared ILS runway 26 approach via the FQF 045 radial.",
   "position": { "kind": "navaid", "navaid": "FQF" },
   "altitudeFt": 8000, "headingMag": 360, "iasKt": 100,
-  "transition": "fqf",
-  "nav1MHz": 116.3, "nav2MHz": 116.3
+  "transition": "fqf"
 }
 ```
 
@@ -150,7 +149,7 @@ RNAV approaches use the same file shape, plus:
     `flyOver` as coded), `track` (`TF`), and the `hold` (`HM`, `legNm`).
 - **Minimums**: kinds `LPV` and `LNAV/VNAV` (DA), `LP` and `LNAV` (MDA), categories A and B.
 - **Starts**: `position` is usually `{ "kind": "waypoint", "id": IAF }` with a lead-in; vectors
-  starts have no `transition`. `nav1MHz`/`nav2MHz` are still required (the radios exist).
+  starts have no `transition`.
 - **TAA** (optional): `taa: { iaf, areas: [{ name, fromCourseMag, toCourseMag, noPT, rings:
   [{ withinNm, minAltFt }] }] }`, courses TO the IAF, clockwise from → to, rings inside out.
 

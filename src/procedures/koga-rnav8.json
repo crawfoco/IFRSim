@@ -229,14 +229,12 @@
         "bearingMag": 330,
         "distanceNm": 12
       },
-      "altitudeFt": 8000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 6000, "until": "AHUFU" },
       "headingMag": 200,
       "iasKt": 100,
       "transition": "ahufu",
-      "noReversal": true,
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "noReversal": true
     },
     {
       "id": "taa-east",
@@ -250,13 +248,11 @@
         "bearingMag": 130,
         "distanceNm": 12
       },
-      "altitudeFt": 8000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 6000, "until": "AHUFU" },
       "headingMag": 250,
       "iasKt": 100,
-      "transition": "ahufu",
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "transition": "ahufu"
     },
     {
       "id": "vectors-final",
@@ -270,9 +266,7 @@
       "altitudeFt": 5200,
       "assigned": { "altFt": 5200 },
       "headingMag": 60,
-      "iasKt": 100,
-      "nav1MHz": 112.4,
-      "nav2MHz": 112.4
+      "iasKt": 100
     }
   ],
   "notes": [

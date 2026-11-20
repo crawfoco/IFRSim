@@ -230,13 +230,11 @@
         "bearingMag": 180,
         "distanceNm": 10
       },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9000, "until": "DILVE" },
       "headingMag": 40,
       "iasKt": 100,
-      "transition": "dilve",
-      "nav1MHz": 116.3,
-      "nav2MHz": 116.3
+      "transition": "dilve"
     },
     {
       "id": "from-ezbel",
@@ -250,13 +248,11 @@
         "bearingMag": 350,
         "distanceNm": 10
       },
-      "altitudeFt": 11000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 9000, "until": "EZBEL" },
       "headingMag": 120,
       "iasKt": 100,
-      "transition": "ezbel",
-      "nav1MHz": 116.3,
-      "nav2MHz": 116.3
+      "transition": "ezbel"
     },
     {
       "id": "vectors-final",
@@ -270,9 +266,7 @@
       "altitudeFt": 8100,
       "assigned": { "altFt": 8100 },
       "headingMag": 260,
-      "iasKt": 100,
-      "nav1MHz": 116.3,
-      "nav2MHz": 116.3
+      "iasKt": 100
     }
   ],
   "notes": [

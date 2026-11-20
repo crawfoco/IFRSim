@@ -231,13 +231,11 @@
         "radialMag": 315,
         "dmeNm": 12
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "AKO" },
       "headingMag": 135,
       "iasKt": 100,
-      "transition": "ako-pt",
-      "nav1MHz": 116.3,
-      "nav2MHz": 116.3
+      "transition": "ako-pt"
     },
     {
       "id": "direct-ako-east",
@@ -251,13 +249,11 @@
         "bearingMag": 75,
         "distanceNm": 12
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000, "until": "AKO" },
       "headingMag": 210,
       "iasKt": 100,
-      "transition": "ako-pt",
-      "nav1MHz": 116.3,
-      "nav2MHz": 116.3
+      "transition": "ako-pt"
     },
     {
       "id": "north-arc",
@@ -269,13 +265,11 @@
         "radialMag": 50,
         "dmeNm": 20
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000 },
       "headingMag": 230,
       "iasKt": 100,
-      "transition": "north-arc",
-      "nav1MHz": 114.4,
-      "nav2MHz": 116.3
+      "transition": "north-arc"
     },
     {
       "id": "south-arc",
@@ -287,13 +281,11 @@
         "radialMag": 170,
         "dmeNm": 20
       },
-      "altitudeFt": 9000,
+      "altitudeFt": 10000,
       "assigned": { "altFt": 7000 },
       "headingMag": 350,
       "iasKt": 100,
-      "transition": "south-arc",
-      "nav1MHz": 114.4,
-      "nav2MHz": 114.4
+      "transition": "south-arc"
     }
   ],
   "notes": [

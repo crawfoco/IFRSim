@@ -23,7 +23,14 @@ async function turn(page: Page, testId: string, key: string, times: number) {
   for (let i = 0; i < times; i++) await knob.press(key);
 }
 
-/** KCFO radar vectors on the glass panel. NAV1 and NAV2 both start on FQF 116.30, heading 330. */
+/** Tune a radio's standby from the 108.00 the radios start on: MHz knob up, then kHz knob up. */
+async function tuneStandby(page: Page, radio: 1 | 2, mhz: number) {
+  const whole = Math.floor(mhz);
+  await turn(page, `nav${radio}-mhz`, 'ArrowUp', whole - 108);
+  await turn(page, `nav${radio}-khz`, 'ArrowUp', Math.round((mhz - whole) * 20));
+}
+
+/** KCFO radar vectors on the glass panel. NAV1 and NAV2 start on 108.00, heading 330. */
 async function startGlass(page: Page) {
   await page.goto('/');
   await page.getByTestId('pick-kcfo-ils26').click();
@@ -47,10 +54,14 @@ test('CDI switch: active NAV drops to ROL; armed NAV is cancelled and HDG kept',
   test.setTimeout(300_000);
   await startGlass(page);
   // NAV2 → I-FTG 109.30; the aircraft starts south of the localizer. Auto-ID shows the ident.
-  await turn(page, 'nav2-mhz', 'ArrowDown', 7);
+  await tuneStandby(page, 2, 109.3);
   await page.getByTestId('nav2-swap').click();
   await expect(page.getByTestId('nav2-active')).toHaveText('109.30');
   await expect(page.getByTestId('nav2-autoid')).toHaveText('I-FTG');
+  // NAV1 → FQF 116.30, used later in the test.
+  await tuneStandby(page, 1, 116.3);
+  await page.getByTestId('nav1-swap').click();
+  await expect(page.getByTestId('nav1-autoid')).toHaveText('FQF');
   // One CRS knob sets the course of the CDI's source: switch the CDI to VLOC2, then set 263.
   await page.getByTestId('btn-cdi').click();
   await expect(page.getByTestId('btn-cdi')).toContainText('VLOC2');
@@ -95,6 +106,9 @@ test('BRG1 on NAV1 points at FQF; BRG2 on a localizer shows NO BRG', async ({ pa
   await startGlass(page);
   await page.getByTestId('pause').click();
   await expect(page.getByTestId('pfd-brg1')).toHaveCount(0);
+  // NAV1 → FQF 116.30.
+  await tuneStandby(page, 1, 116.3);
+  await page.getByTestId('nav1-swap').click();
 
   await page.getByTestId('btn-brg1').click();
   await expect(page.getByTestId('btn-brg1')).toContainText('NAV1');
@@ -116,7 +130,7 @@ test('BRG1 on NAV1 points at FQF; BRG2 on a localizer shows NO BRG', async ({ pa
   expect(Math.abs(((actual - expected + 540) % 360) - 180)).toBeLessThan(1);
 
   // NAV2 → I-FTG; BRG2 → NAV2: a localizer has no bearing.
-  await turn(page, 'nav2-mhz', 'ArrowDown', 7);
+  await tuneStandby(page, 2, 109.3);
   await page.getByTestId('nav2-swap').click();
   await page.getByTestId('btn-brg2').click();
   await page.getByTestId('btn-brg2').click();
@@ -145,11 +159,14 @@ test('the DME window shows the DME source radio and its distance', async ({ page
   await page.getByTestId('pause').click();
   // Glass: no separate DME readout, just the source buttons; the PFD shows the distance.
   await expect(page.getByTestId('dme')).toHaveCount(0);
+  // NAV1 → FQF 116.30 (VOR/DME).
+  await tuneStandby(page, 1, 116.3);
+  await page.getByTestId('nav1-swap').click();
   await expect(page.getByTestId('pfd-dme-source')).toHaveText('NAV1');
   await expect(page.getByTestId('pfd-dme-station')).toHaveText('FQF');
   await expect(page.getByTestId('pfd-dme-nm')).toHaveText(/^\d+\.\d NM$/);
   // NAV2 → I-FTG (LOC/DME) and DME source NAV2.
-  await turn(page, 'nav2-mhz', 'ArrowDown', 7);
+  await tuneStandby(page, 2, 109.3);
   await page.getByTestId('nav2-swap').click();
   await page.getByTestId('dme-src-2').click();
   await expect(page.getByTestId('pfd-dme-source')).toHaveText('NAV2');

@@ -108,7 +108,8 @@ describe('climb in hold', () => {
     f.wait(0.1);
     f.send({ type: 'button', button: 'ALT' });
     f.tune(1, 111.3, 168);
-    f.send({ type: 'ident', radio: 2 }, { type: 'dmeSource', radio: 2 });
+    f.tune(2, 117.1); // MTJ, for the DME
+    f.send({ type: 'dmeSource', radio: 2 });
     f.send({ type: 'button', button: 'APR' });
     expect(f.until(() => f.r.state.ap.lateral === 'APR', 600)).toBe(true);
     f.descendOrClimb(8100, -800);

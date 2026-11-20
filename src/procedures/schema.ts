@@ -357,9 +357,6 @@ export const StartSchema = z
      * (the GPS asks "Hold at <IAF>?" and the answer is No).
      */
     noReversal: z.boolean().optional(),
-    /** Radios as the learner finds them (usually still on the previous station). */
-    nav1MHz: z.number().min(108).max(117.95),
-    nav2MHz: z.number().min(108).max(117.95),
   })
   .strict()
   .refine((s) => !(s.leadInNm && s.offset), {
