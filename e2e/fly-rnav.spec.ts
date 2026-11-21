@@ -53,7 +53,7 @@ test('glass: KLAA RNAV 18 vectors-to-final on the GPS, GP coupled to the LPV DA'
   // Down to the FAF altitude, then the GP captures near LOLME and the GPS annunciates LPV.
   await turn(page, 'knob-alt', 'ArrowDown', 5);
   await page.getByTestId('btn-VS').click();
-  await turn(page, 'knob-vs', 'ArrowDown', 5);
+  await page.getByTestId('btn-vs-down').click(); // −500 fpm
   await expect(page.getByTestId('gps-annunciation')).toHaveText('LPV', { timeout: 150_000 });
   await expect(page.getByTestId('pfd-hsi-gps-mode')).toContainText('LPV');
   await expect(page.getByTestId('pfd-ann-vertical')).toHaveText('GP', { timeout: 150_000 });

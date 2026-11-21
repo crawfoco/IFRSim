@@ -137,12 +137,91 @@ test.describe('steam panel, more', () => {
     await expect(input).toHaveValue('');
   });
 
-  test('frequency steps: MHz on the left, kHz on the right', async ({ page }) => {
+  test('step buttons, left to right: up before down; frequency MHz then kHz', async ({ page }) => {
+    const lefts = async (testId: string, ids: string[]) => {
+      const xs = [];
+      for (const id of ids)
+        xs.push((await page.getByTestId(`${testId}-step-${id}`).boundingBox())!.x);
+      return xs;
+    };
     await page.getByTestId('nav1-standby-edit').click();
-    const lefts = [];
-    for (const id of ['mhz-down', 'mhz-up', 'khz-down', 'khz-up'])
-      lefts.push((await page.getByTestId(`nav1-standby-step-${id}`).boundingBox())!.x);
-    expect([...lefts].sort((a, b) => a - b)).toEqual(lefts);
+    const f = await lefts('nav1-standby', ['mhz-up', 'mhz-down', 'khz-up', 'khz-down']);
+    expect([...f].sort((a, b) => a - b)).toEqual(f);
+    await page.keyboard.press('Escape');
+    await page.getByTestId('ann-alt-sel-edit').click();
+    const a = await lefts('ann-alt-sel', ['p1000', 'p100', 'm100', 'm1000']);
+    expect([...a].sort((x, y) => x - y)).toEqual(a);
+    await page.keyboard.press('Escape');
+    for (const id of ['ann-hdg-sel', 'knob-crs1-sel']) {
+      await page.getByTestId(`${id}-edit`).click();
+      const d = await lefts(id, ['p10', 'p1', 'm1', 'm10']);
+      expect(
+        [...d].sort((x, y) => x - y),
+        id,
+      ).toEqual(d);
+      await page.keyboard.press('Escape');
+    }
+  });
+
+  test('a rejected entry shows its error without moving any button', async ({ page }) => {
+    await page.getByTestId('nav1-standby-edit').click();
+    const where = async () => {
+      const out = [];
+      for (const id of ['step-mhz-up', 'key-7', 'key-0', 'set'])
+        out.push(await page.getByTestId(`nav1-standby-${id}`).boundingBox());
+      return out;
+    };
+    const before = await where();
+    await expect(page.getByTestId('nav1-standby-msg')).toHaveText(/108\.00 to 117\.95/);
+    await page.keyboard.type('113.87');
+    await page.keyboard.press('Enter');
+    await expect(page.getByTestId('nav1-standby-msg')).toHaveText(/^Enter a NAV frequency/);
+    expect(await where()).toEqual(before);
+    await page.keyboard.type('1');
+    await expect(page.getByTestId('nav1-standby-input')).not.toHaveAttribute('aria-invalid');
+    expect(await where()).toEqual(before);
+  });
+
+  test('the speed readout opens a menu of 80, 90 and 100 KIAS', async ({ page }) => {
+    await expect(page.getByTestId('knob-power')).toHaveCount(0);
+    await page.getByTestId('power-edit').click();
+    const menu = page.getByTestId('power-menu');
+    await expect(menu).toBeInViewport({ ratio: 1 });
+    await expect(menu.getByRole('menuitemradio')).toHaveText([
+      '80 KIASCAT A',
+      '90 KIASCAT A',
+      '100 KIASCAT B',
+    ]);
+    await page.getByTestId('speed-opt-80').click();
+    await expect(menu).toHaveCount(0);
+    await expect(page.getByTestId('power-value')).toHaveText('80');
+    await expect(page.getByTestId('power-cat')).toHaveText('CAT A');
+    // The current choice is marked; Escape closes without a change.
+    await page.getByTestId('power-edit').click();
+    await expect(page.getByTestId('speed-opt-80')).toHaveAttribute('aria-checked', 'true');
+    await page.keyboard.press('Escape');
+    await expect(menu).toHaveCount(0);
+    await expect(page.getByTestId('power-edit')).toBeFocused();
+    // A press outside closes it too.
+    await page.getByTestId('power-edit').click();
+    await page.getByTestId('nav1-active').click();
+    await expect(menu).toHaveCount(0);
+    await expect(page.getByTestId('power-value')).toHaveText('80');
+  });
+
+  test('VS: +500 / −500 fpm buttons, acting only in VS mode', async ({ page }) => {
+    await expect(page.getByTestId('knob-vs')).toHaveCount(0);
+    await expect(page.getByTestId('btn-vs-up')).toBeDisabled();
+    await page.getByTestId('btn-AP').click();
+    await page.getByTestId('btn-VS').click();
+    await expect(page.getByTestId('btn-vs-up')).toBeEnabled();
+    const vs = page.getByTestId('ann-vs-sel');
+    const start = Number(await vs.textContent());
+    await page.getByTestId('btn-vs-down').click();
+    await expect(vs).toHaveText(String(start - 500));
+    await page.getByTestId('btn-vs-up').click();
+    await page.getByTestId('btn-vs-up').click();
+    await expect(vs).toHaveText(`+${start + 500}`);
   });
 });
 

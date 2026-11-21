@@ -1,4 +1,4 @@
-/** Generic GA autopilot: mode annunciator, mode buttons, HDG / ALT / VS knobs. */
+/** Generic GA autopilot: mode annunciator, mode buttons, HDG / ALT knobs and VS +/− buttons. */
 import { annunciation, type ApButton } from '../../sim/autopilot/modes';
 import type { SimState } from '../../sim/state';
 import {
@@ -7,7 +7,8 @@ import {
   headingKnob,
   parseAltitude,
   parseDegrees,
-  vsKnob,
+  VS_STEP_FPM,
+  vsStep,
   type Send,
 } from './controls';
 import { Knob } from './Knob';
@@ -180,15 +181,40 @@ export function ApPanel({
                 : altitudeEntry('knob-alt-sel', 'knob-entry', 'knob-entry-value', 'ALT')
             }
           />
-          <Knob
-            label="VS"
-            valueText={
-              vsMode ? `vertical speed ${fmtVs(state.ap.vsRefFpm)} fpm` : 'inactive outside VS mode'
-            }
-            testId="knob-vs"
-            disabled={!vsMode}
-            onTurn={(n) => send((s) => vsKnob(s, n))}
-          />
+          {/* VS: two buttons in the knob's place, up over down; they act only in VS mode. */}
+          <div
+            className="knob vs-steps"
+            role="group"
+            aria-label="Vertical speed"
+            data-testid="vs-steps"
+          >
+            {(
+              [
+                ['up', VS_STEP_FPM, '+'],
+                ['down', -VS_STEP_FPM, '−'],
+              ] as const
+            ).map(([id, fpm, sign]) => (
+              <button
+                key={id}
+                type="button"
+                className="vs-btn"
+                data-testid={`btn-vs-${id}`}
+                disabled={!vsMode}
+                aria-label={`Vertical speed ${id} ${VS_STEP_FPM} feet per minute`}
+                title={
+                  vsMode
+                    ? `Vertical speed ${id} ${VS_STEP_FPM} fpm`
+                    : 'Vertical speed: press VS first (acts only in VS mode)'
+                }
+                onClick={() => send((s) => vsStep(s, fpm))}
+              >
+                {sign}
+                {VS_STEP_FPM}
+                <span className="vs-btn-unit">FPM</span>
+              </button>
+            ))}
+            <span className="knob-label">VS</span>
+          </div>
         </div>
       </div>
     </section>

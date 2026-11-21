@@ -18,15 +18,8 @@
  * the popover, `${testId}-input` its field, `${testId}-key-<k>` the keys (0–9, dot, back),
  * `${testId}-set` / `-cancel`, and `${testId}-step-<id>` the step buttons.
  */
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type KeyboardEvent,
-  type PointerEvent,
-} from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { useOutsidePress, usePopoverPlacement } from './usePopover';
 
 export interface EntryStep {
   /** Test-id suffix, e.g. "m10". */
@@ -72,9 +65,6 @@ export interface ValueEntryProps<T> {
   hint?: string;
 }
 
-const POP_GAP_PX = 6;
-/** Before it is placed: invisible but focusable, so the field can take the focus at once. */
-const HIDDEN: CSSProperties = { opacity: 0, pointerEvents: 'none' };
 const KEYS = ['7', '8', '9', '4', '5', '6', '1', '2', '3'];
 
 export function ValueEntry<T>({
@@ -100,9 +90,9 @@ export function ValueEntry<T>({
   const [typed, setTyped] = useState<string | null>(null);
   const [invalid, setInvalid] = useState(false);
   const [touch, setTouch] = useState(false);
-  const [pos, setPos] = useState<CSSProperties>(HIDDEN);
   const button = useRef<HTMLButtonElement>(null);
   const pop = useRef<HTMLDivElement>(null);
+  const pos = usePopoverPlacement(open, button, pop);
   const input = useRef<HTMLInputElement>(null);
   const lastPointer = useRef('');
   // Set when Enter, Escape, Set or Cancel closes the popover: focus goes back to the window.
@@ -128,10 +118,6 @@ export function ValueEntry<T>({
     if (v !== null) onSet(v);
     close(fromSet);
   };
-  const commitRef = useRef(commit);
-  useEffect(() => {
-    commitRef.current = commit;
-  });
 
   useEffect(() => {
     if (!open && refocus.current) {
@@ -140,41 +126,8 @@ export function ValueEntry<T>({
     }
   }, [open]);
 
-  // Place the popover below the window, or above it when there isn't room, kept on screen.
-  useLayoutEffect(() => {
-    if (!open) return;
-    const place = () => {
-      const w = button.current?.getBoundingClientRect();
-      const p = pop.current?.getBoundingClientRect();
-      if (!w || !p) return;
-      const vw = document.documentElement.clientWidth;
-      const vh = document.documentElement.clientHeight;
-      const below = w.bottom + POP_GAP_PX;
-      const top =
-        below + p.height <= vh ? below : Math.max(POP_GAP_PX, w.top - POP_GAP_PX - p.height);
-      const left = Math.min(Math.max(POP_GAP_PX, w.left), vw - p.width - POP_GAP_PX);
-      setPos({ top, left });
-    };
-    place();
-    window.addEventListener('resize', place);
-    document.addEventListener('scroll', place, true);
-    return () => {
-      window.removeEventListener('resize', place);
-      document.removeEventListener('scroll', place, true);
-    };
-  }, [open]);
-
   // A press outside the popover (and its window) sets a valid entry and closes.
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: globalThis.PointerEvent) => {
-      const t = e.target as Node;
-      if (pop.current?.contains(t) || button.current?.contains(t)) return;
-      commitRef.current(false);
-    };
-    document.addEventListener('pointerdown', onDown, true);
-    return () => document.removeEventListener('pointerdown', onDown, true);
-  }, [open]);
+  useOutsidePress(open, [pop, button], () => commit(false));
 
   // Focus the field on opening; with the live value shown, select it so typing replaces it.
   // Not on touch: iOS answers a selection with its Cut/Copy menu, and the keypad's first
@@ -254,7 +207,6 @@ export function ValueEntry<T>({
           if (open) return commit(false);
           setTouch(lastPointer.current === 'touch' || lastPointer.current === 'pen');
           lastPointer.current = '';
-          setPos(HIDDEN);
           setOpen(true);
         }}
       >
@@ -289,11 +241,15 @@ export function ValueEntry<T>({
             onChange={(e) => type(e.target.value)}
             onKeyDown={onKeyDown}
           />
-          {invalid && (
-            <div className="entry-error" role="alert">
-              Enter {rangeHint}
-            </div>
-          )}
+          {/* Always there, so the buttons below never move: what the field takes, or (red)
+              why an entry was rejected. */}
+          <div
+            className={`entry-msg${invalid ? ' entry-error' : ''}`}
+            data-testid={`${testId}-msg`}
+            aria-live="assertive"
+          >
+            {invalid ? `Enter ${rangeHint}` : rangeHint[0]!.toUpperCase() + rangeHint.slice(1)}
+          </div>
           {steps.length > 0 && (
             <div className="entry-steps">
               {steps.map((s) => (
@@ -346,9 +302,9 @@ export function ValueEntry<T>({
   );
 }
 
-/** −10 / −1 / +1 / +10 for a heading or course; `turn(n)` turns it by n degrees. */
+/** +10 / +1 / −1 / −10 (up before down) for a heading or course; `turn(n)` turns it n°. */
 export function degreeSteps(what: string, turn: (deg: number) => void): EntryStep[] {
-  return ([-10, -1, 1, 10] as const).map((n) => ({
+  return ([10, 1, -1, -10] as const).map((n) => ({
     id: n < 0 ? `m${-n}` : `p${n}`,
     label: n < 0 ? `−${-n}` : `+${n}`,
     title: `${what} ${n < 0 ? 'down' : 'up'} ${Math.abs(n)}°`,
@@ -357,11 +313,12 @@ export function degreeSteps(what: string, turn: (deg: number) => void): EntrySte
 }
 
 /**
- * MHz on the left, kHz on the right, as the knobs sit: −1 MHz / +1 MHz / −50 kHz /
- * +50 kHz, wrapping as the knobs do.
+ * MHz on the left, kHz on the right, as the knobs sit, up before down: +1 MHz / −1 MHz /
+ * +50 kHz / −50 kHz, wrapping as the knobs do.
  */
 export function frequencySteps(turn: (part: 'mhz' | 'khz', steps: number) => void): EntryStep[] {
   return [
+    { id: 'mhz-up', label: '+1', unit: 'MHz', title: 'Up 1 MHz', onPress: () => turn('mhz', 1) },
     {
       id: 'mhz-down',
       label: '−1',
@@ -369,7 +326,7 @@ export function frequencySteps(turn: (part: 'mhz' | 'khz', steps: number) => voi
       title: 'Down 1 MHz',
       onPress: () => turn('mhz', -1),
     },
-    { id: 'mhz-up', label: '+1', unit: 'MHz', title: 'Up 1 MHz', onPress: () => turn('mhz', 1) },
+    { id: 'khz-up', label: '+50', unit: 'kHz', title: 'Up 50 kHz', onPress: () => turn('khz', 1) },
     {
       id: 'khz-down',
       label: '−50',
@@ -377,13 +334,12 @@ export function frequencySteps(turn: (part: 'mhz' | 'khz', steps: number) => voi
       title: 'Down 50 kHz',
       onPress: () => turn('khz', -1),
     },
-    { id: 'khz-up', label: '+50', unit: 'kHz', title: 'Up 50 kHz', onPress: () => turn('khz', 1) },
   ];
 }
 
-/** −1000 / −100 / +100 / +1000 ft for the altitude preselect; `turn(n)` moves it n feet. */
+/** +1000 / +100 / −100 / −1000 ft for the altitude preselect; `turn(n)` moves it n feet. */
 export function altitudeSteps(turn: (ft: number) => void): EntryStep[] {
-  return ([-1000, -100, 100, 1000] as const).map((n) => ({
+  return ([1000, 100, -100, -1000] as const).map((n) => ({
     id: n < 0 ? `m${-n}` : `p${n}`,
     label: n < 0 ? `−${-n}` : `+${n}`,
     unit: 'ft',

@@ -13,9 +13,10 @@ import {
   parseAltitude,
   parseDegrees,
   parseFrequency,
-  speedKnob,
+  SPEED_CHOICES,
   stepFrequency,
-  vsKnob,
+  VS_STEP_FPM,
+  vsStep,
 } from '../../src/ui/panel/controls';
 import {
   createWheelGate,
@@ -28,7 +29,7 @@ import {
 } from '../../src/ui/panel/Knob';
 import { CourseKnob } from '../../src/ui/panel/NavControls';
 import { NavRadios } from '../../src/ui/panel/NavRadios';
-import { altitudeSteps, frequencySteps } from '../../src/ui/panel/ValueEntry';
+import { altitudeSteps, degreeSteps, frequencySteps } from '../../src/ui/panel/ValueEntry';
 import { nav, onRadial } from '../sim/helpers';
 
 const W = buildWorld(nav, { magVarEastDeg: 8 });
@@ -144,26 +145,36 @@ describe('typed altitudes', () => {
 });
 
 describe('popover step buttons', () => {
-  it('frequency: MHz on the left, kHz on the right, as the knobs sit', () => {
+  it('frequency: MHz on the left, kHz on the right, up before down', () => {
     const turns: [string, number][] = [];
     const steps = frequencySteps((part, n) => turns.push([part, n]));
-    expect(steps.map((s) => s.id)).toEqual(['mhz-down', 'mhz-up', 'khz-down', 'khz-up']);
+    expect(steps.map((s) => s.id)).toEqual(['mhz-up', 'mhz-down', 'khz-up', 'khz-down']);
     steps.forEach((s) => s.onPress());
     expect(turns).toEqual([
-      ['mhz', -1],
       ['mhz', 1],
-      ['khz', -1],
+      ['mhz', -1],
       ['khz', 1],
+      ['khz', -1],
     ]);
   });
 
-  it('altitude: −1000 / −100 / +100 / +1000 ft', () => {
+  it('heading and course: +10 / +1 / −1 / −10°', () => {
+    const turns: number[] = [];
+    const steps = degreeSteps('Heading', (n) => turns.push(n));
+    expect(steps.map((s) => s.id)).toEqual(['p10', 'p1', 'm1', 'm10']);
+    expect(steps.map((s) => s.label)).toEqual(['+10', '+1', '−1', '−10']);
+    steps.forEach((s) => s.onPress());
+    expect(turns).toEqual([10, 1, -1, -10]);
+    expect(steps[0]!.title).toBe('Heading up 10°');
+  });
+
+  it('altitude: +1000 / +100 / −100 / −1000 ft', () => {
     const turns: number[] = [];
     const steps = altitudeSteps((ft) => turns.push(ft));
-    expect(steps.map((s) => s.id)).toEqual(['m1000', 'm100', 'p100', 'p1000']);
+    expect(steps.map((s) => s.id)).toEqual(['p1000', 'p100', 'm100', 'm1000']);
     steps.forEach((s) => s.onPress());
-    expect(turns).toEqual([-1000, -100, 100, 1000]);
-    expect(steps[0]!.title).toBe('Altitude down 1,000 ft');
+    expect(turns).toEqual([1000, 100, -100, -1000]);
+    expect(steps[0]!.title).toBe('Altitude up 1,000 ft');
   });
 });
 
@@ -240,21 +251,32 @@ describe('wheel and trackpad', () => {
 });
 
 describe('knobs send the right commands', () => {
-  it('heading, altitude, speed and course', () => {
+  it('heading, altitude and course', () => {
     expect(headingKnob(s0, 1, false)).toEqual({ type: 'headingBug', deg: 331 });
     expect(headingKnob(s0, -3, true)).toEqual({ type: 'headingBug', deg: 300 });
     expect(altitudeKnob(s0, -10, false)).toEqual({ type: 'altPreselect', ft: 7000 });
     expect(altitudeKnob(s0, 1, true)).toEqual({ type: 'altPreselect', ft: 9000 });
-    expect(speedKnob(s0, -2, true)).toEqual({ type: 'speed', kt: 90 });
     expect(courseKnob(s0, 1, 10, false)).toEqual({ type: 'course', radio: 1, deg: 365 });
     expect(run(s0, courseKnob(s0, 1, 10, false)).radios.nav1.obsDeg).toBe(5);
     expect(courseKnob(s0, 2, -1, true)).toEqual({ type: 'course', radio: 2, deg: -10 });
   });
 
-  it('VS knob steps 100 fpm from the current target', () => {
+  it('VS buttons step 500 fpm from the current target, within the sim limits', () => {
     const vs = run(s0, { type: 'button', button: 'AP' }, { type: 'button', button: 'VS' });
-    expect(vsKnob(vs, -5)).toEqual({ type: 'vsTarget', fpm: -500 });
-    expect(run(vs, vsKnob(vs, -5)).ap.vsRefFpm).toBe(-500);
+    const start = vs.ap.vsRefFpm;
+    expect(VS_STEP_FPM).toBe(500);
+    expect(vsStep(vs, -VS_STEP_FPM)).toEqual({ type: 'vsTarget', fpm: start - 500 });
+    let s = vs;
+    for (let i = 0; i < 6; i++) s = run(s, vsStep(s, -VS_STEP_FPM));
+    expect(s.ap.vsRefFpm).toBe(-1500); // the sim's floor
+    for (let i = 0; i < 6; i++) s = run(s, vsStep(s, VS_STEP_FPM));
+    expect(s.ap.vsRefFpm).toBe(1000); // and its ceiling
+  });
+
+  it('speed menu: 80, 90 and 100 KIAS; 90 is still category A, 100 is B', () => {
+    expect(SPEED_CHOICES).toEqual([80, 90, 100]);
+    expect(SPEED_CHOICES.map(approachCategory)).toEqual(['A', 'A', 'B']);
+    for (const kt of SPEED_CHOICES) expect(run(s0, { type: 'speed', kt }).panel.iasCmdKt).toBe(kt);
   });
 
   it('keyboard: arrows step 1, Page/Shift step big, other keys ignored', () => {
@@ -317,7 +339,7 @@ describe('panel rendering', () => {
     expect(order.every((i) => i > 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(html).toMatch(/data-testid="ann-vs-sel"[^>]*><\/span>/);
-    const knobs = ['knob-hdg', 'knob-alt', 'knob-vs'].map((id) => html.indexOf(id));
+    const knobs = ['knob-hdg', 'knob-alt', 'vs-steps'].map((id) => html.indexOf(id));
     expect([...knobs].sort((a, b) => a - b)).toEqual(knobs);
   });
 

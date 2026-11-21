@@ -69,7 +69,7 @@ export function ModeBar({ fields }: { fields: ModeBarFields }) {
       <Field id="lateral" text={fields.lateral} cls="g-ann-active" />
       <Field id="lateralArmed" text={fields.lateralArmed} cls="g-ann-armed" />
       <Field id="ap" text={fields.ap ? 'AP' : ''} cls="g-ann-active" />
-      {/* Keyed on the mode, so turning the VS wheel ("VS −500FPM" → "VS −600FPM") doesn't flash. */}
+      {/* Keyed on the mode, so changing the VS target ("VS −500FPM" → "VS −1000FPM") doesn't flash. */}
       <Field
         id="vertical"
         text={fields.vertical}

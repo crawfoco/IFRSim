@@ -48,7 +48,8 @@ for (const vp of [
         'btn-AP',
         'btn-APR',
         'knob-hdg',
-        'knob-power',
+        'power-edit',
+        'btn-vs-up',
         'nav2-khz',
         'dme-src-2',
         'timer-reset',
@@ -69,7 +70,7 @@ for (const vp of [
         for (const [win, knob] of [
           ['ann-hdg-sel', 'knob-hdg'],
           ['ann-alt-sel', 'knob-alt'],
-          ['ann-vs-sel', 'knob-vs'],
+          ['ann-vs-sel', 'vs-steps'],
         ] as const)
           expect(Math.abs((await centre(win)) - (await centre(knob))), win).toBeLessThanOrEqual(2);
         await expect(page.getByTestId('dme')).toBeInViewport({ ratio: 1 });

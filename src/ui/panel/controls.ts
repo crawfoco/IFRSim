@@ -79,15 +79,17 @@ export const altitudeKnob = (s: SimState, steps: number, big: boolean): Command 
   ft: s.panel.altPreselectFt + steps * (big ? 1000 : 100),
 });
 
-export const vsKnob = (s: SimState, steps: number): Command => ({
+/** How far one press of the VS +/− buttons moves the vertical-speed target. */
+export const VS_STEP_FPM = 500;
+
+/** The VS buttons: move the vertical-speed target by `fpm` (the sim clamps it). */
+export const vsStep = (s: SimState, fpm: number): Command => ({
   type: 'vsTarget',
-  fpm: s.ap.vsRefFpm + steps * 100,
+  fpm: s.ap.vsRefFpm + fpm,
 });
 
-export const speedKnob = (s: SimState, steps: number, big: boolean): Command => ({
-  type: 'speed',
-  kt: s.panel.iasCmdKt + steps * (big ? 5 : 1),
-});
+/** The target speeds the speed menu offers, in KIAS. */
+export const SPEED_CHOICES = [80, 90, 100] as const;
 
 export const courseKnob = (s: SimState, radio: RadioId, steps: number, big: boolean): Command => ({
   type: 'course',

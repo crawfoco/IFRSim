@@ -82,9 +82,15 @@
   border-color: #ff5a5a;
   color: #ff8a8a;
 }
-.entry-error {
-  color: #ff8a8a;
+/* Two lines held open whether it shows the range or an error, so nothing below moves. */
+.entry-msg {
+  min-height: calc(2 * 1.35em);
+  color: #8a929c;
   font-size: 12px;
+  line-height: 1.35;
+}
+.entry-msg.entry-error {
+  color: #ff8a8a;
 }
 .entry-steps {
   display: grid;
@@ -378,6 +384,44 @@
   outline: 3px solid #2ec4f0;
   outline-offset: 2px;
 }
+/* VS +/− buttons, stacked in the space of a 46 px knob. */
+.vs-steps {
+  gap: 3px;
+}
+.vs-btn {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  width: var(--ap-knob-col);
+  height: 24px;
+  padding: 0;
+  font:
+    700 12px system-ui,
+    sans-serif;
+  color: #e9ecef;
+  background: linear-gradient(#3a4049, #2b3037);
+  border: 1px solid #4a515b;
+  border-radius: 5px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.vs-btn-unit {
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  color: #8a929c;
+}
+.vs-btn:active:not(:disabled) {
+  background: #22262c;
+}
+.vs-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.vs-btn:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 1px;
+}
 .knob-label {
   font:
     600 11px system-ui,
@@ -473,6 +517,51 @@
   font-size: 11px;
   color: #2ec4f0;
   text-align: center;
+}
+/* The speed menu: one row per target speed, the current one marked. */
+.speed-menu {
+  width: 168px;
+  gap: 4px;
+}
+.speed-opt {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+  background: #2b3037;
+  color: #f4f5f6;
+  font:
+    700 15px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.speed-opt-cat {
+  font:
+    600 12px system-ui,
+    sans-serif;
+  color: #2ec4f0;
+}
+.speed-opt.on {
+  border-color: #2ec4f0;
+  background: #133a48;
+}
+.speed-opt:active {
+  background: #3a414b;
+}
+.speed-opt:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 1px;
+}
+@media (pointer: coarse) {
+  .speed-opt {
+    min-height: 44px;
+  }
 }
 
 .dme-unit-box {

@@ -45,7 +45,7 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
         },
       };
     case 'vsTarget':
-      // The VS wheel only acts in VS mode.
+      // The VS buttons only act in VS mode.
       if (s.ap.vertical !== 'VS') return s;
       return { ...s, ap: { ...s.ap, vsRefFpm: clamp(Math.round(c.fpm / 100) * 100, -1500, 1000) } };
     case 'speed':
