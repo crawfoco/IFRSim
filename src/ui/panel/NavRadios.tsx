@@ -1,5 +1,6 @@
 /**
- * NAV1 / NAV2: active and standby frequencies, flip-flop, MHz and kHz tuning knobs, and
+ * NAV1 / NAV2: active and standby frequencies, flip-flop, MHz and kHz tuning knobs, a
+ * standby window that takes a typed frequency (click it, type 113.85, Enter), and
  * the ident button, which plays the received station's Morse ident and shows it as
  * dots and dashes (decoding it against the chart is the learner's job).
  */
@@ -7,8 +8,9 @@ import { useState, type ReactNode } from 'react';
 import { morse } from '../../sim/nav/morse';
 import type { RadioId, SimState } from '../../sim/state';
 import { playIdent } from '../audio/ident';
-import { formatMHz, frequencyKnob, type Send } from './controls';
+import { formatMHz, frequencyKnob, parseFrequency, type Send } from './controls';
 import { Knob } from './Knob';
+import { ValueEntry } from './ValueEntry';
 
 export type Idents = Record<RadioId, string | null>;
 
@@ -100,12 +102,20 @@ function NavRadio({
       >
         ⇆
       </button>
-      <div className="radio-freq">
-        <span className="radio-label">STBY</span>
-        <span className="radio-standby" data-testid={`nav${id}-standby`}>
-          {formatMHz(r.standbyMHz)}
-        </span>
-      </div>
+      <ValueEntry
+        testId={`nav${id}-standby`}
+        text={formatMHz(r.standbyMHz)}
+        parse={parseFrequency}
+        onSet={(mhz) => send({ type: 'standby', radio: id, mhz })}
+        name={`NAV${id} standby`}
+        rangeHint="a NAV frequency, 108.00 to 117.95, in 0.05 steps"
+        label="STBY"
+        className="radio-freq"
+        labelClassName="radio-label"
+        valueClassName="radio-standby"
+        maxLength={6}
+        title="Click to type a frequency"
+      />
       <div className="radio-knobs">
         <Knob
           small

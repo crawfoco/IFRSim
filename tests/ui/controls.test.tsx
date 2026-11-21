@@ -10,11 +10,21 @@ import {
   courseKnob,
   frequencyKnob,
   headingKnob,
+  parseDegrees,
+  parseFrequency,
   speedKnob,
   stepFrequency,
   vsKnob,
 } from '../../src/ui/panel/controls';
-import { keyToSteps } from '../../src/ui/panel/Knob';
+import {
+  createWheelStepper,
+  keyToSteps,
+  knobTitle,
+  WHEEL_GESTURE_GAP_MS,
+  WHEEL_PX_PER_STEP,
+  type WheelLike,
+} from '../../src/ui/panel/Knob';
+import { CourseKnob } from '../../src/ui/panel/NavControls';
 import { NavRadios } from '../../src/ui/panel/NavRadios';
 import { nav, onRadial } from '../sim/helpers';
 
@@ -49,6 +59,113 @@ describe('frequency knobs', () => {
     expect(s.radios.nav1.standbyMHz).toBe(109.3);
     s = run(s, { type: 'swap', radio: 1 });
     expect(s.radios.nav1.activeMHz).toBe(109.3);
+  });
+});
+
+describe('typed frequencies', () => {
+  it('accepts NAV frequencies with or without the dot', () => {
+    expect(parseFrequency('113.85')).toBe(113.85);
+    expect(parseFrequency(' 109.3 ')).toBe(109.3);
+    expect(parseFrequency('109.')).toBe(109);
+    expect(parseFrequency('117')).toBe(117);
+    expect(parseFrequency('108,00')).toBe(108);
+    expect(parseFrequency('11395')).toBe(113.95);
+    expect(parseFrequency('1093')).toBe(109.3);
+  });
+
+  it('rejects anything off the band or off the 50 kHz spacing', () => {
+    for (const t of [
+      '',
+      '107.95',
+      '118.00',
+      '113.87',
+      '113.851',
+      '13.85',
+      'abc',
+      '1.1385',
+      '113.8.5',
+    ])
+      expect(parseFrequency(t), t).toBeNull();
+  });
+
+  it('a typed frequency is one the sim accepts as is', () => {
+    const s = run(s0, { type: 'standby', radio: 2, mhz: parseFrequency('117.95')! });
+    expect(s.radios.nav2.standbyMHz).toBe(117.95);
+  });
+});
+
+describe('typed headings and courses', () => {
+  it('accepts whole degrees 1–360, with or without °; 0 is north (360)', () => {
+    expect(parseDegrees('263')).toBe(263);
+    expect(parseDegrees(' 5 ')).toBe(5);
+    expect(parseDegrees('005')).toBe(5);
+    expect(parseDegrees('360')).toBe(360);
+    expect(parseDegrees('0')).toBe(360);
+    expect(parseDegrees('090°')).toBe(90);
+  });
+
+  it('rejects anything else', () => {
+    for (const t of ['', '361', '1000', '-5', '26.5', 'abc', '2 63'])
+      expect(parseDegrees(t), t).toBeNull();
+  });
+
+  it('typed values go straight to the sim', () => {
+    const s = run(
+      s0,
+      { type: 'headingBug', deg: parseDegrees('263')! },
+      { type: 'course', radio: 2, deg: parseDegrees('0')! },
+    );
+    expect(s.panel.headingBugDeg).toBe(263);
+    expect(s.radios.nav2.obsDeg).toBe(0); // shown as 360
+  });
+});
+
+describe('wheel and trackpad', () => {
+  const px = (deltaY: number, timeStamp: number, deltaX = 0): WheelLike => ({
+    deltaX,
+    deltaY,
+    deltaMode: 0,
+    timeStamp,
+  });
+  const total = (events: WheelLike[]) => {
+    const steps = createWheelStepper();
+    return events.reduce((n, e) => n + steps(e), 0);
+  };
+
+  it('a mouse notch is one step, each notch after a pause another', () => {
+    expect(total([px(-100, 0)])).toBe(1);
+    expect(total([px(100, 0), px(100, 400), px(100, 800)])).toBe(-3);
+    // Firefox reports mouse wheels in lines.
+    const steps = createWheelStepper();
+    expect(
+      [1, 2, 3].map((t) => steps({ deltaX: 0, deltaY: -3, deltaMode: 1, timeStamp: t })),
+    ).toEqual([1, 1, 1]);
+  });
+
+  it('a trackpad swipe steps once per WHEEL_PX_PER_STEP, not once per event', () => {
+    // 60 events of 5 px, 16 ms apart: 300 px in one gesture.
+    const swipe = Array.from({ length: 60 }, (_, i) => px(-5, i * 16));
+    const n = total(swipe);
+    expect(n).toBe(1 + Math.floor((300 - 5) / WHEEL_PX_PER_STEP));
+    expect(n).toBeLessThan(10);
+  });
+
+  it('never more than one step per event, even for a big delta mid-gesture', () => {
+    expect(total([px(-5, 0), px(-400, 10)])).toBe(2);
+  });
+
+  it('a reversal mid-gesture counts afresh the other way', () => {
+    const steps = createWheelStepper();
+    expect(steps(px(-5, 0))).toBe(1);
+    expect(steps(px(-40, 10))).toBe(0);
+    expect(steps(px(30, 20))).toBe(0);
+    expect(steps(px(30, 30))).toBe(-1);
+  });
+
+  it('a pause starts a new gesture; horizontal scroll counts (Shift+wheel)', () => {
+    expect(total([px(-5, 0), px(-5, WHEEL_GESTURE_GAP_MS + 1)])).toBe(2);
+    expect(total([px(0, 0, -100)])).toBe(1);
+    expect(total([px(0, 0, 0)])).toBe(0);
   });
 });
 
@@ -139,6 +256,36 @@ describe('panel rendering', () => {
     expect(html).toMatch(
       /title="Double-click \(or Enter\) to set the bug[^"]*"[^>]*data-testid="knob-hdg"/,
     );
+  });
+
+  it('knob tooltips say how far a step and a big step go', () => {
+    expect(knobTitle(undefined, ['1°', '10°'])).toBe(
+      'Drag, scroll or arrow keys: 1°. Shift or Page Up/Down: 10°.',
+    );
+    expect(knobTitle('Double-click to sync', ['1°', '10°'])).toBe(
+      'Double-click to sync. Drag, scroll or arrow keys: 1°. Shift or Page Up/Down: 10°.',
+    );
+    expect(knobTitle()).toBeUndefined();
+    const html = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    expect(html).toMatch(/title="[^"]*Shift or Page Up\/Down: 10°\."[^>]*data-testid="knob-hdg"/);
+    expect(html).toMatch(
+      /title="[^"]*Shift or Page Up\/Down: 1,000 ft\."[^>]*data-testid="knob-alt"/,
+    );
+  });
+
+  it('the selected heading is a window you can click to type in; on glass it sits under the knob', () => {
+    const steam = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    expect(steam).toMatch(/<button[^>]*data-testid="ann-hdg-sel-edit"/);
+    expect(steam).not.toContain('knob-hdg-sel');
+    const glass = renderToStaticMarkup(<ApPanel state={s0} send={noop} annunciator={false} />);
+    expect(glass).toMatch(/data-testid="knob-hdg-sel"[^>]*>330</); // bug starts on the heading
+  });
+
+  it('a course knob has a course window under it', () => {
+    const html = renderToStaticMarkup(<CourseKnob radio={1} state={s0} send={noop} />);
+    expect(html).toMatch(/<button[^>]*data-testid="knob-crs1-sel-edit"/);
+    expect(html).toMatch(/data-testid="knob-crs1-sel"[^>]*>355</);
+    expect(html).toContain('>CRS<');
   });
 
   it('shows active and standby frequencies', () => {
