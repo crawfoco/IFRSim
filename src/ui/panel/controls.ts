@@ -41,6 +41,18 @@ export function parseFrequency(text: string): number | null {
   return k / 100;
 }
 
+/**
+ * A typed heading or course: whole degrees 0…360, "°" allowed; 0 reads as 360 (north),
+ * as a heading bug or course is set.
+ */
+export function parseDegrees(text: string): number | null {
+  const m = /^(\d{1,3})°?$/.exec(text.trim());
+  if (!m) return null;
+  const deg = Number(m[1]);
+  if (deg > 360) return null;
+  return deg === 0 ? 360 : deg;
+}
+
 export const formatMHz = (mhz: number) => mhz.toFixed(2);
 export const formatCourse = (deg: number) => String(Math.round(deg) % 360 || 360).padStart(3, '0');
 

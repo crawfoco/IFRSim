@@ -10,6 +10,7 @@ import {
   courseKnob,
   frequencyKnob,
   headingKnob,
+  parseDegrees,
   parseFrequency,
   speedKnob,
   stepFrequency,
@@ -18,10 +19,12 @@ import {
 import {
   createWheelStepper,
   keyToSteps,
+  knobTitle,
   WHEEL_GESTURE_GAP_MS,
   WHEEL_PX_PER_STEP,
   type WheelLike,
 } from '../../src/ui/panel/Knob';
+import { CourseKnob } from '../../src/ui/panel/NavControls';
 import { NavRadios } from '../../src/ui/panel/NavRadios';
 import { nav, onRadial } from '../sim/helpers';
 
@@ -88,6 +91,32 @@ describe('typed frequencies', () => {
   it('a typed frequency is one the sim accepts as is', () => {
     const s = run(s0, { type: 'standby', radio: 2, mhz: parseFrequency('117.95')! });
     expect(s.radios.nav2.standbyMHz).toBe(117.95);
+  });
+});
+
+describe('typed headings and courses', () => {
+  it('accepts whole degrees 1–360, with or without °; 0 is north (360)', () => {
+    expect(parseDegrees('263')).toBe(263);
+    expect(parseDegrees(' 5 ')).toBe(5);
+    expect(parseDegrees('005')).toBe(5);
+    expect(parseDegrees('360')).toBe(360);
+    expect(parseDegrees('0')).toBe(360);
+    expect(parseDegrees('090°')).toBe(90);
+  });
+
+  it('rejects anything else', () => {
+    for (const t of ['', '361', '1000', '-5', '26.5', 'abc', '2 63'])
+      expect(parseDegrees(t), t).toBeNull();
+  });
+
+  it('typed values go straight to the sim', () => {
+    const s = run(
+      s0,
+      { type: 'headingBug', deg: parseDegrees('263')! },
+      { type: 'course', radio: 2, deg: parseDegrees('0')! },
+    );
+    expect(s.panel.headingBugDeg).toBe(263);
+    expect(s.radios.nav2.obsDeg).toBe(0); // shown as 360
   });
 });
 
@@ -227,6 +256,36 @@ describe('panel rendering', () => {
     expect(html).toMatch(
       /title="Double-click \(or Enter\) to set the bug[^"]*"[^>]*data-testid="knob-hdg"/,
     );
+  });
+
+  it('knob tooltips say how far a step and a big step go', () => {
+    expect(knobTitle(undefined, ['1°', '10°'])).toBe(
+      'Drag, scroll or arrow keys: 1°. Shift or Page Up/Down: 10°.',
+    );
+    expect(knobTitle('Double-click to sync', ['1°', '10°'])).toBe(
+      'Double-click to sync. Drag, scroll or arrow keys: 1°. Shift or Page Up/Down: 10°.',
+    );
+    expect(knobTitle()).toBeUndefined();
+    const html = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    expect(html).toMatch(/title="[^"]*Shift or Page Up\/Down: 10°\."[^>]*data-testid="knob-hdg"/);
+    expect(html).toMatch(
+      /title="[^"]*Shift or Page Up\/Down: 1,000 ft\."[^>]*data-testid="knob-alt"/,
+    );
+  });
+
+  it('the selected heading is a window you can click to type in; on glass it sits under the knob', () => {
+    const steam = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    expect(steam).toMatch(/<button[^>]*data-testid="ann-hdg-sel-edit"/);
+    expect(steam).not.toContain('knob-hdg-sel');
+    const glass = renderToStaticMarkup(<ApPanel state={s0} send={noop} annunciator={false} />);
+    expect(glass).toMatch(/data-testid="knob-hdg-sel"[^>]*>330</); // bug starts on the heading
+  });
+
+  it('a course knob has a course window under it', () => {
+    const html = renderToStaticMarkup(<CourseKnob radio={1} state={s0} send={noop} />);
+    expect(html).toMatch(/<button[^>]*data-testid="knob-crs1-sel-edit"/);
+    expect(html).toMatch(/data-testid="knob-crs1-sel"[^>]*>355</);
+    expect(html).toContain('>CRS<');
   });
 
   it('shows active and standby frequencies', () => {

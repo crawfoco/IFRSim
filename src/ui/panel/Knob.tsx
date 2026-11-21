@@ -4,7 +4,14 @@
  * the parent turns those into sim commands. A knob with `onPush` is also pushed by a
  * double-click or Enter (e.g. the HDG knob syncs the bug to the current heading).
  */
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
 
 const DRAG_PX_PER_STEP = 8;
 const DEG_PER_STEP = 15;
@@ -22,6 +29,18 @@ export interface KnobProps {
   onPush?: () => void;
   /** What a push does, shown as a tooltip and read by screen readers. */
   pushHint?: string;
+  /** How far a step and a big step go, e.g. ['1°', '10°']: shown in the tooltip. */
+  stepHint?: [small: string, big: string];
+  /** Shown under the knob in place of the label, e.g. a value window you can type into. */
+  below?: ReactNode;
+}
+
+/** The knob's tooltip: what a push does, then how to turn it in small and big steps. */
+export function knobTitle(pushHint?: string, stepHint?: [string, string]): string | undefined {
+  const turn = stepHint
+    ? `Drag, scroll or arrow keys: ${stepHint[0]}. Shift or Page Up/Down: ${stepHint[1]}.`
+    : undefined;
+  return [pushHint && `${pushHint}.`, turn].filter(Boolean).join(' ') || undefined;
 }
 
 export function keyToSteps(e: { key: string; shiftKey: boolean }): [number, boolean] | null {
@@ -94,7 +113,10 @@ export function Knob({
   disabled,
   onPush,
   pushHint,
+  stepHint,
+  below,
 }: KnobProps) {
+  const title = knobTitle(pushHint, stepHint);
   const ref = useRef<HTMLDivElement>(null);
   const [angle, setAngle] = useState(0);
   const drag = useRef<{ y: number; acc: number } | null>(null);
@@ -167,8 +189,8 @@ export function Knob({
         aria-label={label}
         aria-valuetext={valueText}
         aria-disabled={disabled || undefined}
-        aria-description={pushHint}
-        title={pushHint}
+        aria-description={title}
+        title={title}
         data-testid={testId}
         onDoubleClick={onPush ? push : undefined}
         onKeyDown={onKeyDown}
@@ -179,7 +201,7 @@ export function Knob({
       >
         <span className="knob-grip" style={{ transform: `rotate(${angle}deg)` }} />
       </div>
-      <span className="knob-label">{label}</span>
+      {below ?? <span className="knob-label">{label}</span>}
     </div>
   );
 }

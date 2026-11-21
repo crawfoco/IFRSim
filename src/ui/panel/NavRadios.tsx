@@ -4,12 +4,13 @@
  * the ident button, which plays the received station's Morse ident and shows it as
  * dots and dashes (decoding it against the chart is the learner's job).
  */
-import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { morse } from '../../sim/nav/morse';
 import type { RadioId, SimState } from '../../sim/state';
 import { playIdent } from '../audio/ident';
 import { formatMHz, frequencyKnob, parseFrequency, type Send } from './controls';
 import { Knob } from './Knob';
+import { ValueEntry } from './ValueEntry';
 
 export type Idents = Record<RadioId, string | null>;
 
@@ -69,98 +70,6 @@ function IdentRow({
   );
 }
 
-/**
- * The standby window. Click it (or focus it and press Enter) to type a frequency; Enter
- * or leaving the field sets it, Escape cancels. An invalid entry stays in the field,
- * marked, on Enter, and is dropped on leaving.
- */
-function StandbyEntry({ id, mhz, send }: { id: RadioId; mhz: number; send: Send }) {
-  const [draft, setDraft] = useState<string | null>(null);
-  const [invalid, setInvalid] = useState(false);
-  const button = useRef<HTMLButtonElement>(null);
-  // Set when Enter or Escape closes the field: focus goes back to the window, and a blur
-  // from the field going away must not commit a cancelled draft.
-  const closing = useRef(false);
-  useEffect(() => {
-    if (draft === null && closing.current) {
-      closing.current = false;
-      button.current?.focus();
-    }
-  }, [draft]);
-  const close = () => {
-    setDraft(null);
-    setInvalid(false);
-  };
-  /** Enter: set it or mark it invalid. Blur: set it or drop it. */
-  const commit = (fromEnter: boolean) => {
-    if (closing.current) return;
-    const v = parseFrequency(draft ?? '');
-    if (v === null && fromEnter) {
-      setInvalid(true);
-      return;
-    }
-    if (v !== null) send({ type: 'standby', radio: id, mhz: v });
-    closing.current = fromEnter;
-    close();
-  };
-  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      commit(true);
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      closing.current = true;
-      close();
-    }
-  };
-
-  if (draft === null)
-    return (
-      <button
-        ref={button}
-        type="button"
-        className="radio-freq radio-freq-edit"
-        aria-label={`NAV${id} standby ${formatMHz(mhz)}, click to type a frequency`}
-        title="Click to type a frequency"
-        data-testid={`nav${id}-standby-edit`}
-        onClick={() => setDraft(formatMHz(mhz))}
-      >
-        <span className="radio-label">STBY</span>
-        <span className="radio-standby" data-testid={`nav${id}-standby`}>
-          {formatMHz(mhz)}
-        </span>
-      </button>
-    );
-  return (
-    <div className="radio-freq">
-      <label className="radio-label" htmlFor={`nav${id}-standby-input`}>
-        STBY
-      </label>
-      <input
-        id={`nav${id}-standby-input`}
-        className={`radio-standby radio-standby-input${invalid ? ' radio-invalid' : ''}`}
-        data-testid={`nav${id}-standby-input`}
-        aria-label={`NAV${id} standby frequency, 108.00 to 117.95`}
-        aria-invalid={invalid || undefined}
-        title={invalid ? 'Enter a NAV frequency, 108.00 to 117.95, in 0.05 steps' : undefined}
-        inputMode="decimal"
-        autoComplete="off"
-        spellCheck={false}
-        maxLength={6}
-        value={draft}
-        autoFocus
-        onFocus={(e) => e.currentTarget.select()}
-        onChange={(e) => {
-          setDraft(e.target.value);
-          setInvalid(false);
-        }}
-        onKeyDown={onKeyDown}
-        onBlur={() => commit(false)}
-      />
-    </div>
-  );
-}
-
 function NavRadio({
   id,
   state,
@@ -193,7 +102,20 @@ function NavRadio({
       >
         ⇆
       </button>
-      <StandbyEntry id={id} mhz={r.standbyMHz} send={send} />
+      <ValueEntry
+        testId={`nav${id}-standby`}
+        text={formatMHz(r.standbyMHz)}
+        parse={parseFrequency}
+        onSet={(mhz) => send({ type: 'standby', radio: id, mhz })}
+        name={`NAV${id} standby`}
+        rangeHint="a NAV frequency, 108.00 to 117.95, in 0.05 steps"
+        label="STBY"
+        className="radio-freq"
+        labelClassName="radio-label"
+        valueClassName="radio-standby"
+        maxLength={6}
+        title="Click to type a frequency"
+      />
       <div className="radio-knobs">
         <Knob
           small

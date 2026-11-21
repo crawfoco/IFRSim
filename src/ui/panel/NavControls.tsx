@@ -1,8 +1,12 @@
-/** Course knobs (CRS on the HSI, OBS on the CDI) and the DME source selector. */
+/**
+ * Course knobs (CRS on the HSI, OBS on the CDI), each with a course window under it that
+ * takes a typed course, and the DME source selector.
+ */
 import type { RadioId, SimState } from '../../sim/state';
 import { DmeReadout } from '../instruments/DmeReadout';
-import { courseKnob, formatCourse, type Send } from './controls';
+import { courseKnob, formatCourse, parseDegrees, type Send } from './controls';
 import { Knob } from './Knob';
+import { ValueEntry } from './ValueEntry';
 
 export function CourseKnob({
   radio,
@@ -21,12 +25,30 @@ export function CourseKnob({
 }) {
   const deg = state.radios[radio === 1 ? 'nav1' : 'nav2'].obsDeg;
   const name = label ?? (radio === 1 ? 'CRS' : 'OBS');
+  const id = testId ?? `knob-crs${radio}`;
   return (
     <Knob
       label={name}
       valueText={`NAV${radio} ${name.toLowerCase()} ${formatCourse(deg)}`}
-      testId={testId ?? `knob-crs${radio}`}
+      testId={id}
       onTurn={(n, big) => send((s) => courseKnob(s, radio, n, big))}
+      stepHint={['1°', '10°']}
+      below={
+        <ValueEntry
+          testId={`${id}-sel`}
+          text={formatCourse(deg)}
+          parse={parseDegrees}
+          onSet={(d) => send({ type: 'course', radio, deg: d })}
+          name={`NAV${radio} ${name === 'OBS' ? 'OBS course' : 'course'}`}
+          rangeHint="a course, 1 to 360 degrees"
+          label={name}
+          className="knob-entry"
+          labelClassName="knob-entry-label"
+          valueClassName="knob-entry-value"
+          maxLength={3}
+          title={`${name}: click to type the course`}
+        />
+      }
     />
   );
 }

@@ -51,9 +51,12 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
    - Two nav radios (NAV1, NAV2), each with active/standby frequency, flip-flop
      and Morse ident (audio and dot/dash text). Standby is tuned with the MHz/kHz
      knobs or by clicking the standby window and typing the frequency (108.00–117.95,
-     50 kHz spacing; anything else is rejected, not rounded). Knobs turn by drag,
-     wheel or keyboard; trackpad scrolling steps about once per 50 px of scroll, so a
-     swipe doesn't spin the dial.
+     50 kHz spacing; anything else is rejected, not rounded). The selected heading
+     and each course (CRS / OBS) can be typed the same way, 1–360 (0 = 360): heading
+     in the AP strip's heading window (under the HDG knob on the glass panel), course
+     in a window under its knob. Knobs turn by drag, wheel or keyboard; trackpad
+     scrolling steps about once per 50 px of scroll, so a swipe doesn't spin the dial.
+     Knob tooltips give the small and big (Shift / Page Up/Down) step.
    - Needles behave like real receivers: full-scale ±10° for VOR, ±2.5° for the
      localizer, ±0.7° for the glideslope, to/from logic, a flag when out of range
      or untuned.

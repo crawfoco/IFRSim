@@ -1,3 +1,38 @@
+/* Value windows you can type into (ValueEntry): standby frequency, heading, course.
+   Kept early in the file so each window's own class (later) sets its box. */
+.entry-btn {
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: text;
+}
+.entry-btn:hover {
+  border-color: #4a515b;
+}
+.entry-btn:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 2px;
+}
+.entry-input {
+  box-sizing: content-box;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #2ec4f0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  outline: none;
+}
+.entry-input.entry-invalid {
+  border-bottom-color: #ff5a5a;
+  color: #ff8a8a;
+}
+
 /* Panel hardware: dark in both themes. */
 .ap,
 .radios,
@@ -417,37 +452,28 @@
   }
 }
 
-/* Standby window: click to type a frequency. */
-.radio-freq-edit {
-  border: 1px solid transparent;
-  color: inherit;
-  text-align: left;
-  cursor: text;
+/* Value window under a knob (CRS / OBS, and HDG on the glass panel): label over value. */
+.knob-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 40px;
+  padding: 1px 4px 2px;
+  border-radius: 3px;
+  background: #000;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  text-align: center;
 }
-.radio-freq-edit:hover {
-  border-color: #4a515b;
+.knob-entry-label {
+  font:
+    600 9px system-ui,
+    sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--muted);
 }
-.radio-freq-edit:focus-visible {
-  outline: 3px solid #2ec4f0;
-  outline-offset: 2px;
-}
-.radio-standby-input {
-  width: 6ch;
-  padding: 0;
-  border: 0;
-  border-bottom: 1px solid #2ec4f0;
-  background: transparent;
-  font: inherit;
-  font-size: 18px;
-  color: #f4f5f6;
-  outline: none;
-}
-.radio-standby-input.radio-invalid {
-  border-bottom-color: #ff5a5a;
-  color: #ff8a8a;
-}
-@media (max-width: 1199px) {
-  .radio-standby-input {
-    font-size: 16px;
-  }
+.knob-entry-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2ec4f0;
 }

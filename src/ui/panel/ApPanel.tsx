@@ -1,8 +1,16 @@
 /** Generic GA autopilot: mode annunciator, mode buttons, HDG / ALT / VS knobs. */
 import { annunciation, type ApButton } from '../../sim/autopilot/modes';
 import type { SimState } from '../../sim/state';
-import { altitudeKnob, formatCourse, headingKnob, vsKnob, type Send } from './controls';
+import {
+  altitudeKnob,
+  formatCourse,
+  headingKnob,
+  parseDegrees,
+  vsKnob,
+  type Send,
+} from './controls';
 import { Knob } from './Knob';
+import { ValueEntry } from './ValueEntry';
 
 const BUTTONS: { id: ApButton; name: string }[] = [
   { id: 'AP', name: 'Autopilot on/off' },
@@ -27,6 +35,30 @@ export function ApPanel({
 }) {
   const a = annunciation(state.ap, state.ap.navKind);
   const vsMode = state.ap.vertical === 'VS' && state.ap.engaged;
+  const hdg = formatCourse(state.panel.headingBugDeg);
+  /** The selected heading, typed: in the annunciator strip (steam) or under the knob (glass). */
+  const headingEntry = (
+    testId: string,
+    className: string,
+    valueClassName: string,
+    label?: string,
+  ) => (
+    <ValueEntry
+      testId={testId}
+      text={label ? hdg : `${hdg}°`}
+      editText={hdg}
+      parse={parseDegrees}
+      onSet={(deg) => send({ type: 'headingBug', deg })}
+      name="Selected heading"
+      rangeHint="a heading, 1 to 360 degrees"
+      label={label}
+      className={className}
+      labelClassName="knob-entry-label"
+      valueClassName={valueClassName}
+      maxLength={3}
+      title="Selected heading: click to type it"
+    />
+  );
   return (
     <section className="ap" aria-label="Autopilot">
       {annunciator && (
@@ -55,9 +87,7 @@ export function ApPanel({
             </span>
           </div>
           <div className="ap-sel">
-            <span className="ann ann-sel" title="Selected heading" data-testid="ann-hdg-sel">
-              {formatCourse(state.panel.headingBugDeg)}°
-            </span>
+            {headingEntry('ann-hdg-sel', 'ann ann-sel', 'ann-sel-value')}
             <span className="ann ann-sel" title="Selected altitude, feet" data-testid="ann-alt-sel">
               {state.panel.altPreselectFt.toLocaleString('en-US')}
             </span>
@@ -89,16 +119,24 @@ export function ApPanel({
         <div className="ap-knobs">
           <Knob
             label="HDG"
-            valueText={`heading bug ${formatCourse(state.panel.headingBugDeg)}`}
+            valueText={`heading bug ${hdg}`}
             testId="knob-hdg"
             onTurn={(n, big) => send((s) => headingKnob(s, n, big))}
             onPush={() => send({ type: 'syncHeadingBug' })}
             pushHint="Double-click (or Enter) to set the bug to the current heading"
+            stepHint={['1°', '10°']}
+            // Glass: no annunciator strip, so the heading window sits under the knob.
+            below={
+              annunciator
+                ? undefined
+                : headingEntry('knob-hdg-sel', 'knob-entry', 'knob-entry-value', 'HDG')
+            }
           />
           <Knob
             label="ALT"
             valueText={`altitude preselect ${state.panel.altPreselectFt} feet`}
             testId="knob-alt"
+            stepHint={['100 ft', '1,000 ft']}
             onTurn={(n, big) => send((s) => altitudeKnob(s, n, big))}
           />
           <Knob
