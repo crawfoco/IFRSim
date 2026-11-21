@@ -10,7 +10,7 @@ import type { RadioId, SimState } from '../../sim/state';
 import { playIdent } from '../audio/ident';
 import { formatMHz, frequencyKnob, parseFrequency, type Send } from './controls';
 import { Knob } from './Knob';
-import { ValueEntry } from './ValueEntry';
+import { frequencySteps, ValueEntry } from './ValueEntry';
 
 export type Idents = Record<RadioId, string | null>;
 
@@ -114,7 +114,10 @@ function NavRadio({
         labelClassName="radio-label"
         valueClassName="radio-standby"
         maxLength={6}
-        title="Click to type a frequency"
+        title="Click to set the frequency"
+        decimal
+        steps={frequencySteps((part, n) => send((s) => frequencyKnob(s, id, part, n)))}
+        hint="Knobs: MHz and kHz (50 kHz steps). Scroll or drag to turn."
       />
       <div className="radio-knobs">
         <Knob

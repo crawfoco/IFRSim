@@ -50,13 +50,21 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
      OBS/CDI for NAV2, and a stopwatch/timer.
    - Two nav radios (NAV1, NAV2), each with active/standby frequency, flip-flop
      and Morse ident (audio and dot/dash text). Standby is tuned with the MHz/kHz
-     knobs or by clicking the standby window and typing the frequency (108.00–117.95,
-     50 kHz spacing; anything else is rejected, not rounded). The selected heading
-     and each course (CRS / OBS) can be typed the same way, 1–360 (0 = 360): heading
-     in the AP strip's heading window (under the HDG knob on the glass panel), course
-     in a window under its knob. Knobs turn by drag, wheel or keyboard; trackpad
-     scrolling steps about once per 50 px of scroll, so a swipe doesn't spin the dial.
-     Knob tooltips give the small and big (Shift / Page Up/Down) step.
+     knobs, or by clicking or tapping the standby window: a popover with the value, a
+     keypad, step buttons (±1 MHz, ±50 kHz) and Set / Cancel. Typing (keyboard or keypad)
+     takes 108.00–117.95 on the 50 kHz spacing; anything else is rejected, not rounded.
+     The selected heading (AP strip; under the HDG knob on the glass panel) and each
+     course (CRS / OBS, a window under its knob) work the same way: 1–360 (0 = 360), steps
+     ±1° / ±10°, and for heading a sync to the current heading. Step buttons act at once;
+     typed values need Set or Enter. Opened by touch, the popover asks for no system
+     keyboard, so the iPad keyboard doesn't cover the panel.
+   - Knobs turn by drag, wheel or keyboard. Trackpad scrolling steps about once per
+     50 px; a scroll that started off a knob keeps scrolling the panel when a knob passes
+     under the pointer; a pinch (Ctrl+wheel) over a knob doesn't turn it. Knob tooltips
+     give the small and big (Shift / Page Up/Down) step.
+   - Touch screens (pointer: coarse): small controls (radio knobs, swap, ID, value
+     windows) take a touch about 44 px across without changing the layout, the MHz and
+     kHz knobs sit 10 px apart, and value windows keep a visible frame (no hover).
    - Needles behave like real receivers: full-scale ±10° for VOR, ±2.5° for the
      localizer, ±0.7° for the glideslope, to/from logic, a flag when out of range
      or untuned.

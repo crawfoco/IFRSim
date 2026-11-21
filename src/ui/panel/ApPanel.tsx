@@ -10,7 +10,7 @@ import {
   type Send,
 } from './controls';
 import { Knob } from './Knob';
-import { ValueEntry } from './ValueEntry';
+import { degreeSteps, ValueEntry } from './ValueEntry';
 
 const BUTTONS: { id: ApButton; name: string }[] = [
   { id: 'AP', name: 'Autopilot on/off' },
@@ -56,7 +56,18 @@ export function ApPanel({
       labelClassName="knob-entry-label"
       valueClassName={valueClassName}
       maxLength={3}
-      title="Selected heading: click to type it"
+      title="Selected heading: click to set it"
+      steps={[
+        ...degreeSteps('Heading', (n) => send((s) => headingKnob(s, n, false))),
+        {
+          id: 'sync',
+          label: 'Sync to heading',
+          title: 'Set the bug to the current heading',
+          onPress: () => send({ type: 'syncHeadingBug' }),
+          wide: true,
+        },
+      ]}
+      hint="Knob: drag, scroll or arrows 1°; Shift or Page Up/Down 10°. Double-click syncs."
     />
   );
   return (

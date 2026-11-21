@@ -6,7 +6,7 @@ import type { RadioId, SimState } from '../../sim/state';
 import { DmeReadout } from '../instruments/DmeReadout';
 import { courseKnob, formatCourse, parseDegrees, type Send } from './controls';
 import { Knob } from './Knob';
-import { ValueEntry } from './ValueEntry';
+import { degreeSteps, ValueEntry } from './ValueEntry';
 
 export function CourseKnob({
   radio,
@@ -46,7 +46,9 @@ export function CourseKnob({
           labelClassName="knob-entry-label"
           valueClassName="knob-entry-value"
           maxLength={3}
-          title={`${name}: click to type the course`}
+          title={`${name}: click to set the course`}
+          steps={degreeSteps('Course', (n) => send((s) => courseKnob(s, radio, n, false)))}
+          hint="Knob: drag, scroll or arrows 1°; Shift or Page Up/Down 10°."
         />
       }
     />

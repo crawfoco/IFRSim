@@ -1,6 +1,8 @@
 /**
- * Setting the panel from a laptop: type a frequency, heading or course into its window,
- * and a trackpad swipe on a knob steps a few times rather than spinning the dial.
+ * Setting the panel with a mouse or trackpad: type a frequency, heading or course into its
+ * window's popover or use its step buttons; a trackpad swipe on a knob steps a few times
+ * rather than spinning the dial, and a scroll that passes over a knob doesn't turn it.
+ * Touch is in touch-entry.spec.ts.
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -95,4 +97,67 @@ test('glass panel: heading and course windows under the knobs', async ({ page })
   await expect(page.getByTestId('knob-hdg-sel')).toHaveText('293');
   await typeInto(page, 'knob-crs-sel', '263');
   await expect(page.getByTestId('knob-crs-sel')).toHaveText('263');
+});
+
+test('popover step buttons act at once; Set closes; the knob hint is shown', async ({ page }) => {
+  await fly(page);
+  await page.getByTestId('ann-hdg-sel-edit').click();
+  const pop = page.getByTestId('ann-hdg-sel-pop');
+  await expect(pop).toBeInViewport({ ratio: 1 });
+  await expect(pop).toContainText('Shift or Page Up/Down 10°');
+  await page.getByTestId('ann-hdg-sel-step-m10').click();
+  await page.getByTestId('ann-hdg-sel-step-m10').click();
+  await page.getByTestId('ann-hdg-sel-step-p1').click();
+  await expect(page.getByTestId('ann-hdg-sel')).toHaveText('311°'); // 330 − 20 + 1
+  await expect(page.getByTestId('ann-hdg-sel-input')).toHaveValue('311');
+  // Typing after a step replaces the value; focus stayed in the field.
+  await page.keyboard.type('263');
+  await page.getByTestId('ann-hdg-sel-set').click();
+  await expect(pop).toHaveCount(0);
+  await expect(page.getByTestId('ann-hdg-sel')).toHaveText('263°');
+
+  await page.getByTestId('nav1-standby-edit').click();
+  await page.getByTestId('nav1-standby-step-mhz-up').click();
+  await page.getByTestId('nav1-standby-step-khz-up').click();
+  await expect(page.getByTestId('nav1-standby')).toHaveText('109.05');
+  await page.getByTestId('nav1-standby-cancel').click();
+  await expect(page.getByTestId('nav1-standby-pop')).toHaveCount(0);
+  await expect(page.getByTestId('nav1-standby')).toHaveText('109.05'); // steps already applied
+});
+
+test('a panel scroll that passes over a knob scrolls on instead of turning it', async ({
+  page,
+}) => {
+  // Laptop height: the glass panel scrolls a little.
+  await page.setViewportSize({ width: 1366, height: 700 });
+  await fly(page, 'glass');
+  const pane = page.locator('.panel-pane');
+  const scrollTop = () => pane.evaluate((el) => el.scrollTop);
+  const crs = page.getByTestId('knob-crs-sel');
+  await expect(crs).toHaveText('360');
+  const knob = (await page.getByTestId('knob-crs').boundingBox())!;
+  const pfd = (await page.getByTestId('pfd').boundingBox())!;
+  // Start scrolling over the PFD, then let the knob come under the pointer mid-gesture.
+  await page.mouse.move(pfd.x + pfd.width / 2, pfd.y + pfd.height / 2);
+  await page.mouse.wheel(0, 10);
+  await page.mouse.move(knob.x + knob.width / 2, knob.y + knob.height / 2);
+  for (let i = 0; i < 4; i++) await page.mouse.wheel(0, 10);
+  await expect(crs).toHaveText('360');
+  expect(await scrollTop()).toBeGreaterThan(0);
+  // After a pause, a scroll on the knob turns it.
+  await page.waitForTimeout(400);
+  const k2 = (await page.getByTestId('knob-crs').boundingBox())!;
+  await page.mouse.move(k2.x + k2.width / 2, k2.y + k2.height / 2);
+  await page.mouse.wheel(0, -10);
+  await expect(crs).toHaveText('001');
+});
+
+test('a trackpad pinch (Ctrl+wheel) over a knob does not turn it', async ({ page }) => {
+  await fly(page);
+  const box = (await page.getByTestId('knob-crs1').boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.keyboard.down('Control');
+  await page.mouse.wheel(0, -10);
+  await page.keyboard.up('Control');
+  await expect(page.getByTestId('knob-crs1-sel')).toHaveText('360');
 });

@@ -17,6 +17,7 @@ import {
   vsKnob,
 } from '../../src/ui/panel/controls';
 import {
+  createWheelGate,
   createWheelStepper,
   keyToSteps,
   knobTitle,
@@ -160,6 +161,29 @@ describe('wheel and trackpad', () => {
     expect(steps(px(-40, 10))).toBe(0);
     expect(steps(px(30, 20))).toBe(0);
     expect(steps(px(30, 30))).toBe(-1);
+  });
+
+  it('line deltas count as pixels: a mouse notch is a step, small trackpad lines are not', () => {
+    const lines = (deltaY: number, timeStamp: number): WheelLike => ({
+      deltaX: 0,
+      deltaY,
+      deltaMode: 1,
+      timeStamp,
+    });
+    // 30 events of 0.25 line (5 px) in one swipe: 150 px, so 1 + 2 steps, not 30.
+    expect(total(Array.from({ length: 30 }, (_, i) => lines(-0.25, i * 16)))).toBe(3);
+    // A fast spin of 3-line notches is still one step per notch.
+    expect(total([0, 20, 40, 60].map((t) => lines(3, t)))).toBe(-4);
+  });
+
+  it('a scroll keeps its owner until it pauses: the panel scrolls on past a knob', () => {
+    const gate = createWheelGate<string>();
+    expect(gate(null, 0)).toBeNull(); // started over the panel
+    expect(gate('hdg', 16)).toBeNull(); // the knob passes under the pointer: still the panel's
+    expect(gate('hdg', 32)).toBeNull();
+    expect(gate('hdg', 32 + WHEEL_GESTURE_GAP_MS + 1)).toBe('hdg'); // a new gesture on the knob
+    expect(gate(null, 48 + WHEEL_GESTURE_GAP_MS)).toBe('hdg'); // drifting off mid-gesture
+    expect(gate('crs', 2000)).toBe('crs');
   });
 
   it('a pause starts a new gesture; horizontal scroll counts (Shift+wheel)', () => {
