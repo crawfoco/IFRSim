@@ -51,13 +51,18 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
    - Two nav radios (NAV1, NAV2), each with active/standby frequency, flip-flop
      and Morse ident (audio and dot/dash text). Standby is tuned with the MHz/kHz
      knobs, or by clicking or tapping the standby window: a popover with the value, a
-     keypad, step buttons (±1 MHz, ±50 kHz) and Set / Cancel. Typing (keyboard or keypad)
-     takes 108.00–117.95 on the 50 kHz spacing; anything else is rejected, not rounded.
+     keypad, step buttons (MHz on the left: −1 / +1 MHz; kHz on the right: −50 / +50 kHz)
+     and Set / Cancel. Typing (keyboard or keypad) takes 108.00–117.95 on the 50 kHz
+     spacing; anything else is rejected, not rounded.
      The selected heading (AP strip; under the HDG knob on the glass panel) and each
      course (CRS / OBS, a window under its knob) work the same way: 1–360 (0 = 360), steps
-     ±1° / ±10°, and for heading a sync to the current heading. Step buttons act at once;
-     typed values need Set or Enter. Opened by touch, the popover asks for no system
-     keyboard, so the iPad keyboard doesn't cover the panel.
+     ±1° / ±10°, and for heading a sync to the current heading. So does the selected
+     altitude (AP strip; under the ALT knob on the glass panel): 0–18,000 ft in hundreds
+     ("4500" or "4,500"), steps ±100 / ±1,000 ft. Step buttons act at once; typed values
+     need Set or Enter. A rejected entry stays, marked, and the next key starts a new
+     entry (Delete clears it). Every value window has a dotted underline under its value
+     to show it can be clicked. Opened by touch, the popover asks for no system keyboard,
+     so the iPad keyboard doesn't cover the panel.
    - Knobs turn by drag, wheel or keyboard. Trackpad scrolling steps about once per
      50 px; a scroll that started off a knob keeps scrolling the panel when a knob passes
      under the pointer; a pinch (Ctrl+wheel) over a knob doesn't turn it. Knob tooltips
@@ -65,6 +70,8 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
    - Touch screens (pointer: coarse): small controls (radio knobs, swap, ID, value
      windows) take a touch about 44 px across without changing the layout, the MHz and
      kHz knobs sit 10 px apart, and value windows keep a visible frame (no hover).
+   - The approach select screen asks for bug reports and enhancement requests as issues
+     at github.com/crawfoco/IFRSim/issues (a link that opens in a new tab).
    - Needles behave like real receivers: full-scale ±10° for VOR, ±2.5° for the
      localizer, ±0.7° for the glideslope, to/from logic, a flag when out of range
      or untuned.

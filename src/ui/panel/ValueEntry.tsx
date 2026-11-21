@@ -1,10 +1,12 @@
 /**
  * A value window you can set from any input: the NAV standby frequency, the selected
- * heading and the course. Click or tap it (or focus it and press Enter) to open a popover
+ * heading and altitude, and the course. A dotted underline under the value marks it as
+ * clickable. Click or tap it (or focus it and press Enter) to open a popover
  * with the value, an on-screen keypad and step buttons.
  *
  * - Typing (physical keyboard or the keypad) replaces the value; Enter or Set sets it,
- *   Escape or Cancel closes without setting. An invalid entry stays, marked, on Set.
+ *   Escape or Cancel closes without setting. An invalid entry stays, marked, on Set; the
+ *   next key (typed or keypad) replaces it, and Delete clears it.
  * - Step buttons (e.g. −10 / +10) act at once, like a knob turn, and the popover then
  *   shows the new value.
  * - A click or tap outside sets a valid entry and drops an invalid one.
@@ -187,9 +189,10 @@ export function ValueEntry<T>({
     setTyped(next.slice(0, maxLength));
     setInvalid(false);
   };
-  // Keypad: the first key replaces the value shown, as typing over a selected field does.
-  const press = (k: string) => type(typed === null ? k : typed + k);
-  const back = () => type((typed ?? live).slice(0, -1));
+  // Keypad: the first key replaces the value shown, as typing over a selected field does,
+  // and so does the first key after a rejected entry (Delete clears it).
+  const press = (k: string) => type(typed === null || invalid ? k : typed + k);
+  const back = () => type(invalid ? '' : (typed ?? live).slice(0, -1));
   const step = (s: EntryStep) => {
     s.onPress();
     setTyped(null);
@@ -197,6 +200,17 @@ export function ValueEntry<T>({
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    // After a rejected entry the next key starts a new one rather than editing the bad one.
+    if (invalid && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (e.key.length === 1) {
+        e.preventDefault();
+        return press(e.key);
+      }
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        e.preventDefault();
+        return back();
+      }
+    }
     if (e.key === 'Enter') {
       e.preventDefault();
       commit(true);
@@ -245,7 +259,7 @@ export function ValueEntry<T>({
         }}
       >
         {label !== undefined && <span className={labelClassName}>{label}</span>}
-        <span className={valueClassName} data-testid={testId}>
+        <span className={`${valueClassName} entry-value`} data-testid={testId}>
           {text}
         </span>
       </button>
@@ -342,7 +356,10 @@ export function degreeSteps(what: string, turn: (deg: number) => void): EntrySte
   }));
 }
 
-/** −1 MHz / −50 kHz / +50 kHz / +1 MHz, wrapping as the knobs do. */
+/**
+ * MHz on the left, kHz on the right, as the knobs sit: −1 MHz / +1 MHz / −50 kHz /
+ * +50 kHz, wrapping as the knobs do.
+ */
 export function frequencySteps(turn: (part: 'mhz' | 'khz', steps: number) => void): EntryStep[] {
   return [
     {
@@ -352,6 +369,7 @@ export function frequencySteps(turn: (part: 'mhz' | 'khz', steps: number) => voi
       title: 'Down 1 MHz',
       onPress: () => turn('mhz', -1),
     },
+    { id: 'mhz-up', label: '+1', unit: 'MHz', title: 'Up 1 MHz', onPress: () => turn('mhz', 1) },
     {
       id: 'khz-down',
       label: '−50',
@@ -360,6 +378,16 @@ export function frequencySteps(turn: (part: 'mhz' | 'khz', steps: number) => voi
       onPress: () => turn('khz', -1),
     },
     { id: 'khz-up', label: '+50', unit: 'kHz', title: 'Up 50 kHz', onPress: () => turn('khz', 1) },
-    { id: 'mhz-up', label: '+1', unit: 'MHz', title: 'Up 1 MHz', onPress: () => turn('mhz', 1) },
   ];
+}
+
+/** −1000 / −100 / +100 / +1000 ft for the altitude preselect; `turn(n)` moves it n feet. */
+export function altitudeSteps(turn: (ft: number) => void): EntryStep[] {
+  return ([-1000, -100, 100, 1000] as const).map((n) => ({
+    id: n < 0 ? `m${-n}` : `p${n}`,
+    label: n < 0 ? `−${-n}` : `+${n}`,
+    unit: 'ft',
+    title: `Altitude ${n < 0 ? 'down' : 'up'} ${Math.abs(n).toLocaleString('en-US')} ft`,
+    onPress: () => turn(n),
+  }));
 }

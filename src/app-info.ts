@@ -1,6 +1,8 @@
 import { version } from '../package.json';
 
 export const APP_NAME = 'IFRSim';
+/** Where to report bugs and ask for enhancements. */
+export const ISSUES_URL = 'https://github.com/crawfoco/IFRSim/issues';
 export const TRAINING_DISCLAIMER = 'Training use only — not for navigation';
 
 /** Which build is running. CI sets the commit and date; a local build has neither. */

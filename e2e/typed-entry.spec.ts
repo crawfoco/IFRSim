@@ -91,10 +91,67 @@ test.describe('steam panel', () => {
   });
 });
 
-test('glass panel: heading and course windows under the knobs', async ({ page }) => {
+test.describe('steam panel, more', () => {
+  test.beforeEach(({ page }) => fly(page));
+
+  test('type the selected altitude; its steps move it 100 and 1,000 ft', async ({ page }) => {
+    await expect(page.getByTestId('ann-alt-sel')).toHaveText('8,000');
+    await typeInto(page, 'ann-alt-sel', '4500');
+    await expect(page.getByTestId('ann-alt-sel')).toHaveText('4,500');
+    await page.getByTestId('ann-alt-sel-edit').click();
+    await page.getByTestId('ann-alt-sel-step-p1000').click();
+    await page.getByTestId('ann-alt-sel-step-m100').click();
+    await expect(page.getByTestId('ann-alt-sel')).toHaveText('5,400');
+    // Off the hundreds: marked, not set.
+    await page.keyboard.type('4550');
+    await page.keyboard.press('Enter');
+    await expect(page.getByTestId('ann-alt-sel-input')).toHaveAttribute('aria-invalid', 'true');
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('ann-alt-sel')).toHaveText('5,400');
+  });
+
+  test('after a rejected entry the next key starts a new one', async ({ page }) => {
+    const input = page.getByTestId('nav1-standby-input');
+    await page.getByTestId('nav1-standby-edit').click();
+    await page.keyboard.type('113.87');
+    await page.keyboard.press('Enter');
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    // Typed on the keyboard: replaces, not appends.
+    await page.keyboard.type('113.85');
+    await expect(input).toHaveValue('113.85');
+    await expect(input).not.toHaveAttribute('aria-invalid');
+    await page.keyboard.press('Enter');
+    await expect(page.getByTestId('nav1-standby')).toHaveText('113.85');
+
+    // The keypad does the same, after Set.
+    await page.getByTestId('nav1-standby-edit').click();
+    for (const k of ['1', '0', '7']) await page.getByTestId(`nav1-standby-key-${k}`).click();
+    await page.getByTestId('nav1-standby-set').click();
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    await page.getByTestId('nav1-standby-key-1').click();
+    await expect(input).toHaveValue('1');
+    // Delete after a rejected entry clears it.
+    await page.keyboard.press('Enter'); // "1" is rejected too
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    await page.getByTestId('nav1-standby-key-back').click();
+    await expect(input).toHaveValue('');
+  });
+
+  test('frequency steps: MHz on the left, kHz on the right', async ({ page }) => {
+    await page.getByTestId('nav1-standby-edit').click();
+    const lefts = [];
+    for (const id of ['mhz-down', 'mhz-up', 'khz-down', 'khz-up'])
+      lefts.push((await page.getByTestId(`nav1-standby-step-${id}`).boundingBox())!.x);
+    expect([...lefts].sort((a, b) => a - b)).toEqual(lefts);
+  });
+});
+
+test('glass panel: heading, altitude and course windows under the knobs', async ({ page }) => {
   await fly(page, 'glass');
   await typeInto(page, 'knob-hdg-sel', '293');
   await expect(page.getByTestId('knob-hdg-sel')).toHaveText('293');
+  await typeInto(page, 'knob-alt-sel', '6000');
+  await expect(page.getByTestId('knob-alt-sel')).toHaveText('6,000');
   await typeInto(page, 'knob-crs-sel', '263');
   await expect(page.getByTestId('knob-crs-sel')).toHaveText('263');
 });

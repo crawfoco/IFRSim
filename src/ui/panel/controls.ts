@@ -2,6 +2,7 @@
  * What each panel control sends. Pure: given the current (view) state and a knob turn,
  * return the sim command. Keeping this out of the components makes it unit-testable.
  */
+import { ALT_PRESELECT_MAX_FT } from '../../sim/commands';
 import type { Command, RadioId, SimState } from '../../sim/state';
 
 /**
@@ -51,6 +52,18 @@ export function parseDegrees(text: string): number | null {
   const deg = Number(m[1]);
   if (deg > 360) return null;
   return deg === 0 ? 360 : deg;
+}
+
+/**
+ * A typed altitude preselect in feet: "4000", "4,000" or "4 000", 0 to 18,000 in
+ * hundreds. Returns feet, or null; 4050 is rejected, not rounded.
+ */
+export function parseAltitude(text: string): number | null {
+  const t = text.trim().replace(/[,\s]/g, '');
+  if (!/^\d{1,5}$/.test(t)) return null;
+  const ft = Number(t);
+  if (ft > ALT_PRESELECT_MAX_FT || ft % 100 !== 0) return null;
+  return ft;
 }
 
 export const formatMHz = (mhz: number) => mhz.toFixed(2);

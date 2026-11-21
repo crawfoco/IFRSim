@@ -10,6 +10,7 @@ import {
   courseKnob,
   frequencyKnob,
   headingKnob,
+  parseAltitude,
   parseDegrees,
   parseFrequency,
   speedKnob,
@@ -27,6 +28,7 @@ import {
 } from '../../src/ui/panel/Knob';
 import { CourseKnob } from '../../src/ui/panel/NavControls';
 import { NavRadios } from '../../src/ui/panel/NavRadios';
+import { altitudeSteps, frequencySteps } from '../../src/ui/panel/ValueEntry';
 import { nav, onRadial } from '../sim/helpers';
 
 const W = buildWorld(nav, { magVarEastDeg: 8 });
@@ -118,6 +120,50 @@ describe('typed headings and courses', () => {
     );
     expect(s.panel.headingBugDeg).toBe(263);
     expect(s.radios.nav2.obsDeg).toBe(0); // shown as 360
+  });
+});
+
+describe('typed altitudes', () => {
+  it('accepts 0–18,000 ft in hundreds, with or without a separator', () => {
+    expect(parseAltitude('4500')).toBe(4500);
+    expect(parseAltitude(' 4,500 ')).toBe(4500);
+    expect(parseAltitude('4 500')).toBe(4500);
+    expect(parseAltitude('18000')).toBe(18000);
+    expect(parseAltitude('0')).toBe(0);
+  });
+
+  it('rejects anything off the hundreds, out of range or not a number', () => {
+    for (const t of ['', '4550', '45', '18100', '100000', '-500', '4.5', 'abc', 'FL120'])
+      expect(parseAltitude(t), t).toBeNull();
+  });
+
+  it('a typed altitude is one the sim accepts as is', () => {
+    const s = run(s0, { type: 'altPreselect', ft: parseAltitude('4,500')! });
+    expect(s.panel.altPreselectFt).toBe(4500);
+  });
+});
+
+describe('popover step buttons', () => {
+  it('frequency: MHz on the left, kHz on the right, as the knobs sit', () => {
+    const turns: [string, number][] = [];
+    const steps = frequencySteps((part, n) => turns.push([part, n]));
+    expect(steps.map((s) => s.id)).toEqual(['mhz-down', 'mhz-up', 'khz-down', 'khz-up']);
+    steps.forEach((s) => s.onPress());
+    expect(turns).toEqual([
+      ['mhz', -1],
+      ['mhz', 1],
+      ['khz', -1],
+      ['khz', 1],
+    ]);
+  });
+
+  it('altitude: −1000 / −100 / +100 / +1000 ft', () => {
+    const turns: number[] = [];
+    const steps = altitudeSteps((ft) => turns.push(ft));
+    expect(steps.map((s) => s.id)).toEqual(['m1000', 'm100', 'p100', 'p1000']);
+    steps.forEach((s) => s.onPress());
+    expect(turns).toEqual([-1000, -100, 100, 1000]);
+    expect(steps[0]!.title).toBe('Altitude down 1,000 ft');
   });
 });
 
@@ -303,6 +349,33 @@ describe('panel rendering', () => {
     expect(steam).not.toContain('knob-hdg-sel');
     const glass = renderToStaticMarkup(<ApPanel state={s0} send={noop} annunciator={false} />);
     expect(glass).toMatch(/data-testid="knob-hdg-sel"[^>]*>330</); // bug starts on the heading
+  });
+
+  it('the selected altitude is a window you can click to type in; on glass it sits under the knob', () => {
+    const steam = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    expect(steam).toMatch(/<button[^>]*data-testid="ann-alt-sel-edit"/);
+    expect(steam).toMatch(/data-testid="ann-alt-sel"[^>]*>8,000</);
+    expect(steam).not.toContain('knob-alt-sel');
+    const glass = renderToStaticMarkup(<ApPanel state={s0} send={noop} annunciator={false} />);
+    expect(glass).toMatch(/<button[^>]*data-testid="knob-alt-sel-edit"/);
+    expect(glass).toMatch(/data-testid="knob-alt-sel"[^>]*>8,000</);
+  });
+
+  it('every value window marks its value as clickable (the dotted underline)', () => {
+    const html =
+      renderToStaticMarkup(<ApPanel state={s0} send={noop} />) +
+      renderToStaticMarkup(<CourseKnob radio={1} state={s0} send={noop} />) +
+      renderToStaticMarkup(<NavRadios state={s0} send={noop} idents={{ 1: 'FQF', 2: null }} />);
+    for (const id of [
+      'ann-hdg-sel',
+      'ann-alt-sel',
+      'knob-crs1-sel',
+      'nav1-standby',
+      'nav2-standby',
+    ])
+      expect(html, id).toMatch(
+        new RegExp(`class="[^"]*\\bentry-value\\b[^"]*" data-testid="${id}"`),
+      );
   });
 
   it('a course knob has a course window under it', () => {

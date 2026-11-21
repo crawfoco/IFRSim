@@ -11,6 +11,16 @@
   text-align: left;
   cursor: pointer;
 }
+/* A dotted underline marks every value window as clickable, mouse or touch; solid on hover. */
+.entry-value {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.entry-btn:hover .entry-value,
+.entry-btn.entry-open .entry-value {
+  text-decoration-style: solid;
+}
 .entry-btn:hover,
 .entry-btn.entry-open {
   border-color: #4a515b;

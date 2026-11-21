@@ -102,6 +102,7 @@ for (const vp of [
     for (const card of await cards.all()) await expect(card).toBeInViewport({ ratio: 1 });
     await expect(page.getByTestId('how-to-fly')).toBeInViewport({ ratio: 1 });
     await expect(page.getByTestId('build-stamp')).toBeInViewport({ ratio: 1 });
+    await expect(page.getByTestId('report-issues')).toBeInViewport({ ratio: 1 });
     await page.screenshot({ path: `${SHOT_DIR}/home-${vp.name}.png` });
   });
 

@@ -5,12 +5,13 @@ import {
   altitudeKnob,
   formatCourse,
   headingKnob,
+  parseAltitude,
   parseDegrees,
   vsKnob,
   type Send,
 } from './controls';
 import { Knob } from './Knob';
-import { degreeSteps, ValueEntry } from './ValueEntry';
+import { altitudeSteps, degreeSteps, ValueEntry } from './ValueEntry';
 
 const BUTTONS: { id: ApButton; name: string }[] = [
   { id: 'AP', name: 'Autopilot on/off' },
@@ -70,6 +71,32 @@ export function ApPanel({
       hint="Knob: drag, scroll or arrows 1°; Shift or Page Up/Down 10°. Double-click syncs."
     />
   );
+  const altFt = state.panel.altPreselectFt;
+  /** The selected altitude, typed: in the annunciator strip (steam) or under the knob (glass). */
+  const altitudeEntry = (
+    testId: string,
+    className: string,
+    valueClassName: string,
+    label?: string,
+  ) => (
+    <ValueEntry
+      testId={testId}
+      text={altFt.toLocaleString('en-US')}
+      editText={String(altFt)}
+      parse={parseAltitude}
+      onSet={(ft) => send({ type: 'altPreselect', ft })}
+      name="Selected altitude"
+      rangeHint="an altitude, 0 to 18,000 feet in hundreds"
+      label={label}
+      className={className}
+      labelClassName="knob-entry-label"
+      valueClassName={valueClassName}
+      maxLength={6}
+      title="Selected altitude, feet: click to set it"
+      steps={altitudeSteps((ft) => send((s) => altitudeKnob(s, ft / 100, false)))}
+      hint="Knob: drag, scroll or arrows 100 ft; Shift or Page Up/Down 1,000 ft."
+    />
+  );
   return (
     <section className="ap" aria-label="Autopilot">
       {annunciator && (
@@ -99,9 +126,7 @@ export function ApPanel({
           </div>
           <div className="ap-sel">
             {headingEntry('ann-hdg-sel', 'ann ann-sel', 'ann-sel-value')}
-            <span className="ann ann-sel" title="Selected altitude, feet" data-testid="ann-alt-sel">
-              {state.panel.altPreselectFt.toLocaleString('en-US')}
-            </span>
+            {altitudeEntry('ann-alt-sel', 'ann ann-sel', 'ann-sel-value')}
             <span
               className="ann ann-sel"
               title="Selected vertical speed, feet per minute (VS mode)"
@@ -149,6 +174,11 @@ export function ApPanel({
             testId="knob-alt"
             stepHint={['100 ft', '1,000 ft']}
             onTurn={(n, big) => send((s) => altitudeKnob(s, n, big))}
+            below={
+              annunciator
+                ? undefined
+                : altitudeEntry('knob-alt-sel', 'knob-entry', 'knob-entry-value', 'ALT')
+            }
           />
           <Knob
             label="VS"
