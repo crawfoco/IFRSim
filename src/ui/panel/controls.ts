@@ -23,6 +23,24 @@ export function stepFrequency(mhz: number, part: 'mhz' | 'khz', steps: number): 
   return (whole * 100 + frac) / 100;
 }
 
+/**
+ * A frequency typed into a standby window: "113.85", "113.8" (= 113.80), "113", or the
+ * digits alone ("11385", "1138"). Returns MHz, or null unless it is a NAV frequency
+ * (108.00…117.95) on the 50 kHz spacing; 113.87 is rejected, not rounded.
+ */
+export function parseFrequency(text: string): number | null {
+  const t = text.trim().replace(',', '.');
+  let m = /^(\d{3})(?:\.(\d{0,2}))?$/.exec(t);
+  if (!m) {
+    const digits = /^(\d{3})(\d{1,2})$/.exec(t);
+    if (!digits) return null;
+    m = digits;
+  }
+  const k = Number(m[1]) * 100 + Number((m[2] ?? '').padEnd(2, '0'));
+  if (k < 10800 || k > 11795 || k % 5 !== 0) return null;
+  return k / 100;
+}
+
 export const formatMHz = (mhz: number) => mhz.toFixed(2);
 export const formatCourse = (deg: number) => String(Math.round(deg) % 360 || 360).padStart(3, '0');
 

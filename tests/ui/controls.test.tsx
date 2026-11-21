@@ -10,11 +10,18 @@ import {
   courseKnob,
   frequencyKnob,
   headingKnob,
+  parseFrequency,
   speedKnob,
   stepFrequency,
   vsKnob,
 } from '../../src/ui/panel/controls';
-import { keyToSteps } from '../../src/ui/panel/Knob';
+import {
+  createWheelStepper,
+  keyToSteps,
+  WHEEL_GESTURE_GAP_MS,
+  WHEEL_PX_PER_STEP,
+  type WheelLike,
+} from '../../src/ui/panel/Knob';
 import { NavRadios } from '../../src/ui/panel/NavRadios';
 import { nav, onRadial } from '../sim/helpers';
 
@@ -49,6 +56,87 @@ describe('frequency knobs', () => {
     expect(s.radios.nav1.standbyMHz).toBe(109.3);
     s = run(s, { type: 'swap', radio: 1 });
     expect(s.radios.nav1.activeMHz).toBe(109.3);
+  });
+});
+
+describe('typed frequencies', () => {
+  it('accepts NAV frequencies with or without the dot', () => {
+    expect(parseFrequency('113.85')).toBe(113.85);
+    expect(parseFrequency(' 109.3 ')).toBe(109.3);
+    expect(parseFrequency('109.')).toBe(109);
+    expect(parseFrequency('117')).toBe(117);
+    expect(parseFrequency('108,00')).toBe(108);
+    expect(parseFrequency('11395')).toBe(113.95);
+    expect(parseFrequency('1093')).toBe(109.3);
+  });
+
+  it('rejects anything off the band or off the 50 kHz spacing', () => {
+    for (const t of [
+      '',
+      '107.95',
+      '118.00',
+      '113.87',
+      '113.851',
+      '13.85',
+      'abc',
+      '1.1385',
+      '113.8.5',
+    ])
+      expect(parseFrequency(t), t).toBeNull();
+  });
+
+  it('a typed frequency is one the sim accepts as is', () => {
+    const s = run(s0, { type: 'standby', radio: 2, mhz: parseFrequency('117.95')! });
+    expect(s.radios.nav2.standbyMHz).toBe(117.95);
+  });
+});
+
+describe('wheel and trackpad', () => {
+  const px = (deltaY: number, timeStamp: number, deltaX = 0): WheelLike => ({
+    deltaX,
+    deltaY,
+    deltaMode: 0,
+    timeStamp,
+  });
+  const total = (events: WheelLike[]) => {
+    const steps = createWheelStepper();
+    return events.reduce((n, e) => n + steps(e), 0);
+  };
+
+  it('a mouse notch is one step, each notch after a pause another', () => {
+    expect(total([px(-100, 0)])).toBe(1);
+    expect(total([px(100, 0), px(100, 400), px(100, 800)])).toBe(-3);
+    // Firefox reports mouse wheels in lines.
+    const steps = createWheelStepper();
+    expect(
+      [1, 2, 3].map((t) => steps({ deltaX: 0, deltaY: -3, deltaMode: 1, timeStamp: t })),
+    ).toEqual([1, 1, 1]);
+  });
+
+  it('a trackpad swipe steps once per WHEEL_PX_PER_STEP, not once per event', () => {
+    // 60 events of 5 px, 16 ms apart: 300 px in one gesture.
+    const swipe = Array.from({ length: 60 }, (_, i) => px(-5, i * 16));
+    const n = total(swipe);
+    expect(n).toBe(1 + Math.floor((300 - 5) / WHEEL_PX_PER_STEP));
+    expect(n).toBeLessThan(10);
+  });
+
+  it('never more than one step per event, even for a big delta mid-gesture', () => {
+    expect(total([px(-5, 0), px(-400, 10)])).toBe(2);
+  });
+
+  it('a reversal mid-gesture counts afresh the other way', () => {
+    const steps = createWheelStepper();
+    expect(steps(px(-5, 0))).toBe(1);
+    expect(steps(px(-40, 10))).toBe(0);
+    expect(steps(px(30, 20))).toBe(0);
+    expect(steps(px(30, 30))).toBe(-1);
+  });
+
+  it('a pause starts a new gesture; horizontal scroll counts (Shift+wheel)', () => {
+    expect(total([px(-5, 0), px(-5, WHEEL_GESTURE_GAP_MS + 1)])).toBe(2);
+    expect(total([px(0, 0, -100)])).toBe(1);
+    expect(total([px(0, 0, 0)])).toBe(0);
   });
 });
 

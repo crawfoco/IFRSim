@@ -416,3 +416,38 @@
     padding: 6px 7px;
   }
 }
+
+/* Standby window: click to type a frequency. */
+.radio-freq-edit {
+  border: 1px solid transparent;
+  color: inherit;
+  text-align: left;
+  cursor: text;
+}
+.radio-freq-edit:hover {
+  border-color: #4a515b;
+}
+.radio-freq-edit:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 2px;
+}
+.radio-standby-input {
+  width: 6ch;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #2ec4f0;
+  background: transparent;
+  font: inherit;
+  font-size: 18px;
+  color: #f4f5f6;
+  outline: none;
+}
+.radio-standby-input.radio-invalid {
+  border-bottom-color: #ff5a5a;
+  color: #ff8a8a;
+}
+@media (max-width: 1199px) {
+  .radio-standby-input {
+    font-size: 16px;
+  }
+}
