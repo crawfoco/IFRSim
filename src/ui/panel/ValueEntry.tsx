@@ -1,13 +1,39 @@
 /**
- * A value window you can type into: the NAV standby frequency, the selected heading and
- * the course. Click it (or focus it and press Enter) to type; Enter or leaving the field
- * sets the value, Escape cancels. An invalid entry stays in the field, marked, on Enter,
- * and is dropped on leaving. The parent parses the text and sends the command.
+ * A value window you can set from any input: the NAV standby frequency, the selected
+ * heading and altitude, and the course. A dotted underline under the value marks it as
+ * clickable. Click or tap it (or focus it and press Enter) to open a popover
+ * with the value, an on-screen keypad and step buttons.
  *
- * Test ids: `${testId}-edit` is the window, `${testId}` the value in it, and
- * `${testId}-input` the field while typing.
+ * - Typing (physical keyboard or the keypad) replaces the value; Enter or Set sets it,
+ *   Escape or Cancel closes without setting. An invalid entry stays, marked, on Set; the
+ *   next key (typed or keypad) replaces it, and Delete clears it.
+ * - Step buttons (e.g. −10 / +10) act at once, like a knob turn, and the popover then
+ *   shows the new value.
+ * - A click or tap outside sets a valid entry and drops an invalid one.
+ * - Opened by touch, the field asks for no system keyboard (`inputmode="none"`): the
+ *   keypad is the keyboard, so the iPad keyboard doesn't cover half the panel. A
+ *   hardware keyboard still types into it.
+ *
+ * Test ids: `${testId}-edit` is the window, `${testId}` the value in it, `${testId}-pop`
+ * the popover, `${testId}-input` its field, `${testId}-key-<k>` the keys (0–9, dot, back),
+ * `${testId}-set` / `-cancel`, and `${testId}-step-<id>` the step buttons.
  */
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { useOutsidePress, usePopoverPlacement } from './usePopover';
+
+export interface EntryStep {
+  /** Test-id suffix, e.g. "m10". */
+  id: string;
+  /** Button text, e.g. "−10". */
+  label: string;
+  /** Small unit under the text, e.g. "MHz". */
+  unit?: string;
+  /** Read by screen readers and shown as a tooltip, e.g. "Heading down 10°". */
+  title: string;
+  onPress: () => void;
+  /** Takes a whole row (e.g. HDG's sync). */
+  wide?: boolean;
+}
 
 export interface ValueEntryProps<T> {
   testId: string;
@@ -17,9 +43,9 @@ export interface ValueEntryProps<T> {
   editText?: string;
   parse: (text: string) => T | null;
   onSet: (value: T) => void;
-  /** Accessible name, e.g. "NAV1 standby". */
+  /** Accessible name and popover heading, e.g. "NAV1 standby". */
   name: string;
-  /** What a valid entry is, e.g. "108.00 to 117.95, in 0.05 steps". */
+  /** What a valid entry is, e.g. "a NAV frequency, 108.00 to 117.95, in 0.05 steps". */
   rangeHint: string;
   /** Short label shown in the window above the value, e.g. STBY or CRS. */
   label?: string | undefined;
@@ -31,7 +57,15 @@ export interface ValueEntryProps<T> {
   maxLength: number;
   /** Tooltip on the window; defaults to a hint to click and type. */
   title?: string;
+  /** Step buttons in the popover. */
+  steps?: EntryStep[];
+  /** Whether the keypad has a decimal point (frequencies) or not (degrees). */
+  decimal?: boolean;
+  /** One line under the keypad, e.g. how the knob turns (not shown when opened by touch). */
+  hint?: string;
 }
+
+const KEYS = ['7', '8', '9', '4', '5', '6', '1', '2', '3'];
 
 export function ValueEntry<T>({
   testId,
@@ -47,99 +81,269 @@ export function ValueEntry<T>({
   valueClassName,
   maxLength,
   title,
+  steps = [],
+  decimal = false,
+  hint,
 }: ValueEntryProps<T>) {
-  const [draft, setDraft] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  /** What has been typed since opening or the last step; null shows the live value. */
+  const [typed, setTyped] = useState<string | null>(null);
   const [invalid, setInvalid] = useState(false);
+  const [touch, setTouch] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
-  // Set when Enter or Escape closes the field: focus goes back to the window, and a blur
-  // from the field going away must not commit a cancelled draft.
-  const closing = useRef(false);
-  useEffect(() => {
-    if (draft === null && closing.current) {
-      closing.current = false;
-      button.current?.focus();
-    }
-  }, [draft]);
-  const close = () => {
-    setDraft(null);
+  const pop = useRef<HTMLDivElement>(null);
+  const pos = usePopoverPlacement(open, button, pop);
+  const input = useRef<HTMLInputElement>(null);
+  const lastPointer = useRef('');
+  // Set when Enter, Escape, Set or Cancel closes the popover: focus goes back to the window.
+  const refocus = useRef(false);
+
+  const live = editText ?? text;
+  const shown = typed ?? live;
+
+  const close = (focusWindow: boolean) => {
+    refocus.current = focusWindow;
+    setOpen(false);
+    setTyped(null);
     setInvalid(false);
   };
-  /** Enter: set it or mark it invalid. Blur: set it or drop it. */
-  const commit = (fromEnter: boolean) => {
-    if (closing.current) return;
-    const v = parse(draft ?? '');
-    if (v === null && fromEnter) {
+  /** Set what was typed. From Set/Enter an invalid entry stays open, marked. */
+  const commit = (fromSet: boolean) => {
+    if (typed === null) return close(fromSet);
+    const v = parse(typed);
+    if (v === null && fromSet) {
       setInvalid(true);
       return;
     }
     if (v !== null) onSet(v);
-    closing.current = fromEnter;
-    close();
+    close(fromSet);
   };
+
+  useEffect(() => {
+    if (!open && refocus.current) {
+      refocus.current = false;
+      button.current?.focus();
+    }
+  }, [open]);
+
+  // A press outside the popover (and its window) sets a valid entry and closes.
+  useOutsidePress(open, [pop, button], () => commit(false));
+
+  // Focus the field on opening; with the live value shown, select it so typing replaces it.
+  // Not on touch: iOS answers a selection with its Cut/Copy menu, and the keypad's first
+  // key replaces the value anyway.
+  useEffect(() => {
+    if (!open) return;
+    input.current?.focus({ preventScroll: true });
+    if (typed === null && !touch) input.current?.select();
+  }, [open, typed, touch, live]);
+
+  const type = (next: string) => {
+    setTyped(next.slice(0, maxLength));
+    setInvalid(false);
+  };
+  // Keypad: the first key replaces the value shown, as typing over a selected field does,
+  // and so does the first key after a rejected entry (Delete clears it).
+  const press = (k: string) => type(typed === null || invalid ? k : typed + k);
+  const back = () => type(invalid ? '' : (typed ?? live).slice(0, -1));
+  const step = (s: EntryStep) => {
+    s.onPress();
+    setTyped(null);
+    setInvalid(false);
+  };
+
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    // After a rejected entry the next key starts a new one rather than editing the bad one.
+    if (invalid && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (e.key.length === 1) {
+        e.preventDefault();
+        return press(e.key);
+      }
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        e.preventDefault();
+        return back();
+      }
+    }
     if (e.key === 'Enter') {
       e.preventDefault();
       commit(true);
     } else if (e.key === 'Escape') {
       e.preventDefault();
-      closing.current = true;
-      close();
+      close(true);
     }
   };
-  const labelEl = (htmlFor?: string) =>
-    label === undefined ? null : htmlFor ? (
-      <label className={labelClassName} htmlFor={htmlFor}>
-        {label}
-      </label>
-    ) : (
-      <span className={labelClassName}>{label}</span>
-    );
+  // Keypad and step buttons keep the focus in the field, so typing carries on.
+  const keepFocus = (e: PointerEvent) => e.preventDefault();
 
-  if (draft === null)
-    return (
+  const keyBtn = (k: string, id: string, aria: string, onClick: () => void) => (
+    <button
+      key={id}
+      type="button"
+      className="entry-key"
+      aria-label={aria}
+      data-testid={`${testId}-key-${id}`}
+      onPointerDown={keepFocus}
+      onClick={onClick}
+    >
+      {k}
+    </button>
+  );
+
+  return (
+    <>
       <button
         ref={button}
         type="button"
-        className={`${className} entry-btn`}
-        aria-label={`${name} ${text}, click to type a value`}
-        title={title ?? `${name}: click to type a value`}
+        className={`${className} entry-btn${open ? ' entry-open' : ''}`}
+        aria-label={`${name} ${text}, click to set`}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        title={title ?? `${name}: click to set`}
         data-testid={`${testId}-edit`}
-        onClick={() => setDraft(editText ?? text)}
+        onPointerDown={(e) => {
+          lastPointer.current = e.pointerType;
+        }}
+        onClick={() => {
+          if (open) return commit(false);
+          setTouch(lastPointer.current === 'touch' || lastPointer.current === 'pen');
+          lastPointer.current = '';
+          setOpen(true);
+        }}
       >
-        {labelEl()}
-        <span className={valueClassName} data-testid={testId}>
+        {label !== undefined && <span className={labelClassName}>{label}</span>}
+        <span className={`${valueClassName} entry-value`} data-testid={testId}>
           {text}
         </span>
       </button>
-    );
-  const inputId = `${testId}-input`;
-  return (
-    <span className={`${className} entry-open`}>
-      {labelEl(inputId)}
-      <span className={valueClassName}>
-        <input
-          id={inputId}
-          className={`entry-input${invalid ? ' entry-invalid' : ''}`}
-          style={{ width: `${maxLength}ch` }}
-          data-testid={inputId}
-          aria-label={`${name}, ${rangeHint}`}
-          aria-invalid={invalid || undefined}
-          title={invalid ? `Enter ${rangeHint}` : undefined}
-          inputMode="decimal"
-          autoComplete="off"
-          spellCheck={false}
-          maxLength={maxLength}
-          value={draft}
-          autoFocus
-          onFocus={(e) => e.currentTarget.select()}
-          onChange={(e) => {
-            setDraft(e.target.value);
-            setInvalid(false);
-          }}
-          onKeyDown={onKeyDown}
-          onBlur={() => commit(false)}
-        />
-      </span>
-    </span>
+      {open && (
+        <div
+          ref={pop}
+          className="entry-pop"
+          role="dialog"
+          aria-label={name}
+          data-testid={`${testId}-pop`}
+          style={pos}
+        >
+          <div className="entry-pop-name">{name}</div>
+          <input
+            ref={input}
+            className={`entry-input${invalid ? ' entry-invalid' : ''}`}
+            data-testid={`${testId}-input`}
+            aria-label={`${name}, ${rangeHint}`}
+            aria-invalid={invalid || undefined}
+            title={invalid ? `Enter ${rangeHint}` : undefined}
+            inputMode={touch ? 'none' : decimal ? 'decimal' : 'numeric'}
+            enterKeyHint="done"
+            autoComplete="off"
+            spellCheck={false}
+            maxLength={maxLength}
+            value={shown}
+            onChange={(e) => type(e.target.value)}
+            onKeyDown={onKeyDown}
+          />
+          {/* Always there, so the buttons below never move: what the field takes, or (red)
+              why an entry was rejected. */}
+          <div
+            className={`entry-msg${invalid ? ' entry-error' : ''}`}
+            data-testid={`${testId}-msg`}
+            aria-live="assertive"
+          >
+            {invalid ? `Enter ${rangeHint}` : rangeHint[0]!.toUpperCase() + rangeHint.slice(1)}
+          </div>
+          {steps.length > 0 && (
+            <div className="entry-steps">
+              {steps.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  className={`entry-step${s.wide ? ' entry-step-wide' : ''}`}
+                  title={s.title}
+                  aria-label={s.title}
+                  data-testid={`${testId}-step-${s.id}`}
+                  onPointerDown={keepFocus}
+                  onClick={() => step(s)}
+                >
+                  {s.label}
+                  {s.unit && <span className="entry-step-unit">{s.unit}</span>}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="entry-keys">
+            {KEYS.map((k) => keyBtn(k, k, k, () => press(k)))}
+            {decimal ? keyBtn('.', 'dot', 'point', () => press('.')) : <span />}
+            {keyBtn('0', '0', '0', () => press('0'))}
+            {keyBtn('⌫', 'back', 'Delete', back)}
+          </div>
+          <div className="entry-actions">
+            <button
+              type="button"
+              className="entry-action"
+              data-testid={`${testId}-cancel`}
+              onPointerDown={keepFocus}
+              onClick={() => close(true)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="entry-action entry-set"
+              data-testid={`${testId}-set`}
+              onPointerDown={keepFocus}
+              onClick={() => commit(true)}
+            >
+              Set
+            </button>
+          </div>
+          {hint && !touch && <div className="entry-hint">{hint}</div>}
+        </div>
+      )}
+    </>
   );
+}
+
+/** +10 / +1 / −1 / −10 (up before down) for a heading or course; `turn(n)` turns it n°. */
+export function degreeSteps(what: string, turn: (deg: number) => void): EntryStep[] {
+  return ([10, 1, -1, -10] as const).map((n) => ({
+    id: n < 0 ? `m${-n}` : `p${n}`,
+    label: n < 0 ? `−${-n}` : `+${n}`,
+    title: `${what} ${n < 0 ? 'down' : 'up'} ${Math.abs(n)}°`,
+    onPress: () => turn(n),
+  }));
+}
+
+/**
+ * MHz on the left, kHz on the right, as the knobs sit, up before down: +1 MHz / −1 MHz /
+ * +50 kHz / −50 kHz, wrapping as the knobs do.
+ */
+export function frequencySteps(turn: (part: 'mhz' | 'khz', steps: number) => void): EntryStep[] {
+  return [
+    { id: 'mhz-up', label: '+1', unit: 'MHz', title: 'Up 1 MHz', onPress: () => turn('mhz', 1) },
+    {
+      id: 'mhz-down',
+      label: '−1',
+      unit: 'MHz',
+      title: 'Down 1 MHz',
+      onPress: () => turn('mhz', -1),
+    },
+    { id: 'khz-up', label: '+50', unit: 'kHz', title: 'Up 50 kHz', onPress: () => turn('khz', 1) },
+    {
+      id: 'khz-down',
+      label: '−50',
+      unit: 'kHz',
+      title: 'Down 50 kHz',
+      onPress: () => turn('khz', -1),
+    },
+  ];
+}
+
+/** +1000 / +100 / −100 / −1000 ft for the altitude preselect; `turn(n)` moves it n feet. */
+export function altitudeSteps(turn: (ft: number) => void): EntryStep[] {
+  return ([1000, 100, -100, -1000] as const).map((n) => ({
+    id: n < 0 ? `m${-n}` : `p${n}`,
+    label: n < 0 ? `−${-n}` : `+${n}`,
+    unit: 'ft',
+    title: `Altitude ${n < 0 ? 'down' : 'up'} ${Math.abs(n).toLocaleString('en-US')} ft`,
+    onPress: () => turn(n),
+  }));
 }

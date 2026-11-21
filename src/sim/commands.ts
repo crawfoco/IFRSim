@@ -8,7 +8,7 @@ import { sense } from './sensors';
 import type { Command, NavRadio, RadioId, SimState } from './state';
 import type { World } from './world';
 
-const ALT_PRESELECT_MAX_FT = 18_000;
+export const ALT_PRESELECT_MAX_FT = 18_000;
 const NAV_MIN_MHZ = 108.0;
 const NAV_MAX_MHZ = 117.95;
 
@@ -45,7 +45,7 @@ export function applyCommand(s: SimState, c: Command, world: World): SimState {
         },
       };
     case 'vsTarget':
-      // The VS wheel only acts in VS mode.
+      // The VS buttons only act in VS mode.
       if (s.ap.vertical !== 'VS') return s;
       return { ...s, ap: { ...s.ap, vsRefFpm: clamp(Math.round(c.fpm / 100) * 100, -1500, 1000) } };
     case 'speed':

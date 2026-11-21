@@ -10,13 +10,16 @@ import {
   courseKnob,
   frequencyKnob,
   headingKnob,
+  parseAltitude,
   parseDegrees,
   parseFrequency,
-  speedKnob,
+  SPEED_CHOICES,
   stepFrequency,
-  vsKnob,
+  VS_STEP_FPM,
+  vsStep,
 } from '../../src/ui/panel/controls';
 import {
+  createWheelGate,
   createWheelStepper,
   keyToSteps,
   knobTitle,
@@ -26,6 +29,7 @@ import {
 } from '../../src/ui/panel/Knob';
 import { CourseKnob } from '../../src/ui/panel/NavControls';
 import { NavRadios } from '../../src/ui/panel/NavRadios';
+import { altitudeSteps, degreeSteps, frequencySteps } from '../../src/ui/panel/ValueEntry';
 import { nav, onRadial } from '../sim/helpers';
 
 const W = buildWorld(nav, { magVarEastDeg: 8 });
@@ -120,6 +124,60 @@ describe('typed headings and courses', () => {
   });
 });
 
+describe('typed altitudes', () => {
+  it('accepts 0–18,000 ft in hundreds, with or without a separator', () => {
+    expect(parseAltitude('4500')).toBe(4500);
+    expect(parseAltitude(' 4,500 ')).toBe(4500);
+    expect(parseAltitude('4 500')).toBe(4500);
+    expect(parseAltitude('18000')).toBe(18000);
+    expect(parseAltitude('0')).toBe(0);
+  });
+
+  it('rejects anything off the hundreds, out of range or not a number', () => {
+    for (const t of ['', '4550', '45', '18100', '100000', '-500', '4.5', 'abc', 'FL120'])
+      expect(parseAltitude(t), t).toBeNull();
+  });
+
+  it('a typed altitude is one the sim accepts as is', () => {
+    const s = run(s0, { type: 'altPreselect', ft: parseAltitude('4,500')! });
+    expect(s.panel.altPreselectFt).toBe(4500);
+  });
+});
+
+describe('popover step buttons', () => {
+  it('frequency: MHz on the left, kHz on the right, up before down', () => {
+    const turns: [string, number][] = [];
+    const steps = frequencySteps((part, n) => turns.push([part, n]));
+    expect(steps.map((s) => s.id)).toEqual(['mhz-up', 'mhz-down', 'khz-up', 'khz-down']);
+    steps.forEach((s) => s.onPress());
+    expect(turns).toEqual([
+      ['mhz', 1],
+      ['mhz', -1],
+      ['khz', 1],
+      ['khz', -1],
+    ]);
+  });
+
+  it('heading and course: +10 / +1 / −1 / −10°', () => {
+    const turns: number[] = [];
+    const steps = degreeSteps('Heading', (n) => turns.push(n));
+    expect(steps.map((s) => s.id)).toEqual(['p10', 'p1', 'm1', 'm10']);
+    expect(steps.map((s) => s.label)).toEqual(['+10', '+1', '−1', '−10']);
+    steps.forEach((s) => s.onPress());
+    expect(turns).toEqual([10, 1, -1, -10]);
+    expect(steps[0]!.title).toBe('Heading up 10°');
+  });
+
+  it('altitude: +1000 / +100 / −100 / −1000 ft', () => {
+    const turns: number[] = [];
+    const steps = altitudeSteps((ft) => turns.push(ft));
+    expect(steps.map((s) => s.id)).toEqual(['p1000', 'p100', 'm100', 'm1000']);
+    steps.forEach((s) => s.onPress());
+    expect(turns).toEqual([1000, 100, -100, -1000]);
+    expect(steps[0]!.title).toBe('Altitude up 1,000 ft');
+  });
+});
+
 describe('wheel and trackpad', () => {
   const px = (deltaY: number, timeStamp: number, deltaX = 0): WheelLike => ({
     deltaX,
@@ -162,6 +220,29 @@ describe('wheel and trackpad', () => {
     expect(steps(px(30, 30))).toBe(-1);
   });
 
+  it('line deltas count as pixels: a mouse notch is a step, small trackpad lines are not', () => {
+    const lines = (deltaY: number, timeStamp: number): WheelLike => ({
+      deltaX: 0,
+      deltaY,
+      deltaMode: 1,
+      timeStamp,
+    });
+    // 30 events of 0.25 line (5 px) in one swipe: 150 px, so 1 + 2 steps, not 30.
+    expect(total(Array.from({ length: 30 }, (_, i) => lines(-0.25, i * 16)))).toBe(3);
+    // A fast spin of 3-line notches is still one step per notch.
+    expect(total([0, 20, 40, 60].map((t) => lines(3, t)))).toBe(-4);
+  });
+
+  it('a scroll keeps its owner until it pauses: the panel scrolls on past a knob', () => {
+    const gate = createWheelGate<string>();
+    expect(gate(null, 0)).toBeNull(); // started over the panel
+    expect(gate('hdg', 16)).toBeNull(); // the knob passes under the pointer: still the panel's
+    expect(gate('hdg', 32)).toBeNull();
+    expect(gate('hdg', 32 + WHEEL_GESTURE_GAP_MS + 1)).toBe('hdg'); // a new gesture on the knob
+    expect(gate(null, 48 + WHEEL_GESTURE_GAP_MS)).toBe('hdg'); // drifting off mid-gesture
+    expect(gate('crs', 2000)).toBe('crs');
+  });
+
   it('a pause starts a new gesture; horizontal scroll counts (Shift+wheel)', () => {
     expect(total([px(-5, 0), px(-5, WHEEL_GESTURE_GAP_MS + 1)])).toBe(2);
     expect(total([px(0, 0, -100)])).toBe(1);
@@ -170,21 +251,32 @@ describe('wheel and trackpad', () => {
 });
 
 describe('knobs send the right commands', () => {
-  it('heading, altitude, speed and course', () => {
+  it('heading, altitude and course', () => {
     expect(headingKnob(s0, 1, false)).toEqual({ type: 'headingBug', deg: 331 });
     expect(headingKnob(s0, -3, true)).toEqual({ type: 'headingBug', deg: 300 });
     expect(altitudeKnob(s0, -10, false)).toEqual({ type: 'altPreselect', ft: 7000 });
     expect(altitudeKnob(s0, 1, true)).toEqual({ type: 'altPreselect', ft: 9000 });
-    expect(speedKnob(s0, -2, true)).toEqual({ type: 'speed', kt: 90 });
     expect(courseKnob(s0, 1, 10, false)).toEqual({ type: 'course', radio: 1, deg: 365 });
     expect(run(s0, courseKnob(s0, 1, 10, false)).radios.nav1.obsDeg).toBe(5);
     expect(courseKnob(s0, 2, -1, true)).toEqual({ type: 'course', radio: 2, deg: -10 });
   });
 
-  it('VS knob steps 100 fpm from the current target', () => {
+  it('VS buttons step 500 fpm from the current target, within the sim limits', () => {
     const vs = run(s0, { type: 'button', button: 'AP' }, { type: 'button', button: 'VS' });
-    expect(vsKnob(vs, -5)).toEqual({ type: 'vsTarget', fpm: -500 });
-    expect(run(vs, vsKnob(vs, -5)).ap.vsRefFpm).toBe(-500);
+    const start = vs.ap.vsRefFpm;
+    expect(VS_STEP_FPM).toBe(500);
+    expect(vsStep(vs, -VS_STEP_FPM)).toEqual({ type: 'vsTarget', fpm: start - 500 });
+    let s = vs;
+    for (let i = 0; i < 6; i++) s = run(s, vsStep(s, -VS_STEP_FPM));
+    expect(s.ap.vsRefFpm).toBe(-1500); // the sim's floor
+    for (let i = 0; i < 6; i++) s = run(s, vsStep(s, VS_STEP_FPM));
+    expect(s.ap.vsRefFpm).toBe(1000); // and its ceiling
+  });
+
+  it('speed menu: 80, 90 and 100 KIAS; 90 is still category A, 100 is B', () => {
+    expect(SPEED_CHOICES).toEqual([80, 90, 100]);
+    expect(SPEED_CHOICES.map(approachCategory)).toEqual(['A', 'A', 'B']);
+    for (const kt of SPEED_CHOICES) expect(run(s0, { type: 'speed', kt }).panel.iasCmdKt).toBe(kt);
   });
 
   it('keyboard: arrows step 1, Page/Shift step big, other keys ignored', () => {
@@ -247,7 +339,7 @@ describe('panel rendering', () => {
     expect(order.every((i) => i > 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
     expect(html).toMatch(/data-testid="ann-vs-sel"[^>]*><\/span>/);
-    const knobs = ['knob-hdg', 'knob-alt', 'knob-vs'].map((id) => html.indexOf(id));
+    const knobs = ['knob-hdg', 'knob-alt', 'vs-steps'].map((id) => html.indexOf(id));
     expect([...knobs].sort((a, b) => a - b)).toEqual(knobs);
   });
 
@@ -279,6 +371,33 @@ describe('panel rendering', () => {
     expect(steam).not.toContain('knob-hdg-sel');
     const glass = renderToStaticMarkup(<ApPanel state={s0} send={noop} annunciator={false} />);
     expect(glass).toMatch(/data-testid="knob-hdg-sel"[^>]*>330</); // bug starts on the heading
+  });
+
+  it('the selected altitude is a window you can click to type in; on glass it sits under the knob', () => {
+    const steam = renderToStaticMarkup(<ApPanel state={s0} send={noop} />);
+    expect(steam).toMatch(/<button[^>]*data-testid="ann-alt-sel-edit"/);
+    expect(steam).toMatch(/data-testid="ann-alt-sel"[^>]*>8,000</);
+    expect(steam).not.toContain('knob-alt-sel');
+    const glass = renderToStaticMarkup(<ApPanel state={s0} send={noop} annunciator={false} />);
+    expect(glass).toMatch(/<button[^>]*data-testid="knob-alt-sel-edit"/);
+    expect(glass).toMatch(/data-testid="knob-alt-sel"[^>]*>8,000</);
+  });
+
+  it('every value window marks its value as clickable (the dotted underline)', () => {
+    const html =
+      renderToStaticMarkup(<ApPanel state={s0} send={noop} />) +
+      renderToStaticMarkup(<CourseKnob radio={1} state={s0} send={noop} />) +
+      renderToStaticMarkup(<NavRadios state={s0} send={noop} idents={{ 1: 'FQF', 2: null }} />);
+    for (const id of [
+      'ann-hdg-sel',
+      'ann-alt-sel',
+      'knob-crs1-sel',
+      'nav1-standby',
+      'nav2-standby',
+    ])
+      expect(html, id).toMatch(
+        new RegExp(`class="[^"]*\\bentry-value\\b[^"]*" data-testid="${id}"`),
+      );
   });
 
   it('a course knob has a course window under it', () => {

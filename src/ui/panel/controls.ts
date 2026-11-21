@@ -2,6 +2,7 @@
  * What each panel control sends. Pure: given the current (view) state and a knob turn,
  * return the sim command. Keeping this out of the components makes it unit-testable.
  */
+import { ALT_PRESELECT_MAX_FT } from '../../sim/commands';
 import type { Command, RadioId, SimState } from '../../sim/state';
 
 /**
@@ -53,6 +54,18 @@ export function parseDegrees(text: string): number | null {
   return deg === 0 ? 360 : deg;
 }
 
+/**
+ * A typed altitude preselect in feet: "4000", "4,000" or "4 000", 0 to 18,000 in
+ * hundreds. Returns feet, or null; 4050 is rejected, not rounded.
+ */
+export function parseAltitude(text: string): number | null {
+  const t = text.trim().replace(/[,\s]/g, '');
+  if (!/^\d{1,5}$/.test(t)) return null;
+  const ft = Number(t);
+  if (ft > ALT_PRESELECT_MAX_FT || ft % 100 !== 0) return null;
+  return ft;
+}
+
 export const formatMHz = (mhz: number) => mhz.toFixed(2);
 export const formatCourse = (deg: number) => String(Math.round(deg) % 360 || 360).padStart(3, '0');
 
@@ -66,15 +79,17 @@ export const altitudeKnob = (s: SimState, steps: number, big: boolean): Command 
   ft: s.panel.altPreselectFt + steps * (big ? 1000 : 100),
 });
 
-export const vsKnob = (s: SimState, steps: number): Command => ({
+/** How far one press of the VS +/− buttons moves the vertical-speed target. */
+export const VS_STEP_FPM = 500;
+
+/** The VS buttons: move the vertical-speed target by `fpm` (the sim clamps it). */
+export const vsStep = (s: SimState, fpm: number): Command => ({
   type: 'vsTarget',
-  fpm: s.ap.vsRefFpm + steps * 100,
+  fpm: s.ap.vsRefFpm + fpm,
 });
 
-export const speedKnob = (s: SimState, steps: number, big: boolean): Command => ({
-  type: 'speed',
-  kt: s.panel.iasCmdKt + steps * (big ? 5 : 1),
-});
+/** The target speeds the speed menu offers, in KIAS. */
+export const SPEED_CHOICES = [80, 90, 100] as const;
 
 export const courseKnob = (s: SimState, radio: RadioId, steps: number, big: boolean): Command => ({
   type: 'course',

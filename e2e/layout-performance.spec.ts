@@ -48,7 +48,8 @@ for (const vp of [
         'btn-AP',
         'btn-APR',
         'knob-hdg',
-        'knob-power',
+        'power-edit',
+        'btn-vs-up',
         'nav2-khz',
         'dme-src-2',
         'timer-reset',
@@ -69,7 +70,7 @@ for (const vp of [
         for (const [win, knob] of [
           ['ann-hdg-sel', 'knob-hdg'],
           ['ann-alt-sel', 'knob-alt'],
-          ['ann-vs-sel', 'knob-vs'],
+          ['ann-vs-sel', 'vs-steps'],
         ] as const)
           expect(Math.abs((await centre(win)) - (await centre(knob))), win).toBeLessThanOrEqual(2);
         await expect(page.getByTestId('dme')).toBeInViewport({ ratio: 1 });
@@ -102,6 +103,7 @@ for (const vp of [
     for (const card of await cards.all()) await expect(card).toBeInViewport({ ratio: 1 });
     await expect(page.getByTestId('how-to-fly')).toBeInViewport({ ratio: 1 });
     await expect(page.getByTestId('build-stamp')).toBeInViewport({ ratio: 1 });
+    await expect(page.getByTestId('report-issues')).toBeInViewport({ ratio: 1 });
     await page.screenshot({ path: `${SHOT_DIR}/home-${vp.name}.png` });
   });
 

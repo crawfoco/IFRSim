@@ -3,7 +3,7 @@
  * approaches (ILS, LOC, VOR) and the RNAV (GPS) approaches.
  */
 import { useState } from 'react';
-import { APP_NAME, BUILD_STAMP, TRAINING_DISCLAIMER } from '../../app-info';
+import { APP_NAME, BUILD_STAMP, ISSUES_URL, TRAINING_DISCLAIMER } from '../../app-info';
 import type { Procedure } from '../../procedures/schema';
 import { chartCycleText } from '../chart/ChartViewer';
 
@@ -83,8 +83,17 @@ export function Select({
           </ul>
         </div>
       </div>
-      <footer className="build-stamp" data-testid="build-stamp">
-        {APP_NAME} {BUILD_STAMP}
+      <footer className="select-foot">
+        <p className="report-issues" data-testid="report-issues">
+          Found a bug, or have an idea to make {APP_NAME} better? Please create an issue at{' '}
+          <a href={ISSUES_URL} target="_blank" rel="noopener noreferrer">
+            {ISSUES_URL.replace(/^https:\/\//, '')}
+          </a>
+          .
+        </p>
+        <span className="build-stamp" data-testid="build-stamp">
+          {APP_NAME} {BUILD_STAMP}
+        </span>
       </footer>
     </main>
   );

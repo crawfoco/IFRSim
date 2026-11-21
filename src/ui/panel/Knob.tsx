@@ -64,6 +64,9 @@ export function keyToSteps(e: { key: string; shiftKey: boolean }): [number, bool
 export const WHEEL_PX_PER_STEP = 50;
 /** A pause this long between wheel events starts a new gesture. */
 export const WHEEL_GESTURE_GAP_MS = 250;
+/** Line and page wheel deltas (Firefox) in pixels: a 3-line mouse notch is one step. */
+export const WHEEL_LINE_PX = 20;
+export const WHEEL_PAGE_PX = 400;
 
 export interface WheelLike {
   deltaX: number;
@@ -79,19 +82,22 @@ export interface WheelLike {
  * after the fingers lift, so a step per event spins a trackpad far past the target.
  * Here the first event of a gesture is one step (so a mouse notch or a light touch
  * still turns the knob at once), then pixel scrolling counts one step per
- * WHEEL_PX_PER_STEP, never more than one per event. Line and page deltas (a mouse in
- * Firefox) are one step per event. Up or left (negative delta) turns the knob up; the
- * horizontal axis counts too, since Shift+wheel scrolls sideways in some browsers.
+ * WHEEL_PX_PER_STEP, never more than one per event. Line and page deltas (Firefox) are
+ * counted in pixels the same way, so a mouse notch (3 lines) is still a step but a
+ * trackpad that reports small line deltas can't run away. Up or left (negative delta)
+ * turns the knob up; the horizontal axis counts too, since Shift+wheel scrolls sideways
+ * in some browsers.
  */
 export function createWheelStepper(): (e: WheelLike) => number {
   let acc = 0;
   let last = -Infinity;
   return (e) => {
-    const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-    if (d === 0) return 0;
+    const raw = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+    if (raw === 0) return 0;
+    const d = raw * (e.deltaMode === 1 ? WHEEL_LINE_PX : e.deltaMode === 2 ? WHEEL_PAGE_PX : 1);
     const fresh = e.timeStamp - last > WHEEL_GESTURE_GAP_MS;
     last = e.timeStamp;
-    if (fresh || e.deltaMode !== 0) {
+    if (fresh) {
       acc = 0;
       return d < 0 ? 1 : -1;
     }
@@ -102,6 +108,40 @@ export function createWheelStepper(): (e: WheelLike) => number {
     acc = 0;
     return d < 0 ? 1 : -1;
   };
+}
+
+/**
+ * Who a wheel gesture belongs to: whatever was under the pointer when it started. A
+ * two-finger scroll of the panel that passes over a knob keeps scrolling the panel, rather
+ * than the knob catching it and quietly changing a heading or frequency; a pause (a new
+ * gesture) with the pointer on the knob turns the knob. `over` is the knob under the
+ * pointer (null for none); returns the gesture's owner (null for the page).
+ */
+export function createWheelGate<T>(): (over: T | null, timeStamp: number) => T | null {
+  let owner: T | null = null;
+  let last = -Infinity;
+  return (over, timeStamp) => {
+    if (timeStamp - last > WHEEL_GESTURE_GAP_MS) owner = over;
+    last = timeStamp;
+    return owner;
+  };
+}
+
+/** The current wheel gesture's owner, kept by one capture listener for all knobs. */
+let wheelOwner: Element | null = null;
+let wheelGateInstalled = false;
+function installWheelGate() {
+  if (wheelGateInstalled) return;
+  wheelGateInstalled = true;
+  const gate = createWheelGate<Element>();
+  document.addEventListener(
+    'wheel',
+    (e) => {
+      const over = e.target instanceof Element ? e.target.closest('.knob-cap') : null;
+      wheelOwner = gate(over, e.timeStamp);
+    },
+    { capture: true, passive: true },
+  );
 }
 
 export function Knob({
@@ -135,8 +175,13 @@ export function Knob({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    installWheelGate();
     const wheelSteps = createWheelStepper();
     const onWheel = (e: WheelEvent) => {
+      // A pinch on a trackpad arrives as Ctrl+wheel: leave it to the browser (zoom).
+      if (e.ctrlKey) return;
+      // A scroll that started elsewhere scrolls on past the knob.
+      if (wheelOwner !== el) return;
       e.preventDefault();
       const steps = wheelSteps(e);
       if (steps !== 0) emitRef.current(steps, e.shiftKey);

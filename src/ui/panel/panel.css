@@ -1,5 +1,6 @@
-/* Value windows you can type into (ValueEntry): standby frequency, heading, course.
-   Kept early in the file so each window's own class (later) sets its box. */
+/* Value windows (ValueEntry): standby frequency, heading, course. Click or tap opens a
+   popover with a keypad and step buttons. Kept early in the file so each window's own
+   class (later) sets its box. */
 .entry-btn {
   margin: 0;
   padding: 0;
@@ -8,29 +9,204 @@
   font: inherit;
   color: inherit;
   text-align: left;
-  cursor: text;
+  cursor: pointer;
 }
-.entry-btn:hover {
+/* A dotted underline marks every value window as clickable, mouse or touch; solid on hover. */
+.entry-value {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.entry-btn:hover .entry-value,
+.entry-btn.entry-open .entry-value {
+  text-decoration-style: solid;
+}
+.entry-btn:hover,
+.entry-btn.entry-open {
   border-color: #4a515b;
+}
+.entry-btn.entry-open {
+  border-color: #2ec4f0;
 }
 .entry-btn:focus-visible {
   outline: 3px solid #2ec4f0;
   outline-offset: 2px;
 }
+
+.entry-pop {
+  position: fixed;
+  z-index: 50;
+  display: grid;
+  gap: 8px;
+  width: 196px;
+  padding: 10px;
+  border: 1px solid #4a515b;
+  border-radius: 8px;
+  background: #16191e;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+  color: #e9ecef;
+  font:
+    500 13px system-ui,
+    sans-serif;
+  text-align: left;
+  letter-spacing: normal;
+}
+.entry-pop-name {
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #aab2bb;
+  text-transform: uppercase;
+}
+/* 16 px or more: iOS zooms the page when a smaller field takes the focus. */
 .entry-input {
-  box-sizing: content-box;
-  padding: 0;
-  border: 0;
-  border-bottom: 1px solid #2ec4f0;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-  text-align: inherit;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+  background: #000;
+  color: #f4f5f6;
+  font:
+    700 22px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  text-align: center;
   outline: none;
 }
+.entry-input:focus {
+  border-color: #2ec4f0;
+}
 .entry-input.entry-invalid {
-  border-bottom-color: #ff5a5a;
+  border-color: #ff5a5a;
   color: #ff8a8a;
+}
+/* Two lines held open whether it shows the range or an error, so nothing below moves. */
+.entry-msg {
+  min-height: calc(2 * 1.35em);
+  color: #8a929c;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.entry-msg.entry-error {
+  color: #ff8a8a;
+}
+.entry-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.entry-step-unit {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: #8a929c;
+}
+.entry-step-wide {
+  grid-column: 1 / -1;
+}
+.entry-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.entry-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+.entry-key,
+.entry-step,
+.entry-action {
+  min-height: 34px;
+  padding: 0 4px;
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+  background: #2b3037;
+  color: #f4f5f6;
+  font:
+    600 15px system-ui,
+    sans-serif;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.entry-key {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 17px;
+}
+.entry-step {
+  color: #2ec4f0;
+  font-size: 13px;
+}
+.entry-key:active,
+.entry-step:active,
+.entry-action:active {
+  background: #3a414b;
+}
+.entry-set {
+  border-color: #2ec4f0;
+  background: #2ec4f0;
+  color: #001018;
+}
+.entry-set:active {
+  background: #5fd3f5;
+}
+.entry-key:focus-visible,
+.entry-step:focus-visible,
+.entry-action:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 1px;
+}
+.entry-hint {
+  color: #8a929c;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* Touch screens (P2, P3). Bigger hit areas without moving anything: an invisible ring
+   around each small control takes the touch. And with no hover to show it, every value
+   window keeps a visible frame that says it can be tapped. */
+@media (pointer: coarse) {
+  .entry-pop {
+    width: 236px;
+  }
+  .entry-key,
+  .entry-step,
+  .entry-action {
+    min-height: 44px;
+  }
+  .knob-cap::after,
+  .radio-swap::after,
+  .radio-ident .seg-btn::after,
+  .entry-btn::after {
+    content: '';
+    position: absolute;
+  }
+  /* Insets count from inside the border, so each adds the control's border width. */
+  .knob-cap::after {
+    inset: -6px; /* 2 px border + 4 px: a 38 px radio knob takes a 46 px touch */
+    border-radius: 50%;
+  }
+  .radio-swap,
+  .radio-ident .seg-btn,
+  .entry-btn {
+    position: relative;
+  }
+  .radio-swap::after {
+    inset: -6px -3px; /* 34 px tall: a 44 px touch */
+  }
+  .radio-ident .seg-btn::after {
+    inset: -12px -8px; /* 21 px tall: a 44 px touch */
+  }
+  .entry-btn::after {
+    inset: -7px -4px;
+  }
+}
+@media (hover: none) {
+  .entry-btn {
+    border-color: #4a515b;
+  }
 }
 
 /* Panel hardware: dark in both themes. */
@@ -208,6 +384,44 @@
   outline: 3px solid #2ec4f0;
   outline-offset: 2px;
 }
+/* VS +/− buttons, stacked in the space of a 46 px knob. */
+.vs-steps {
+  gap: 3px;
+}
+.vs-btn {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  width: var(--ap-knob-col);
+  height: 24px;
+  padding: 0;
+  font:
+    700 12px system-ui,
+    sans-serif;
+  color: #e9ecef;
+  background: linear-gradient(#3a4049, #2b3037);
+  border: 1px solid #4a515b;
+  border-radius: 5px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.vs-btn-unit {
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  color: #8a929c;
+}
+.vs-btn:active:not(:disabled) {
+  background: #22262c;
+}
+.vs-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.vs-btn:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 1px;
+}
 .knob-label {
   font:
     600 11px system-ui,
@@ -267,6 +481,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  column-gap: var(--radio-knob-gap, 4px);
 }
 .radio-knobs .knob-label {
   display: none;
@@ -302,6 +517,51 @@
   font-size: 11px;
   color: #2ec4f0;
   text-align: center;
+}
+/* The speed menu: one row per target speed, the current one marked. */
+.speed-menu {
+  width: 168px;
+  gap: 4px;
+}
+.speed-opt {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid #4a515b;
+  border-radius: 4px;
+  background: #2b3037;
+  color: #f4f5f6;
+  font:
+    700 15px ui-monospace,
+    'Cascadia Mono',
+    Consolas,
+    monospace;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.speed-opt-cat {
+  font:
+    600 12px system-ui,
+    sans-serif;
+  color: #2ec4f0;
+}
+.speed-opt.on {
+  border-color: #2ec4f0;
+  background: #133a48;
+}
+.speed-opt:active {
+  background: #3a414b;
+}
+.speed-opt:focus-visible {
+  outline: 3px solid #2ec4f0;
+  outline-offset: 1px;
+}
+@media (pointer: coarse) {
+  .speed-opt {
+    min-height: 44px;
+  }
 }
 
 .dme-unit-box {
@@ -476,4 +736,11 @@
   font-size: 13px;
   font-weight: 700;
   color: #2ec4f0;
+}
+
+/* Touch: MHz and kHz knobs far enough apart that a finger picks the right one. */
+@media (pointer: coarse) {
+  .radios {
+    --radio-knob-gap: 10px;
+  }
 }

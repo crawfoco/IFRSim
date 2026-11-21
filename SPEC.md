@@ -50,13 +50,30 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
      OBS/CDI for NAV2, and a stopwatch/timer.
    - Two nav radios (NAV1, NAV2), each with active/standby frequency, flip-flop
      and Morse ident (audio and dot/dash text). Standby is tuned with the MHz/kHz
-     knobs or by clicking the standby window and typing the frequency (108.00–117.95,
-     50 kHz spacing; anything else is rejected, not rounded). The selected heading
-     and each course (CRS / OBS) can be typed the same way, 1–360 (0 = 360): heading
-     in the AP strip's heading window (under the HDG knob on the glass panel), course
-     in a window under its knob. Knobs turn by drag, wheel or keyboard; trackpad
-     scrolling steps about once per 50 px of scroll, so a swipe doesn't spin the dial.
-     Knob tooltips give the small and big (Shift / Page Up/Down) step.
+     knobs, or by clicking or tapping the standby window: a popover with the value, a
+     keypad, step buttons (MHz on the left: +1 / −1 MHz; kHz on the right: +50 / −50 kHz;
+     up before down) and Set / Cancel. Typing (keyboard or keypad) takes 108.00–117.95 on the 50 kHz
+     spacing; anything else is rejected, not rounded.
+     The selected heading (AP strip; under the HDG knob on the glass panel) and each
+     course (CRS / OBS, a window under its knob) work the same way: 1–360 (0 = 360), steps
+     +10 / +1 / −1 / −10°, and for heading a sync to the current heading. So does the selected
+     altitude (AP strip; under the ALT knob on the glass panel): 0–18,000 ft in hundreds
+     ("4500" or "4,500"), steps +1,000 / +100 / −100 / −1,000 ft. Step buttons act at once;
+     typed values need Set or Enter. A rejected entry stays, marked, and the next key
+     starts a new entry (Delete clears it). The popover keeps a two-line message line
+     under the field, the accepted range or (red) why an entry was rejected, so no button
+     moves when an error appears or clears. Every value window has a dotted underline under its value
+     to show it can be clicked. Opened by touch, the popover asks for no system keyboard,
+     so the iPad keyboard doesn't cover the panel.
+   - Knobs turn by drag, wheel or keyboard. Trackpad scrolling steps about once per
+     50 px; a scroll that started off a knob keeps scrolling the panel when a knob passes
+     under the pointer; a pinch (Ctrl+wheel) over a knob doesn't turn it. Knob tooltips
+     give the small and big (Shift / Page Up/Down) step.
+   - Touch screens (pointer: coarse): small controls (radio knobs, swap, ID, value
+     windows) take a touch about 44 px across without changing the layout, the MHz and
+     kHz knobs sit 10 px apart, and value windows keep a visible frame (no hover).
+   - The approach select screen asks for bug reports and enhancement requests as issues
+     at github.com/crawfoco/IFRSim/issues (a link that opens in a new tab).
    - Needles behave like real receivers: full-scale ±10° for VOR, ±2.5° for the
      localizer, ±0.7° for the glideslope, to/from logic, a flag when out of range
      or untuned.
@@ -67,8 +84,9 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
    *As a learner, I want a familiar GA autopilot so that the skills transfer to
    the aircraft.*
    - Generic panel (not a replica of any brand) with AP on/off, HDG, NAV, APR, ALT,
-     VS, and knobs for heading bug, course, altitude preselect and vertical-speed
-     target.
+     VS, knobs for heading bug, course and altitude preselect, and +500 / −500 FPM
+     buttons (in place of a VS knob) for the vertical-speed target; they act only in VS
+     mode.
    - NAV/APR use the HSI course pointer (CRS) as the course datum, also on a
      localizer, as an HSI-coupled autopilot does: the learner must set CRS to the
      localizer course. The HSI shows reverse sensing with CRS on the reciprocal.
@@ -76,8 +94,10 @@ the briefing, fly it, and get a debrief with a score. No step-by-step coaching.
      when the needle comes alive; GS arms in APR and captures from below; ALT
      preselect captures and levels off. The mode annunciator shows lateral and
      vertical modes, active and armed.
-   - Power selector for target airspeed (80–110 KIAS, default 100). Speed
-     determines the approach category used for minimums (A ≤ 90, B 91–110).
+   - Power selector for target airspeed (default 100 KIAS): no knob; clicking or tapping
+     the speed readout opens a small menu of 80, 90 and 100 KIAS (the sim accepts
+     80–110). Speed determines the approach category used for minimums (A ≤ 90,
+     B 91–110), so the menu reads 80 CAT A, 90 CAT A, 100 CAT B.
 
 4. **Fly the whole procedure.**
    *As a learner, I want to fly feeder routes, DME arcs, holds, the final approach

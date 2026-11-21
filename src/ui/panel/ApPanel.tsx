@@ -1,16 +1,18 @@
-/** Generic GA autopilot: mode annunciator, mode buttons, HDG / ALT / VS knobs. */
+/** Generic GA autopilot: mode annunciator, mode buttons, HDG / ALT knobs and VS +/− buttons. */
 import { annunciation, type ApButton } from '../../sim/autopilot/modes';
 import type { SimState } from '../../sim/state';
 import {
   altitudeKnob,
   formatCourse,
   headingKnob,
+  parseAltitude,
   parseDegrees,
-  vsKnob,
+  VS_STEP_FPM,
+  vsStep,
   type Send,
 } from './controls';
 import { Knob } from './Knob';
-import { ValueEntry } from './ValueEntry';
+import { altitudeSteps, degreeSteps, ValueEntry } from './ValueEntry';
 
 const BUTTONS: { id: ApButton; name: string }[] = [
   { id: 'AP', name: 'Autopilot on/off' },
@@ -56,7 +58,44 @@ export function ApPanel({
       labelClassName="knob-entry-label"
       valueClassName={valueClassName}
       maxLength={3}
-      title="Selected heading: click to type it"
+      title="Selected heading: click to set it"
+      steps={[
+        ...degreeSteps('Heading', (n) => send((s) => headingKnob(s, n, false))),
+        {
+          id: 'sync',
+          label: 'Sync to heading',
+          title: 'Set the bug to the current heading',
+          onPress: () => send({ type: 'syncHeadingBug' }),
+          wide: true,
+        },
+      ]}
+      hint="Knob: drag, scroll or arrows 1°; Shift or Page Up/Down 10°. Double-click syncs."
+    />
+  );
+  const altFt = state.panel.altPreselectFt;
+  /** The selected altitude, typed: in the annunciator strip (steam) or under the knob (glass). */
+  const altitudeEntry = (
+    testId: string,
+    className: string,
+    valueClassName: string,
+    label?: string,
+  ) => (
+    <ValueEntry
+      testId={testId}
+      text={altFt.toLocaleString('en-US')}
+      editText={String(altFt)}
+      parse={parseAltitude}
+      onSet={(ft) => send({ type: 'altPreselect', ft })}
+      name="Selected altitude"
+      rangeHint="an altitude, 0 to 18,000 feet in hundreds"
+      label={label}
+      className={className}
+      labelClassName="knob-entry-label"
+      valueClassName={valueClassName}
+      maxLength={6}
+      title="Selected altitude, feet: click to set it"
+      steps={altitudeSteps((ft) => send((s) => altitudeKnob(s, ft / 100, false)))}
+      hint="Knob: drag, scroll or arrows 100 ft; Shift or Page Up/Down 1,000 ft."
     />
   );
   return (
@@ -88,9 +127,7 @@ export function ApPanel({
           </div>
           <div className="ap-sel">
             {headingEntry('ann-hdg-sel', 'ann ann-sel', 'ann-sel-value')}
-            <span className="ann ann-sel" title="Selected altitude, feet" data-testid="ann-alt-sel">
-              {state.panel.altPreselectFt.toLocaleString('en-US')}
-            </span>
+            {altitudeEntry('ann-alt-sel', 'ann ann-sel', 'ann-sel-value')}
             <span
               className="ann ann-sel"
               title="Selected vertical speed, feet per minute (VS mode)"
@@ -138,16 +175,46 @@ export function ApPanel({
             testId="knob-alt"
             stepHint={['100 ft', '1,000 ft']}
             onTurn={(n, big) => send((s) => altitudeKnob(s, n, big))}
-          />
-          <Knob
-            label="VS"
-            valueText={
-              vsMode ? `vertical speed ${fmtVs(state.ap.vsRefFpm)} fpm` : 'inactive outside VS mode'
+            below={
+              annunciator
+                ? undefined
+                : altitudeEntry('knob-alt-sel', 'knob-entry', 'knob-entry-value', 'ALT')
             }
-            testId="knob-vs"
-            disabled={!vsMode}
-            onTurn={(n) => send((s) => vsKnob(s, n))}
           />
+          {/* VS: two buttons in the knob's place, up over down; they act only in VS mode. */}
+          <div
+            className="knob vs-steps"
+            role="group"
+            aria-label="Vertical speed"
+            data-testid="vs-steps"
+          >
+            {(
+              [
+                ['up', VS_STEP_FPM, '+'],
+                ['down', -VS_STEP_FPM, '−'],
+              ] as const
+            ).map(([id, fpm, sign]) => (
+              <button
+                key={id}
+                type="button"
+                className="vs-btn"
+                data-testid={`btn-vs-${id}`}
+                disabled={!vsMode}
+                aria-label={`Vertical speed ${id} ${VS_STEP_FPM} feet per minute`}
+                title={
+                  vsMode
+                    ? `Vertical speed ${id} ${VS_STEP_FPM} fpm`
+                    : 'Vertical speed: press VS first (acts only in VS mode)'
+                }
+                onClick={() => send((s) => vsStep(s, fpm))}
+              >
+                {sign}
+                {VS_STEP_FPM}
+                <span className="vs-btn-unit">FPM</span>
+              </button>
+            ))}
+            <span className="knob-label">VS</span>
+          </div>
         </div>
       </div>
     </section>
