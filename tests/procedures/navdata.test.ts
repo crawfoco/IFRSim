@@ -1,5 +1,5 @@
 /**
- * Cross-checks FAA NASR navdata against values hand-typed from the approach plates in Charts/.
+ * Cross-checks FAA NASR navdata against values hand-typed from the approach plates in public/charts/.
  * Fix geometry is checked by computing each fix's radial/DME from its defining navaid.
  */
 import { describe, expect, it } from 'vitest';

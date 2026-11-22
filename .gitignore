@@ -16,3 +16,6 @@ data/raw/
 
 # Local planning notes (plan, task list, prompts); not published
 tasks/
+
+# Local drop folder for raw FAA plate downloads (published copies live in public/charts)
+Charts/
