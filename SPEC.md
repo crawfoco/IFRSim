@@ -253,7 +253,6 @@ Typecheck:  npm run typecheck      # tsc --noEmit
 ```
 SPEC.md                 → this document
 docs/                   → architecture notes, procedure-encoding guide
-Charts/                 → source approach plate images (FAA)
 src/
   sim/
     geo/                → projection, bearings, distances, magvar
